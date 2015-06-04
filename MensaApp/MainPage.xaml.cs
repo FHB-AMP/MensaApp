@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 namespace MensaApp
 {
     /// <summary>
-    /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Rahmens navigiert werden kann.
+    /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Rahmens navi giert werden kann.
     /// </summary>
     public sealed partial class MainPage : Page
     {
