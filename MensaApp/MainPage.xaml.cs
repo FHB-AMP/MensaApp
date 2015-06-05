@@ -44,5 +44,11 @@ namespace MensaApp
             // Wenn Sie den NavigationHelper verwenden, der bei einigen Vorlagen zur Verfügung steht,
             // wird dieses Ereignis für Sie behandelt.
         }
+
+        private void Button_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            //Navigate to the Next Page  
+            Frame.Navigate(typeof(MealDetailPage));
+        }
     }
 }
