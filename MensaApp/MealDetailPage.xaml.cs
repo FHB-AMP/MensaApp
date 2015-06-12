@@ -1,8 +1,12 @@
 ﻿using MensaApp.Common;
+using MensaApp.DataModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -20,6 +24,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace MensaApp
 {
+
+    class listenEintrag
+    {
+        public string nameMeal { get; set; }
+    }
+
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Frames navigiert werden kann.
     /// </summary>
@@ -107,5 +117,55 @@ namespace MensaApp
         }
 
         #endregion
+
+        private void GetJSON_Click(object sender, RoutedEventArgs e)
+        {
+            GetServerData_HTTPClient(sender, e);
+        }
+
+        private async void GetServerData_HTTPClient(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    /// TODO Holger wenn Jano seine PHP-Skripte angepasst hat hier einfuegen und alten entfernen
+                    //client.BaseAddress = new Uri("https://mobile-quality-research.org");
+                    //var url = "/services/meals/";
+
+                    client.BaseAddress = new Uri("https://demo3829748.mockable.io/");
+                    var url = "";
+
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Hole JSON-File
+                        var data = response.Content.ReadAsStringAsync();
+
+                        // JSON-File in Objekte verwandeln
+                        var rootObject = JsonConvert.DeserializeObject<RootObjectDays>(data.Result);
+
+                        // Neue Listen fuer den heutigen Tag erstellen
+                        var liste = new List<listenEintrag>();
+
+                        // anzuzeigende Eintraege hinzufuegen
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal1.name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal2.name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal3.name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal4.name });
+
+                        // der Oberflaeche die Liste zur Verfuegung stellen
+                        LstServerData.ItemsSource = liste;
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                  //TODO Holger Fehlerbehandlung einbauen
+            }
+        }
+
     }
 }
