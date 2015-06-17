@@ -18,6 +18,16 @@ namespace MensaApp.ViewModel
             this.Name = name;
         }
 
+        public MealViewModel(int mealNumber, string name, bool suitableMeal, bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
+        {
+            this.MealNumber = mealNumber;
+            this.Name = name;
+            this.IsSuitableMeal = suitableMeal;
+            this.IsSuitableNutrition = suitableNutrition;
+            this.IsSuitableAdditives = suitableAdditives;
+            this.IsSuitableAllergens = suitableAllergens;
+        }
+
         /// <summary>
         /// 
         /// </summary>

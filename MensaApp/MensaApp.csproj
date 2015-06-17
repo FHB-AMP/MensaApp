@@ -87,6 +87,12 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Converter\DateToStringConverter.cs" />
+    <Compile Include="Converter\MealNumberToOfferString.cs" />
+    <Compile Include="Converter\SuitableAdditiveToImagePathConverter.cs" />
+    <Compile Include="Converter\SuitableAllergensToImagePathConverter.cs" />
+    <Compile Include="Converter\SuitableMealToColorCodeConverter.cs" />
+    <Compile Include="Converter\SuitableNutritionToImagePathConverter.cs" />
     <Compile Include="DataModel\AdditivesAllergens.cs" />
     <Compile Include="DataModel\Days.cs" />
     <Compile Include="MainPage.xaml.cs">
