@@ -150,13 +150,31 @@ namespace MensaApp
                         var liste = new List<listenEintrag>();
 
                         // anzuzeigende Eintraege hinzufuegen
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal1.name });
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal2.name });
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal3.name });
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meal4.name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[0].name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[1].name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[2].name });
+                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[3].name });
 
                         // der Oberflaeche die Liste zur Verfuegung stellen
                         LstServerData.ItemsSource = liste;
+
+                        //// erstes Datum aus Liste
+                        //var blubb = rootObject.days[0].date;
+
+                        //// Datum aus JSON auf Seite anzeigen
+                        //Result.Text = rootObject.days[0].date;
+
+                        //// heutige Tag ohne Zeit
+                        //DateTime today = DateTime.Today;
+
+                        //// ListenDatum-Platzhalter
+                        //var listenDatum = "";
+
+                        ////
+                        //foreach (var day in rootObject.days)
+                        //{
+                        //    listenDatum = day.date;
+                        //} 
 
                     }
                 }
@@ -165,6 +183,13 @@ namespace MensaApp
             {
                   //TODO Holger Fehlerbehandlung einbauen
             }
+        }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            // heutige Tag ohne Zeit
+            DateTime today = DateTime.Today;
+            Result.Text = today.ToString();
         }
 
     }

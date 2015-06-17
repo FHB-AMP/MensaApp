@@ -10,7 +10,7 @@
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton x:Name="GetJSON" Icon="Accept" Label="appbarbutton" Click="GetJSON_Click"/>
-            <AppBarButton Icon="Cancel" Label="appbarbutton"/>
+            <AppBarButton Icon="Cancel" Label="appbarbutton" Click="AppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -32,12 +32,13 @@
 
         <!--TODO: Inhalte sollten innerhalb des folgenden Rasters platziert werden,-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <TextBlock Name="Result" Height="100" TextWrapping="Wrap" Text="TextBlock" Margin="10,10,10,461"/>
             <ListBox x:Name="LstServerData">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Background="DarkOrange" Width="460" Height="150" Margin="0,10,0,0">
                             <StackPanel  Orientation="Vertical">
-                                <TextBlock Text="{Binding nameMeal}" Foreground="Black" FontSize="20" Margin="10,10,0,0" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding nameMeal}" Foreground="Black" FontSize="20" Margin="10,20,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
