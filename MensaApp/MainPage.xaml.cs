@@ -50,5 +50,10 @@ namespace MensaApp
             //Navigate to the Next Page  
             Frame.Navigate(typeof(MealDetailPage));
         }
+
+        private void Button2_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MealsPage));
+        }
     }
 }

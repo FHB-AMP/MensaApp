@@ -9,7 +9,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Button Content="MealDetailPage" HorizontalAlignment="Stretch" Margin="0,268,0,305" Height="94" Tapped="Button_Tapped"/>
-
+        <StackPanel>
+            <Button Content="MealDetailPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button_Tapped"/>
+            <Button Content="MealsTodayPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button2_Tapped"/>
+        </StackPanel>
     </Grid>
 </Page>
