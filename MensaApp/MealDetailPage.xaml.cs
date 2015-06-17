@@ -133,7 +133,7 @@ namespace MensaApp
                     //client.BaseAddress = new Uri("https://mobile-quality-research.org");
                     //var url = "/services/meals/";
 
-                    client.BaseAddress = new Uri("https://demo3829748.mockable.io/");
+                    client.BaseAddress = new Uri("http://demo2108727.mockable.io/");
                     var url = "";
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -143,38 +143,38 @@ namespace MensaApp
                         // Hole JSON-File
                         var data = response.Content.ReadAsStringAsync();
 
+                        // String Ueberpruefung  falls nix passiert TODO Holger vor Abgabe entfernen
+                        //Result.Text = data.Result;
+
                         // JSON-File in Objekte verwandeln
                         var rootObject = JsonConvert.DeserializeObject<RootObjectDays>(data.Result);
 
                         // Neue Listen fuer den heutigen Tag erstellen
                         var liste = new List<listenEintrag>();
 
-                        // anzuzeigende Eintraege hinzufuegen
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[0].name });
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[1].name });
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[2].name });
-                        liste.Add(new listenEintrag() { nameMeal = rootObject.days[0].meals[3].name });
+                        // heutige Tag ohne Zeit
+                        DateTime today = DateTime.Today;
+
+                        // Mahlzeit (Objekt) des heutigen Tages finden
+                        for (int i = 0; i < rootObject.days.Count; i++)
+                        {
+                            // Cast von String zu DateTime
+                            DateTime listenTag = zerlegeJSONDate(rootObject.days[i].date);
+
+                            // finde heute
+                            if (listenTag.Equals(today))
+                            {
+                                // so viele Meals wie es an dem Tag gibt hinzufuegen
+                                for (int j = 0; j < rootObject.days[i].meals.Count; j++)
+                                {
+                                    // anzuzeigende Eintraege hinzufuegen
+                                    liste.Add(new listenEintrag() { nameMeal = rootObject.days[i].meals[j].name });
+                                }
+                            }
+                        }
 
                         // der Oberflaeche die Liste zur Verfuegung stellen
                         LstServerData.ItemsSource = liste;
-
-                        //// erstes Datum aus Liste
-                        //var blubb = rootObject.days[0].date;
-
-                        //// Datum aus JSON auf Seite anzeigen
-                        //Result.Text = rootObject.days[0].date;
-
-                        //// heutige Tag ohne Zeit
-                        //DateTime today = DateTime.Today;
-
-                        //// ListenDatum-Platzhalter
-                        //var listenDatum = "";
-
-                        ////
-                        //foreach (var day in rootObject.days)
-                        //{
-                        //    listenDatum = day.date;
-                        //} 
 
                     }
                 }
@@ -183,6 +183,21 @@ namespace MensaApp
             {
                   //TODO Holger Fehlerbehandlung einbauen
             }
+        }
+
+
+        private DateTime zerlegeJSONDate(string dateString)
+        {
+            // Trenner uebergeben
+            string[] separators = {"-"};
+
+            // String dateParts aus JSON-Objekt anhand der Trenner aufteilen und die Leerzeichen entfernen, wenn vorhanden
+            string[] dateParts = dateString.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            // Neues DateTime-Objekt erzeugen und die einzelnen Teile in in Integer parsen
+            DateTime result = new DateTime(Int32.Parse(dateParts[0]), Int32.Parse(dateParts[1]), Int32.Parse(dateParts[2]));
+
+            return result;
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
