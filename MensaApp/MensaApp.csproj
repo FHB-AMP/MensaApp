@@ -101,9 +101,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\AdditivesViewModel.cs" />
     <Compile Include="ViewModel\AllergensViewModel.cs" />
-    <Compile Include="ViewModel\DaysViewModel.cs" />
+    <Compile Include="ViewModel\ForecastViewModel.cs" />
     <Compile Include="ViewModel\MealViewModel.cs" />
-    <Compile Include="ViewModel\MealsViewModel.cs" />
+    <Compile Include="ViewModel\DayViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

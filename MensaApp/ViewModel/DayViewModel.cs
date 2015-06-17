@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,18 +9,39 @@ using System.Threading.Tasks;
 
 namespace MensaApp.ViewModel
 {
-    class DaysViewModel : INotifyPropertyChanged
+    class DayViewModel : INotifyPropertyChanged
     {
+        public DayViewModel()
+        {
+            this.Meals = new ObservableCollection<MealViewModel>();
+        }
+
+        public DayViewModel(DateTime date, ObservableCollection<MealViewModel> meals)
+        {
+            this.Date = date;
+            this.Meals = meals;
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        private List<MealsViewModel> _days;
-        public List<MealsViewModel> Days
+        private DateTime _date;
+        public DateTime Date
         {
-            get { return _days; }
-            set { this.SetProperty(ref this._days, value); }
+            get { return _date; }
+            set { this.SetProperty(ref this._date, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private ObservableCollection<MealViewModel> _meals;
+        public ObservableCollection<MealViewModel> Meals
+        {
+            get { return _meals; }
+            set { this.SetProperty(ref this._meals, value); }
+        }
+        
         // property changed logic by jump start
         public event PropertyChangedEventHandler PropertyChanged;
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
@@ -36,6 +58,5 @@ namespace MensaApp.ViewModel
             if (eventHandler != null)
                 eventHandler(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 }

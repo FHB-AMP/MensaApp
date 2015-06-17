@@ -10,6 +10,14 @@ namespace MensaApp.ViewModel
 {
     class MealViewModel : INotifyPropertyChanged
     {
+        public MealViewModel() { }
+
+        public MealViewModel(int mealNumber, string name) 
+        {
+            this.MealNumber = mealNumber;
+            this.Name = name;
+        }
+
         /// <summary>
         /// 
         /// </summary>
