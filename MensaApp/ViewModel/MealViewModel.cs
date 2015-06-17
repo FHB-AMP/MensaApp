@@ -39,7 +39,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Mahlzeitangebot passt zu den Nutzereinstellungen
         /// </summary>
         private bool _isSuitableMeal;
         public bool IsSuitableMeal
@@ -59,7 +59,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Erster Kreis in der Oberflaeche (vegan, vegetarier, omnivore)
         /// </summary>
         private bool _isSuitableNutrition;
         public bool IsSuitableNutrition
@@ -79,7 +79,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Zweite Kreis Zusatzstoffe passen zu den Nutzereinstellungen
         /// </summary>
         private bool _isSuitableAdditives;
         public bool IsSuitableAdditives
@@ -99,7 +99,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Dritter Kreis, Allergene passen zu den Nutzereinstellungen
         /// </summary>
         private bool _isSuitableAllergens;
         public bool IsSuitableAllergens
