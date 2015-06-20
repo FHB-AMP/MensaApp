@@ -13,149 +13,126 @@
         <CollectionViewSource x:Name="mealsForecast" IsSourceGrouped="True" ItemsPath="Meals"/>
         <valueConverter:DateToStringConverter x:Key="DateToStrigConverter"/>
         <valueConverter:MealNumberToOfferString x:Key="MealNumberToOfferString"/>
-        <valueConverter:SuitableMealToColorCodeConverter x:Key="SuitableMealToColorCodeConverter"/>
+        <valueConverter:SuitableMealToColorCode x:Key="SuitableMealToColorCode"/>
         <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
         <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
         <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>
     </UserControl.Resources>
-    
+
     <Page.BottomAppBar>
-		<CommandBar>
-			<AppBarButton Icon="Refresh" Label="neu laden"/>
-			<AppBarButton Icon="Setting" Label="Einstellung"/>
-		</CommandBar>
-	</Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Compact">
+            <AppBarButton Icon="Refresh" Label="neu laden"/>
+            <AppBarButton Icon="Setting" Label="Einstellung" Click="SettingAppBarButton_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 
-    <Grid x:Name="LayoutRoot" Margin="12,0">
-<!-- Pivot -->        
-        <Pivot HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="0" Margin="-20,0,0,0" Title="FH Brandenburg Mensa">
+    <Grid x:Name="LayoutRoot" Margin="0,0">
+        <!-- Pivot -->
+        <Pivot HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="0" 
+               Margin="-8,0,0,0" Title="FH Brandenburg Mensa">
 
-<!-- First PivotItem -->
-            <PivotItem Margin="18,0,0,0" Padding="2,0" FontSize="8" Header="Heute">
-                <Grid x:Name="ContentGridToday" Margin="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="57.5"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+            <!-- First PivotItem -->
+            <PivotItem Margin="18,0,10,0" Padding="4,0" Header="Heute">
+                <ListView ItemsSource="{Binding Source={StaticResource mealsToday}}" SelectionMode="None">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Margin" Value="8,0,8,12"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.GroupStyle>
+                        <GroupStyle HidesIfEmpty="True">
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <Grid IsHitTestVisible="False">
+                                        <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" FontSize="24" Margin="0,0,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="100">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="33"/>
+                                </Grid.ColumnDefinitions>
 
-                    <ListView x:Name="TodayListView" ItemsSource="{Binding Source={StaticResource mealsToday}}" 
-                              Margin="0,0,0,0" Grid.ColumnSpan="2" Header="" Grid.Row="0" FontSize="24" Grid.RowSpan="2" SelectionMode="None">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Margin" Value="0,0,0,12"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.GroupStyle>
-                            <GroupStyle HidesIfEmpty="True">
-                                <GroupStyle.HeaderTemplate>
-                                    <DataTemplate>
-                                        <Grid IsHitTestVisible="False">
-                                            <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" FontSize="22" Margin="0,0,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GroupStyle.HeaderTemplate>
-                            </GroupStyle>
-                        </ListView.GroupStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Height="100">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="25"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="33"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="0" Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Stroke="White" StrokeThickness="0"/>
-                                    <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableMealToColorCodeConverter}}" Grid.RowSpan="3" Stroke="Black" Margin="0" StrokeThickness="0" RadiusX="5" RadiusY="5"/>
-                                    <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="3" 
-    								        Margin="10" FontSize="16" MaxLines="3" TextTrimming="WordEllipsis"/>
-                                    <Ellipse Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" HorizontalAlignment="Center" Height="18" VerticalAlignment="Center" Width="18" Grid.Column="2" Margin="0"/>
-                                    <Ellipse Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" HorizontalAlignment="Center" Height="18" VerticalAlignment="Center" Width="18" Grid.Column="2" Margin="0" Grid.Row="1"/>
-                                    <Ellipse Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" HorizontalAlignment="Center" Height="18" VerticalAlignment="Center" Width="18" Grid.Column="2" Margin="0" Grid.Row="2"/>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-19,0,0,0" MaxLines="1" Width="66" Height="25" FontSize="13.333" Grid.ColumnSpan="2" Grid.Row="1">
-                                        <TextBlock.RenderTransform>
-                                            <CompositeTransform Rotation="-90"/>
-                                        </TextBlock.RenderTransform>
-                                    </TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
+                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="0" Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Stroke="White" StrokeThickness="0"/>
+                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableMealToColorCode}}" Grid.RowSpan="3" Stroke="Black" Margin="0" StrokeThickness="0" RadiusX="5" RadiusY="5"/>
+                                <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="3" 
+    								        Margin="10" FontSize="20" MaxLines="3" TextTrimming="WordEllipsis" VerticalAlignment="Stretch"/>
+                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Row="0" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Row="1" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Row="2" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-19,0,0,0" MaxLines="1" Width="66" Height="25" FontSize="13.333" Grid.ColumnSpan="2" Grid.Row="1">
+                                    <TextBlock.RenderTransform>
+                                        <CompositeTransform Rotation="-90"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </PivotItem>
-            
-<!-- Second PivotItem -->
-            <PivotItem Margin="18,0,0,0" Padding="2,0" Header="Vorschau">
-                <Grid x:Name="ContentGridForcast" Margin="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="57.5"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
 
-                    <ListView x:Name="ForecastDaysListView" ItemsSource="{Binding Source={StaticResource mealsForecast}}" 
-                              Margin="0,0,0,0" Grid.ColumnSpan="2" Header="" Grid.Row="0" FontSize="24" Grid.RowSpan="2" SelectionMode="None">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Margin" Value="0,0,0,12"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.GroupStyle>
-                            <GroupStyle HidesIfEmpty="True">
-                                <GroupStyle.HeaderTemplate>
-                                    <DataTemplate>
-                                        <Grid IsHitTestVisible="False">
-                                            <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" FontSize="22" Margin="0,4,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GroupStyle.HeaderTemplate>
-                            </GroupStyle>
-                        </ListView.GroupStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Height="100">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="25"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="33"/>
-                                    </Grid.ColumnDefinitions>
+            <!-- Second PivotItem -->
+            <PivotItem Margin="18,0,10,0" Padding="2,0" Header="Vorschau">
+                <ListView ItemsSource="{Binding Source={StaticResource mealsForecast}}" SelectionMode="None">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Margin" Value="8,0,8,12"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.GroupStyle>
+                        <GroupStyle HidesIfEmpty="True">
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <Grid IsHitTestVisible="False">
+                                        <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" FontSize="24" Margin="0,4,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="100">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="33"/>
+                                </Grid.ColumnDefinitions>
 
-                                    <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="0" Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Stroke="White" StrokeThickness="0"/>
-                                    <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableMealToColorCodeConverter}}" Grid.RowSpan="3" Stroke="Black" Margin="0" StrokeThickness="0" RadiusX="5" RadiusY="5"/>
-                                    <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="3" 
-    								        Margin="10" FontSize="16" MaxLines="3" TextTrimming="WordEllipsis"/>
-                                    <Ellipse Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" HorizontalAlignment="Center" Height="18" VerticalAlignment="Center" Width="18" Grid.Column="2" Margin="0"/>
-                                    <Ellipse Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" HorizontalAlignment="Center" Height="18" VerticalAlignment="Center" Width="18" Grid.Column="2" Margin="0" Grid.Row="1"/>
-                                    <Ellipse Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" HorizontalAlignment="Center" Height="18" VerticalAlignment="Center" Width="18" Grid.Column="2" Margin="0" Grid.Row="2"/>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-19,0,0,0" MaxLines="1" Width="66" Height="25" FontSize="13.333" Grid.ColumnSpan="2" Grid.Row="1">
-                                        <TextBlock.RenderTransform>
-                                            <CompositeTransform Rotation="-90"/>
-                                        </TextBlock.RenderTransform>
-                                    </TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
+                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="0" Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Stroke="White" StrokeThickness="0"/>
+                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableMealToColorCode}}" Grid.RowSpan="3" Stroke="Black" Margin="0" StrokeThickness="0" RadiusX="5" RadiusY="5"/>
+                                <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="3" 
+    								        Margin="10" FontSize="20" MaxLines="3" TextTrimming="WordEllipsis" VerticalAlignment="Stretch"/>
+                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Row="0" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Row="1" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Row="2" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-19,0,0,0" MaxLines="1" Width="66" Height="25" FontSize="13.333" Grid.ColumnSpan="2" Grid.Row="1">
+                                    <TextBlock.RenderTransform>
+                                        <CompositeTransform Rotation="-90"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </PivotItem>
         </Pivot>
     </Grid>

@@ -12,6 +12,7 @@
         <StackPanel>
             <Button Content="MealDetailPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button_Tapped"/>
             <Button Content="MealsTodayPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button2_Tapped"/>
+            <Button Content="SettingsPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button3_Tapped"/>
         </StackPanel>
     </Grid>
 </Page>

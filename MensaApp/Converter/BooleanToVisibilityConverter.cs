@@ -7,19 +7,19 @@ using Windows.UI.Xaml.Data;
 
 namespace MensaApp.Converter
 {
-    class SuitableAllergensToImagePathConverter : IValueConverter
+    class BooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            bool isSuitable = (bool)value;
+            bool isVisible = (bool)value;
 
-            if (isSuitable)
+            if (isVisible)
             {
-                return "assets/icon/Allergens-green-240.png";
+                return "Visible";
             }
             else
             {
-                return "assets/icon/Allergens-red-240.png";
+                return "Collapsed";
             }
         }
 

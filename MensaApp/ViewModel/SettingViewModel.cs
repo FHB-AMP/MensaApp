@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MensaApp.ViewModel
 {
-    class AdditiveViewModel : INotifyPropertyChanged
+    class SettingViewModel : INotifyPropertyChanged
     {
-        private string _id;
-        public string Id
+        public SettingViewModel()
         {
-            get { return _id; }
-            set { this.SetProperty(ref this._id, value); }
+            this.Additives = new ObservableCollection<AdditiveViewModel>();
+            this.Allergens = new ObservableCollection<AllergenViewModel>();
         }
 
-        private string _definition;
-        public string Definition
+        private ObservableCollection<AdditiveViewModel> _additives;
+        public ObservableCollection<AdditiveViewModel> Additives
         {
-            get { return _definition; }
-            set { this.SetProperty(ref this._definition, value); }
+            get { return _additives; }
+            set { this.SetProperty(ref this._additives, value); }
         }
 
-        private string _meaning;
-        public string Meaning
+        private ObservableCollection<AllergenViewModel> _allergens;
+        public ObservableCollection<AllergenViewModel> Allergens
         {
-            get { return _meaning; }
-            set { this.SetProperty(ref this._meaning, value); }
+            get { return _allergens; }
+            set { this.SetProperty(ref this._allergens, value); }
         }
 
         // property changed logic by jump start

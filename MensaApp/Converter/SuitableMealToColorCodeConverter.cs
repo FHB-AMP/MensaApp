@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Data;
 
 namespace MensaApp.Converter
 {
-    class SuitableMealToColorCodeConverter : IValueConverter
+    class SuitableMealToColorCode : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -15,11 +15,11 @@ namespace MensaApp.Converter
 
             if (isSuitable)
             {
-                return "#FF6AA84F";
+                return "#FF008F11";
             }
             else
             {
-                return "#FFE06666";
+                return "#FFBF0000";
             }
         }
 

@@ -2,6 +2,7 @@
 using MensaApp.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -24,66 +25,38 @@ namespace MensaApp
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Frames navigiert werden kann.
     /// </summary>
-    public sealed partial class MealsPage : Page
+    public sealed partial class SettingPage : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        private ForecastViewModel _mealsTodayViewModel = new ForecastViewModel();
-        private ForecastViewModel _mealsForecastViewModel = new ForecastViewModel();
+        private SettingViewModel _settingViewModel = new SettingViewModel();
 
-        public MealsPage()
+        public SettingPage()
         {
             this.InitializeComponent();
 
-            mealsToday.Source = _mealsTodayViewModel.Days;
-            mealsForecast.Source = _mealsForecastViewModel.Days;
+            additives.Source = _settingViewModel.Additives;
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-
         }
 
-        private void populateTodayWithMeals()
+
+        public void populateAdditives()
         {
-            DayViewModel dayVM = new DayViewModel();
-            dayVM.Date = DateTime.Now;
-            dayVM.Meals.Add(new MealViewModel(1, "Italienisches Nudelgericht mit Salami- oder Tofustreifen, dazu Reibekäse", false, true, false, false));
-            dayVM.Meals.Add(new MealViewModel(2, "Rostbratwurst mit Pommes frites und buntem Salatmix", true, true, true, true));
-            dayVM.Meals.Add(new MealViewModel(3, "Seefischfilet, gebraten mit Dillsauce Salzkartoffeln oder Reis dazu frischer Gurkensalat", false, true, false, true));
-            dayVM.Meals.Add(new MealViewModel(4, "Kartoffel-Spargel-Auflauf,dazu Saisonsalat mit Sonnenblumenkernen", true, true, true, true));
-            dayVM.Meals.Add(new MealViewModel(5, "Wiener Schnitzel mit lauwarmen Kartoffel - Gurkensalat und kleiner Salatgarnitur", false, false, true, true));
-            _mealsTodayViewModel.Days.Add(dayVM);
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(1)", "mit Farbstoff", "Optische Aufwertung der wertbestimmenden Zutaten (z.B. höherer Fruchtanteil in der Kaltschale).", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(2)", "mit Konservierungsstoff", "Erhaltung bzw. Verlängerung der Genusstauglichkeit des Lebensmittels.", true));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(3)", "mit Antioxidationsmittel", "wie (1) und (2)", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(4)", "mit Geschmacksverstärker", "zur Verstärkung des Geschmacks der wertbestimmenden Zutaten", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(5)", "mit geschwefelt", "Schwefel dient der Abtötung von unerwünschten Mikroorganismen", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(6)", "mit geschwärzt", "Schwärzung erfolgt durch Eisenoxide. Zur Färbung grüner Oliven.", true));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(7)", "mit gewachst", "Überzugsmittel der Fruchtschale von Zitrusfrüchten zur Beeinflussung der Haltbarkeit.", true));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(8)", "mit Phosphat", "Bestandteil des Erbgutes aller Lebewesen und ist in Lebensmitteln tierischen Ursprungs enthalten. Phosphatverbindungen werden u.a. als Säuerungsmittel in Cola, Wurstwaren eingesetzt", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(9)", "mit Süßungsmittel", "Süßstoffe, liefern kaum Nahrungsenergie und werden deshalb u.a. in energiereduzierten Lebensmitteln eingesetzt", true));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(11)", "mit Aspartam-Acesulfamsalz ", "Wird als Süßungsmittel oder Geschmacksverstärker eingesetzt. Es geht im Stoffwechsel des Körpers ein. Der Eiweißbaustein Phenylalanin führt bei Personen, die an Phenylketourie leiden zu schweren Gesundheitsschäden.", false));
         }
-
-        private void populateForecastDaysWithMeals()
-        {
-            DayViewModel dayVM1 = new DayViewModel();
-            dayVM1.Date = DateTime.Now.AddDays(1);
-            dayVM1.Meals.Add(new MealViewModel(1, "Märkische Kartoffelsuppe mit Wiener Würstchen oder Sojawürfeln (vegan), dazu Roggenbrot", false, true, false, false));
-            dayVM1.Meals.Add(new MealViewModel(2, "Pfannengyros mit Tzatziki und Langkornreis, dazu bunter Weißkraut-Möhrensalat", true, true, true, true));
-            dayVM1.Meals.Add(new MealViewModel(3, "Gegrillte Hähnchenkeule mit Letscho und gebackenen Kartoffelecken", false, true, false, true));
-            dayVM1.Meals.Add(new MealViewModel(4, "Brokkoli, Blumenkohl und Kartoffeln mit Gorgonzola gratiniert, dazu roter Linsensalat", true, true, true, true));
-            _mealsForecastViewModel.Days.Add(dayVM1);
-
-            DayViewModel dayVM2 = new DayViewModel();
-            dayVM2.Date = DateTime.Now.AddDays(2);
-            dayVM2.Meals.Add(new MealViewModel(1, "Panierte Jagdwurst oder Tofusteak mit Nudeln und veganer Tomatensauce", false, true, false, true));
-            dayVM2.Meals.Add(new MealViewModel(2, "Rügener Rauch-Matjestopf mit Preiselbeerrahm, dazu Stangenbohnen und Bratkartoffeln", false, false, true, true));
-            dayVM2.Meals.Add(new MealViewModel(3, "Kalbsschnitzel mit lauwarmen Kartoffelsalat und Blattsalat", false, true, true, false));
-            dayVM2.Meals.Add(new MealViewModel(4, "Lasagne mit Sojabolognaise und Salatmix", true, true, true, true));
-            _mealsForecastViewModel.Days.Add(dayVM2);
-
-            DayViewModel dayVM3 = new DayViewModel();
-            dayVM3.Date = DateTime.Now.AddDays(5);
-            dayVM3.Meals.Add(new MealViewModel(1, "Kräuterquark mit Leinöl und Salzkartoffeln", true, true, true, true));
-            dayVM3.Meals.Add(new MealViewModel(2, "Leberkäse mit süßem Senf und Bratkartoffeln, Gewürzgurke", true, true, true, true));
-            dayVM3.Meals.Add(new MealViewModel(3, "Hähnchen CordonBleu mit Sauce Bernaise und Brokkoli, dazu Kroketten oder Salzkartoffeln", true, true, true, true));
-            dayVM3.Meals.Add(new MealViewModel(4, "Sojagyros mit Tzatziki oder Ayvar und Couscous, dazu Weißkrautsalat", true, true, true, true));
-            _mealsForecastViewModel.Days.Add(dayVM3);
-        }
-
 
         /// <summary>
         /// Ruft den <see cref="NavigationHelper"/> ab, der mit dieser <see cref="Page"/> verknüpft ist.
@@ -115,8 +88,7 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            populateTodayWithMeals();
-            populateForecastDaysWithMeals();
+            populateAdditives();
         }
 
         /// <summary>
@@ -158,9 +130,5 @@ namespace MensaApp
 
         #endregion
 
-        private void SettingAppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(SettingPage));
-        }
     }
 }
