@@ -29,15 +29,14 @@ namespace MensaApp
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        private ForecastViewModel _mealsTodayViewModel = new ForecastViewModel();
-        private ForecastViewModel _mealsForecastViewModel = new ForecastViewModel();
-
+        private ForecastViewModel _mealsPageViewModel = new ForecastViewModel();
+        
         public MealsPage()
         {
             this.InitializeComponent();
 
-            mealsToday.Source = _mealsTodayViewModel.Days;
-            mealsForecast.Source = _mealsForecastViewModel.Days;
+            mealsToday.Source = _mealsPageViewModel.Today;
+            mealsForecast.Source = _mealsPageViewModel.ForecastDays;
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -54,7 +53,7 @@ namespace MensaApp
             dayVM.Meals.Add(new MealViewModel(3, "Seefischfilet, gebraten mit Dillsauce Salzkartoffeln oder Reis dazu frischer Gurkensalat", false, true, false, true));
             dayVM.Meals.Add(new MealViewModel(4, "Kartoffel-Spargel-Auflauf,dazu Saisonsalat mit Sonnenblumenkernen", true, true, true, true));
             dayVM.Meals.Add(new MealViewModel(5, "Wiener Schnitzel mit lauwarmen Kartoffel - Gurkensalat und kleiner Salatgarnitur", false, false, true, true));
-            _mealsTodayViewModel.Days.Add(dayVM);
+            _mealsPageViewModel.Today.Add(dayVM);
         }
 
         private void populateForecastDaysWithMeals()
@@ -65,7 +64,7 @@ namespace MensaApp
             dayVM1.Meals.Add(new MealViewModel(2, "Pfannengyros mit Tzatziki und Langkornreis, dazu bunter Weißkraut-Möhrensalat", true, true, true, true));
             dayVM1.Meals.Add(new MealViewModel(3, "Gegrillte Hähnchenkeule mit Letscho und gebackenen Kartoffelecken", false, true, false, true));
             dayVM1.Meals.Add(new MealViewModel(4, "Brokkoli, Blumenkohl und Kartoffeln mit Gorgonzola gratiniert, dazu roter Linsensalat", true, true, true, true));
-            _mealsForecastViewModel.Days.Add(dayVM1);
+            _mealsPageViewModel.ForecastDays.Add(dayVM1);
 
             DayViewModel dayVM2 = new DayViewModel();
             dayVM2.Date = DateTime.Now.AddDays(2);
@@ -73,15 +72,15 @@ namespace MensaApp
             dayVM2.Meals.Add(new MealViewModel(2, "Rügener Rauch-Matjestopf mit Preiselbeerrahm, dazu Stangenbohnen und Bratkartoffeln", false, false, true, true));
             dayVM2.Meals.Add(new MealViewModel(3, "Kalbsschnitzel mit lauwarmen Kartoffelsalat und Blattsalat", false, true, true, false));
             dayVM2.Meals.Add(new MealViewModel(4, "Lasagne mit Sojabolognaise und Salatmix", true, true, true, true));
-            _mealsForecastViewModel.Days.Add(dayVM2);
+            _mealsPageViewModel.ForecastDays.Add(dayVM2);
 
             DayViewModel dayVM3 = new DayViewModel();
-            dayVM3.Date = DateTime.Now.AddDays(5);
+            dayVM3.Date = DateTime.Now.AddDays(3);
             dayVM3.Meals.Add(new MealViewModel(1, "Kräuterquark mit Leinöl und Salzkartoffeln", true, true, true, true));
             dayVM3.Meals.Add(new MealViewModel(2, "Leberkäse mit süßem Senf und Bratkartoffeln, Gewürzgurke", true, true, true, true));
             dayVM3.Meals.Add(new MealViewModel(3, "Hähnchen CordonBleu mit Sauce Bernaise und Brokkoli, dazu Kroketten oder Salzkartoffeln", true, true, true, true));
             dayVM3.Meals.Add(new MealViewModel(4, "Sojagyros mit Tzatziki oder Ayvar und Couscous, dazu Weißkrautsalat", true, true, true, true));
-            _mealsForecastViewModel.Days.Add(dayVM3);
+            _mealsPageViewModel.ForecastDays.Add(dayVM3);
         }
 
 

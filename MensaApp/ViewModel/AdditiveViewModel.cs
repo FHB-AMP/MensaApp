@@ -9,13 +9,25 @@ using System.Windows.Input;
 
 namespace MensaApp.ViewModel
 {
+    /// <summary>
+    /// ViewModel of an additive
+    /// Is used to manipulate front end.
+    /// </summary>
     class AdditiveViewModel : INotifyPropertyChanged
     {
-        public AdditiveViewModel() 
+        public AdditiveViewModel()
         {
+            this.ShowMeaning = false;
+            this.IsExcluded = false;
             this.ToggleShowMeaningCommand = new ToggleShowMeaningClick();
         }
 
+        /// <summary>
+        /// Constructor to create a completly new additive.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="definition"></param>
+        /// <param name="meaning"></param>
         public AdditiveViewModel(string id, string definition, string meaning)
         {
             this.Id = id;
@@ -26,6 +38,13 @@ namespace MensaApp.ViewModel
             this.ToggleShowMeaningCommand = new ToggleShowMeaningClick();
         }
 
+        /// <summary>
+        /// Constructor fo create am additive which is restort from file.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="definition"></param>
+        /// <param name="meaning"></param>
+        /// <param name="isExcluded"></param>
         public AdditiveViewModel(string id, string definition, string meaning, bool isExcluded) 
         {
             this.Id = id;
@@ -36,8 +55,16 @@ namespace MensaApp.ViewModel
             this.ToggleShowMeaningCommand = new ToggleShowMeaningClick();
         }
 
+        /// <summary>
+        /// Command to toggle between show and hide further information of an additive.
+        /// </summary>
         public ICommand ToggleShowMeaningCommand { get; set; }
 
+        /// <summary>
+        /// Unique string to identify an allergen.
+        /// e.g. '(1)'
+        /// Should be saved in file.
+        /// </summary>
         private string _id;
         public string Id
         {
@@ -45,6 +72,10 @@ namespace MensaApp.ViewModel
             set { this.SetProperty(ref this._id, value); }
         }
 
+        /// <summary>
+        /// String to define a certain additive.
+        /// Should be saved in file.
+        /// </summary>
         private string _definition;
         public string Definition
         {
@@ -52,6 +83,10 @@ namespace MensaApp.ViewModel
             set { this.SetProperty(ref this._definition, value); }
         }
 
+        /// <summary>
+        /// String which discribes meaning of a certain additive.
+        /// Should be saved in file.
+        /// </summary>
         private string _meaning;
         public string Meaning
         {
@@ -59,6 +94,20 @@ namespace MensaApp.ViewModel
             set { this.SetProperty(ref this._meaning, value); }
         }
 
+        /// <summary>
+        /// Is true, when the participant want to exclude the certain additive from its nutrition.
+        /// Should be saved in file.
+        /// </summary>
+        private bool _isExcluded;
+        public bool IsExcluded
+        {
+            get { return _isExcluded; }
+            set { _isExcluded = value; }
+        }
+
+        /// <summary>
+        /// Front end attribute to show or hide the 'meaning' property in the list of additives.
+        /// </summary>
         private bool _showMeaning;
         public bool ShowMeaning
         {
@@ -66,19 +115,13 @@ namespace MensaApp.ViewModel
             set { this.SetProperty(ref this._showMeaning, value); }
         }
 
+
+        /// <summary>
+        /// Method which toggles the state of the 'ShowMeaning' property.
+        /// </summary>
         public void ToggleShowMeaning()
         {
             this.ShowMeaning = !this.ShowMeaning;
-        }
-
-        /// <summary>
-        /// Ist True, wenn ein Zusatzstoff von der Ernährung ausgeschossen ist.
-        /// </summary>
-        private bool _isExcluded;
-        public bool IsExcluded
-        {
-            get { return _isExcluded; }
-            set { _isExcluded = value; }
         }
         
 
@@ -100,6 +143,9 @@ namespace MensaApp.ViewModel
         }
     }
 
+    /// <summary>
+    /// Command to call the 'ToggleShowMeaning' method on a button click.
+    /// </summary>
     public class ToggleShowMeaningClick : ICommand
     {
         public bool CanExecute(object parameter)

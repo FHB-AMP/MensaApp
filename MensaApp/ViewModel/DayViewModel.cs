@@ -9,13 +9,37 @@ using System.Threading.Tasks;
 
 namespace MensaApp.ViewModel
 {
+    /// <summary>
+    /// ViewModel of a day. 
+    /// It contains the date of day and the meals which are available at that certain day
+    /// Is used to manipulate front end.
+    /// </summary>
     class DayViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Constructor to create a day with the current date and an empty list of meals.
+        /// </summary>
         public DayViewModel()
         {
+            this.Date = DateTime.Now;
             this.Meals = new ObservableCollection<MealViewModel>();
         }
 
+        /// <summary>
+        /// Constructor to create a day with a date and an empty list of meals.
+        /// </summary>
+        /// <param name="date"></param>
+        public DayViewModel(DateTime date)
+        {
+            this.Date = date;
+            this.Meals = new ObservableCollection<MealViewModel>();
+        }
+
+        /// <summary>
+        /// Constructor create a day with date and a list of meals.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="meals"></param>
         public DayViewModel(DateTime date, ObservableCollection<MealViewModel> meals)
         {
             this.Date = date;
@@ -23,7 +47,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Date of a certain day.
         /// </summary>
         private DateTime _date;
         public DateTime Date
@@ -33,7 +57,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// List of meals which are available at that certain day.
         /// </summary>
         private ObservableCollection<MealViewModel> _meals;
         public ObservableCollection<MealViewModel> Meals

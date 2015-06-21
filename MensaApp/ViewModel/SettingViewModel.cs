@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 
 namespace MensaApp.ViewModel
 {
+    /// <summary>
+    /// ViewModel of the Settings page.
+    /// It contains lists of all available allergens and additives.
+    /// Is used to manipulate front end.
+    /// </summary>
     class SettingViewModel : INotifyPropertyChanged
     {
         public SettingViewModel()
@@ -17,6 +22,9 @@ namespace MensaApp.ViewModel
             this.Allergens = new ObservableCollection<AllergenViewModel>();
         }
 
+        /// <summary>
+        /// The list of all additives which should be shown at the settings page.
+        /// </summary>
         private ObservableCollection<AdditiveViewModel> _additives;
         public ObservableCollection<AdditiveViewModel> Additives
         {
@@ -24,6 +32,9 @@ namespace MensaApp.ViewModel
             set { this.SetProperty(ref this._additives, value); }
         }
 
+        /// <summary>
+        /// The list of all allergens which should be shown at the settings page.
+        /// </summary>
         private ObservableCollection<AllergenViewModel> _allergens;
         public ObservableCollection<AllergenViewModel> Allergens
         {

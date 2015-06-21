@@ -8,20 +8,30 @@ using System.Threading.Tasks;
 
 namespace MensaApp.ViewModel
 {
+    /// <summary>
+    /// ViewModel of a meal.
+    /// Is used to manipulate front end.
+    /// </summary>
     class MealViewModel : INotifyPropertyChanged
     {
-        public MealViewModel() { }
+        public MealViewModel()
+        {
+            this.IsSuitableMeal = true;
+            this.IsSuitableNutrition = true;
+            this.IsSuitableAdditives = true;
+            this.IsSuitableAllergens = true;
+        }
 
-        public MealViewModel(int mealNumber, string name) 
+        public MealViewModel(int mealNumber, string name)
+            : this()
         {
             this.MealNumber = mealNumber;
             this.Name = name;
         }
 
         public MealViewModel(int mealNumber, string name, bool suitableMeal, bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
+            : this(mealNumber, name)
         {
-            this.MealNumber = mealNumber;
-            this.Name = name;
             this.IsSuitableMeal = suitableMeal;
             this.IsSuitableNutrition = suitableNutrition;
             this.IsSuitableAdditives = suitableAdditives;
@@ -29,7 +39,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Describes the position of meal in the list of meals.
         /// </summary>
         private int _mealNumber;
         public int MealNumber
@@ -39,7 +49,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// Mahlzeitangebot passt zu den Nutzereinstellungen
+        /// It True, when the nutirtion, additives and allergens of the meal matches the settings of the participant.
         /// </summary>
         private bool _isSuitableMeal;
         public bool IsSuitableMeal
@@ -47,9 +57,9 @@ namespace MensaApp.ViewModel
             get { return _isSuitableMeal; }
             set { this.SetProperty(ref this._isSuitableMeal, value); }
         }
-        
+
         /// <summary>
-        /// 
+        /// The name of the meal.
         /// </summary>
         private string _name;
         public string Name
@@ -59,7 +69,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// Erster Kreis in der Oberflaeche (vegan, vegetarier, omnivore)
+        /// Is True, when nutrition of the meal matches the nutrition settings of the participant.
         /// </summary>
         private bool _isSuitableNutrition;
         public bool IsSuitableNutrition
@@ -67,9 +77,9 @@ namespace MensaApp.ViewModel
             get { return _isSuitableNutrition; }
             set { this.SetProperty(ref this._isSuitableNutrition, value); }
         }
-        
+
         /// <summary>
-        /// 
+        /// Symbols of the meal. Given by API.
         /// </summary>
         private List<string> _symbols;
         public List<string> Symbols
@@ -79,7 +89,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// Zweite Kreis Zusatzstoffe passen zu den Nutzereinstellungen
+        /// Is True, when additives of the meal matches the additive settings of the participant.
         /// </summary>
         private bool _isSuitableAdditives;
         public bool IsSuitableAdditives
@@ -89,7 +99,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Additives of the meal. Given by API.
         /// </summary>
         private List<AdditiveViewModel> _additives;
         public List<AdditiveViewModel> Additives
@@ -99,7 +109,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// Dritter Kreis, Allergene passen zu den Nutzereinstellungen
+        /// Is True, when allergens of the meal matches the allergen settings of the participant.
         /// </summary>
         private bool _isSuitableAllergens;
         public bool IsSuitableAllergens
@@ -109,7 +119,7 @@ namespace MensaApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Allergens of the meal.
         /// </summary>
         private List<AllergenViewModel> _allergens;
         public List<AllergenViewModel> Allergens
@@ -134,6 +144,6 @@ namespace MensaApp.ViewModel
             if (eventHandler != null)
                 eventHandler(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
     }
 }

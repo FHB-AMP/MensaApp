@@ -11,6 +11,7 @@
     <UserControl.Resources>
         <CollectionViewSource x:Name="mealsToday" IsSourceGrouped="True" ItemsPath="Meals"/>
         <CollectionViewSource x:Name="mealsForecast" IsSourceGrouped="True" ItemsPath="Meals"/>
+        
         <valueConverter:DateToStringConverter x:Key="DateToStrigConverter"/>
         <valueConverter:MealNumberToOfferString x:Key="MealNumberToOfferString"/>
         <valueConverter:SuitableMealToColorCode x:Key="SuitableMealToColorCode"/>
