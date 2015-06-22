@@ -18,7 +18,7 @@
     </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Icon="Save" Label="Speichern"/>
+            <AppBarButton Icon="Save" Label="Speichern" Click="SaveSettingsAppBarButton_Click" />
         </CommandBar>
     </Page.BottomAppBar>
 

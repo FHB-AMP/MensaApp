@@ -160,5 +160,10 @@ namespace MensaApp
 
         #endregion
 
+        private void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }
