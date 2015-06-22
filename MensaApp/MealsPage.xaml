@@ -22,7 +22,7 @@
 
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact">
-            <AppBarButton Icon="Refresh" Label="neu laden"/>
+            <AppBarButton Icon="Refresh" Label="neu laden" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Setting" Label="Einstellung" Click="SettingAppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>

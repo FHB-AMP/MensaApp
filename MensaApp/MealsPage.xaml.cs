@@ -1,4 +1,5 @@
 ﻿using MensaApp.Common;
+using MensaApp.Service;
 using MensaApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -114,8 +115,9 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            populateTodayWithMeals();
-            populateForecastDaysWithMeals();
+            //populateTodayWithMeals();
+            //populateForecastDaysWithMeals();
+            synchronizeWithServer();
         }
 
         /// <summary>
@@ -160,6 +162,42 @@ namespace MensaApp
         private void SettingAppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(SettingPage));
+        }
+
+        /// <summary>
+        /// Neu-Laden der aktuellen Gerichte und anschließender Aktualisierung der Oberflaeche.
+        /// </summary>
+        private async void synchronizeWithServer()
+        {
+            // erzeuge neues Objekt
+            GetTheData gTD = new GetTheData();
+
+            // Hole das JSON und speichere in Datei
+            await gTD.GetServerData();
+
+            // Erstelle neue ViewModels fuer Heute
+            DayViewModel dayVM = await gTD.GetServerDataForToday();
+
+            // DayViewModel der GUI uebergeben
+            _mealsPageViewModel.Today.Add(dayVM);
+
+            // Erstelle neue ViewModels fuer die folgenden drei Tage
+            List<DayViewModel> listeForecast = await gTD.GetServerDataForNextDays(3);
+
+            foreach (DayViewModel dayVMForecast in listeForecast)
+            {
+                _mealsPageViewModel.ForecastDays.Add(dayVMForecast);
+            }
+        }
+
+        /// <summary>
+        /// Manuelles Ausloesen des Neu-Ladens der aktuellen Gerichte und anschließender Aktualisierung der Oberflaeche anstoßen.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            synchronizeWithServer();
         }
     }
 }
