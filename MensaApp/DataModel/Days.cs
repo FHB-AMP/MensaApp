@@ -8,7 +8,7 @@ namespace MensaApp.DataModel
 {
     public class Meal
     {
-        public string mealNumber { get; set; }
+        public int mealNumber { get; set; }
         public string name { get; set; }
         public List<string> symbols { get; set; }
         public List<object> additives { get; set; }
