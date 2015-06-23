@@ -89,10 +89,12 @@
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Converter\DateToStringConverter.cs" />
     <Compile Include="Converter\MealNumberToOfferString.cs" />
+    <Compile Include="Converter\NegateBooleanConverter.cs" />
     <Compile Include="Converter\SuitableAdditiveToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableAllergensToImagePathConverter.cs" />
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\SuitableMealToColorCodeConverter.cs" />
+    <Compile Include="Converter\ShowInformationToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableNutritionToImagePathConverter.cs" />
     <Compile Include="DataModel\AdditivesAllergens.cs" />
     <Compile Include="DataModel\Days.cs" />
@@ -126,18 +128,20 @@
     <Content Include="Assets\2013_11_06_FHB_Logo_RGB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Icon\Additives-green-240.png" />
-    <Content Include="Assets\Icon\Additives-red-240.png" />
-    <Content Include="Assets\Icon\Allergens-green-240.png" />
-    <Content Include="Assets\Icon\Allergens-red-240.png" />
-    <Content Include="Assets\Icon\Nutrition-green-240.png" />
-    <Content Include="Assets\Icon\Nutrition-red-240.png" />
+    <Content Include="Assets\Icon\additives-green-240.png" />
+    <Content Include="Assets\Icon\additives-red-240.png" />
+    <Content Include="Assets\Icon\allergens-green-240.png" />
+    <Content Include="Assets\Icon\allergens-red-240.png" />
+    <Content Include="Assets\Icon\arrow-down-b.png" />
+    <Content Include="Assets\Icon\arrow-up-b.png" />
     <Content Include="Assets\FHB_Logo_SCHWARZ_RGB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\FHB_Logo_WEISS_RGB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Icon\nutrition-green-240.png" />
+    <Content Include="Assets\Icon\nutrition-red-240.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />

@@ -115,9 +115,9 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            //populateTodayWithMeals();
-            //populateForecastDaysWithMeals();
-            synchronizeWithServer();
+            populateTodayWithMeals();
+            populateForecastDaysWithMeals();
+            //synchronizeWithServer();
         }
 
         /// <summary>

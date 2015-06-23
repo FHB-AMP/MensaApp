@@ -15,11 +15,13 @@ namespace MensaApp.Converter
 
             if (isSuitable)
             {
-                return "#FF008F11";
+                //green color
+                return "#50b550";
             }
             else
             {
-                return "#FFBF0000";
+                //red color
+                return "#ed5959";
             }
         }
 

@@ -7,25 +7,18 @@ using Windows.UI.Xaml.Data;
 
 namespace MensaApp.Converter
 {
-    class SuitableNutritionToImagePathConverter : IValueConverter
+    class NegateBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            bool isSuitable = (bool)value;
-
-            if (isSuitable)
-            {
-                return "assets/icon/nutrition-green-240.png";
-            }
-            else
-            {
-                return "assets/icon/nutrition-red-240.png";
-            }
+            bool boolValue = (bool)value;
+            return !boolValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            throw new NotImplementedException();
+            bool boolValue = (bool)value;
+            return !boolValue;
         }
     }
 }

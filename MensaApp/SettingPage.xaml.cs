@@ -44,16 +44,15 @@ namespace MensaApp
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
 
-
         public void populateAdditives()
         {
             _settingViewModel.Additives.Add(new AdditiveViewModel("(1)", "mit Farbstoff", "Optische Aufwertung der wertbestimmenden Zutaten (z.B. höherer Fruchtanteil in der Kaltschale).", false));
             _settingViewModel.Additives.Add(new AdditiveViewModel("(2)", "mit Konservierungsstoff", "Erhaltung bzw. Verlängerung der Genusstauglichkeit des Lebensmittels.", false));
             _settingViewModel.Additives.Add(new AdditiveViewModel("(3)", "mit Antioxidationsmittel", "wie (1) und (2)", false));
             _settingViewModel.Additives.Add(new AdditiveViewModel("(4)", "mit Geschmacksverstärker", "zur Verstärkung des Geschmacks der wertbestimmenden Zutaten", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(5)", "mit geschwefelt", "Schwefel dient der Abtötung von unerwünschten Mikroorganismen", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(6)", "mit geschwärzt", "Schwärzung erfolgt durch Eisenoxide. Zur Färbung grüner Oliven.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(7)", "mit gewachst", "Überzugsmittel der Fruchtschale von Zitrusfrüchten zur Beeinflussung der Haltbarkeit.", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(5)", "geschwefelt", "Schwefel dient der Abtötung von unerwünschten Mikroorganismen", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(6)", "geschwärzt", "Schwärzung erfolgt durch Eisenoxide. Zur Färbung grüner Oliven.", false));
+            _settingViewModel.Additives.Add(new AdditiveViewModel("(7)", "gewachst", "Überzugsmittel der Fruchtschale von Zitrusfrüchten zur Beeinflussung der Haltbarkeit.", false));
             _settingViewModel.Additives.Add(new AdditiveViewModel("(8)", "mit Phosphat", "Bestandteil des Erbgutes aller Lebewesen und ist in Lebensmitteln tierischen Ursprungs enthalten. Phosphatverbindungen werden u.a. als Säuerungsmittel in Cola, Wurstwaren eingesetzt", false));
             _settingViewModel.Additives.Add(new AdditiveViewModel("(9)", "mit Süßungsmittel", "Süßstoffe, liefern kaum Nahrungsenergie und werden deshalb u.a. in energiereduzierten Lebensmitteln eingesetzt", true));
             _settingViewModel.Additives.Add(new AdditiveViewModel("(11)", "mit Aspartam-Acesulfamsalz (eingesetzt enthält eine Phenylalaninquelle)", "Wird als Süßungsmittel oder Geschmacksverstärker eingesetzt. Es geht im Stoffwechsel des Körpers ein. Der Eiweißbaustein Phenylalanin führt bei Personen, die an Phenylketourie leiden zu schweren Gesundheitsschäden.", false));
