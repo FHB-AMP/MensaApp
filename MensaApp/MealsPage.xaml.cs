@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -169,11 +170,20 @@ namespace MensaApp
         /// </summary>
         private async void synchronizeWithServer()
         {
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _mealsPageViewModel.Today.Clear();
+            _mealsPageViewModel.ForecastDays.Clear();
+
+            // Hole die MensaRestSchnittstellen Parameter
+            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+            String MealURI = MensaRestApiResource.GetString("MealURI");
+            String MealURL = MensaRestApiResource.GetString("MealURL");
+
             // erzeuge neues Objekt
             GetTheData gTD = new GetTheData();
 
             // Hole das JSON und speichere in Datei
-            await gTD.GetServerData();
+            await gTD.GetServerData(MealURI, MealURL);
 
             // Erstelle neue ViewModels fuer Heute
             DayViewModel dayVM = await gTD.GetServerDataForToday();
