@@ -14,9 +14,9 @@ namespace MensaApp.ViewModel
     /// It contains lists of all available allergens and additives.
     /// Is used to manipulate front end.
     /// </summary>
-    class SettingViewModel : INotifyPropertyChanged
+    class SettingsPageViewModel : INotifyPropertyChanged
     {
-        public SettingViewModel()
+        public SettingsPageViewModel()
         {
             this.Additives = new ObservableCollection<AdditiveViewModel>();
             this.Allergens = new ObservableCollection<AllergenViewModel>();

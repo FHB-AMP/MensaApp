@@ -45,12 +45,6 @@ namespace MensaApp
             // wird dieses Ereignis für Sie behandelt.
         }
 
-        private void Button_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            //Navigate to the Next Page  
-            Frame.Navigate(typeof(MealDetailPage));
-        }
-
         private void Button2_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(MealsPage));
@@ -59,6 +53,11 @@ namespace MensaApp
         private void Button3_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(SettingPage));
+        }
+
+        private void Button4_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(DetailPage));
         }
     }
 }

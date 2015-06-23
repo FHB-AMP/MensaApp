@@ -13,7 +13,7 @@ namespace MensaApp.ViewModel
     /// ViewModel of an additive
     /// Is used to manipulate front end.
     /// </summary>
-    class AdditiveViewModel : INotifyPropertyChanged
+    public class AdditiveViewModel : INotifyPropertyChanged
     {
         public AdditiveViewModel()
         {

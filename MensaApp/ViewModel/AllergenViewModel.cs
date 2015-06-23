@@ -12,7 +12,7 @@ namespace MensaApp.ViewModel
     /// ViewModel of an allergen
     /// Is used to manipulate front end.
     /// </summary>
-    class AllergenViewModel : INotifyPropertyChanged
+    public class AllergenViewModel : INotifyPropertyChanged
     {
         public AllergenViewModel()
         {

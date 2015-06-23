@@ -1,4 +1,5 @@
 ﻿using MensaApp.Common;
+using MensaApp.DataModel;
 using MensaApp.Service;
 using MensaApp.ViewModel;
 using System;
@@ -31,7 +32,7 @@ namespace MensaApp
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        private ForecastViewModel _mealsPageViewModel = new ForecastViewModel();
+        private MealsPageViewModel _mealsPageViewModel = new MealsPageViewModel();
         
         public MealsPage()
         {
@@ -116,9 +117,9 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            populateTodayWithMeals();
-            populateForecastDaysWithMeals();
-            //synchronizeWithServer();
+            //populateTodayWithMeals();
+            //populateForecastDaysWithMeals();
+            synchronizeWithServer();
         }
 
         /// <summary>
@@ -170,9 +171,8 @@ namespace MensaApp
         /// </summary>
         private async void synchronizeWithServer()
         {
-            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
-            _mealsPageViewModel.Today.Clear();
-            _mealsPageViewModel.ForecastDays.Clear();
+            // Zeige den Progressbar fuer den Zeitraum der asynchronen Datenverarbeitung
+            ProgressBar.Visibility = Visibility.Visible;
 
             // Hole die MensaRestSchnittstellen Parameter
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
@@ -188,16 +188,21 @@ namespace MensaApp
             // Erstelle neue ViewModels fuer Heute
             DayViewModel dayVM = await gTD.GetServerDataForToday();
 
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _mealsPageViewModel.Today.Clear();
             // DayViewModel der GUI uebergeben
             _mealsPageViewModel.Today.Add(dayVM);
 
             // Erstelle neue ViewModels fuer die folgenden drei Tage
             List<DayViewModel> listeForecast = await gTD.GetServerDataForNextDays(3);
 
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _mealsPageViewModel.ForecastDays.Clear();
             foreach (DayViewModel dayVMForecast in listeForecast)
             {
                 _mealsPageViewModel.ForecastDays.Add(dayVMForecast);
             }
+            ProgressBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -205,9 +210,27 @@ namespace MensaApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private void RefreshAppBarButton_Click(object sender, RoutedEventArgs e)
         {
             synchronizeWithServer();
+        }
+
+        /// <summary>
+        /// Handles the tapped event from a list view item of meals lists
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MealsListView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ListView listView = sender as ListView;
+            MealViewModel selectedMeal = listView.SelectedItem as MealViewModel;
+
+            if (selectedMeal != null)
+            {
+                DetailPageParamModel paramModel = new DetailPageParamModel(DateTime.Now, selectedMeal);
+                Frame.Navigate(typeof(DetailPage), paramModel);
+            }
+
         }
     }
 }

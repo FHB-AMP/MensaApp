@@ -35,11 +35,11 @@
         <!-- Pivot -->
         <Pivot Margin="-8,0,0,0" Title="FH Brandenburg Mensa" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <!-- First PivotItem -->
-            <!--<PivotItem Margin="18,0,10,0" Padding="2,0" Header="Ernährung">
+            <!--<PivotItem Margin="18,10,10,0" Padding="2,0" Header="Ernährung">
                 <Grid/>
             </PivotItem>-->
             <!-- Secound PivotItem -->
-            <PivotItem Margin="18,0,10,0" Padding="2,0" Header="Zusatzstoffe">
+            <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Zusatzstoffe">
                 <ListView ItemsSource="{Binding Source={StaticResource additives}}" SelectionMode="None">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
@@ -76,7 +76,7 @@
                 </ListView>
             </PivotItem>
             <!-- Third PivotItem -->
-            <PivotItem  Margin="18,0,10,0" Padding="2,0"  Header="Allergene">
+            <PivotItem  Margin="18,10,10,0" Padding="2,0"  Header="Allergene">
                 <ListView ItemsSource="{Binding Source={StaticResource allergens}}" SelectionMode="None" Margin="10,0">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">

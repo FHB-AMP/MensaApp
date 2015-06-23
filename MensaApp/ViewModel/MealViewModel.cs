@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,14 +13,19 @@ namespace MensaApp.ViewModel
     /// ViewModel of a meal.
     /// Is used to manipulate front end.
     /// </summary>
-    class MealViewModel : INotifyPropertyChanged
+    public class MealViewModel : INotifyPropertyChanged
     {
         public MealViewModel()
         {
+            this.MealNumber = 1;
+            this.Name = "";
             this.IsSuitableMeal = true;
             this.IsSuitableNutrition = true;
             this.IsSuitableAdditives = true;
             this.IsSuitableAllergens = true;
+            this.Symbols = new ObservableCollection<string>();
+            this.Additives = new ObservableCollection<AdditiveViewModel>();
+            this.Allergens = new ObservableCollection<AllergenViewModel>();
         }
 
         public MealViewModel(int mealNumber, string name)
@@ -31,6 +37,24 @@ namespace MensaApp.ViewModel
 
         public MealViewModel(int mealNumber, string name, bool suitableMeal, bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
             : this(mealNumber, name)
+        {
+            this.IsSuitableMeal = suitableMeal;
+            this.IsSuitableNutrition = suitableNutrition;
+            this.IsSuitableAdditives = suitableAdditives;
+            this.IsSuitableAllergens = suitableAllergens;
+        }
+
+        public MealViewModel(int mealNumber, string name, ObservableCollection<string> symbols, ObservableCollection<AdditiveViewModel> additives, ObservableCollection<AllergenViewModel> allergens)
+            : this(mealNumber, name)
+        {
+            this.Symbols = symbols;
+            this.Additives = additives;
+            this.Allergens = allergens;
+        }
+
+        public MealViewModel(int mealNumber, string name, ObservableCollection<string> symbols, ObservableCollection<AdditiveViewModel> additives, 
+            ObservableCollection<AllergenViewModel> allergens, bool suitableMeal, bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
+            : this(mealNumber, name, symbols, additives, allergens)
         {
             this.IsSuitableMeal = suitableMeal;
             this.IsSuitableNutrition = suitableNutrition;
@@ -81,8 +105,8 @@ namespace MensaApp.ViewModel
         /// <summary>
         /// Symbols of the meal. Given by API.
         /// </summary>
-        private List<string> _symbols;
-        public List<string> Symbols
+        private ObservableCollection<string> _symbols;
+        public ObservableCollection<string> Symbols
         {
             get { return _symbols; }
             set { this.SetProperty(ref this._symbols, value); }
@@ -101,8 +125,8 @@ namespace MensaApp.ViewModel
         /// <summary>
         /// Additives of the meal. Given by API.
         /// </summary>
-        private List<AdditiveViewModel> _additives;
-        public List<AdditiveViewModel> Additives
+        private ObservableCollection<AdditiveViewModel> _additives;
+        public ObservableCollection<AdditiveViewModel> Additives
         {
             get { return _additives; }
             set { this.SetProperty(ref this._additives, value); }
@@ -121,8 +145,8 @@ namespace MensaApp.ViewModel
         /// <summary>
         /// Allergens of the meal.
         /// </summary>
-        private List<AllergenViewModel> _allergens;
-        public List<AllergenViewModel> Allergens
+        private ObservableCollection<AllergenViewModel> _allergens;
+        public ObservableCollection<AllergenViewModel> Allergens
         {
             get { return _allergens; }
             set { this.SetProperty(ref this._allergens, value); }

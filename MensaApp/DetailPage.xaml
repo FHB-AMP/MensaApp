@@ -1,0 +1,152 @@
+﻿<Page
+    x:Class="MensaApp.DetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MensaApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:valueConverter="using:MensaApp.Converter"
+    mc:Ignorable="d"
+    DataContext="{Binding MealDetailPageViewModel, RelativeSource={RelativeSource Self}}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <valueConverter:DateToStringConverter x:Key="DateToStrigConverter"/>
+        <valueConverter:MealNumberToOfferString x:Key="MealNumberToOfferString"/>
+        <valueConverter:SuitableToColorCode x:Key="SuitableToColorCode"/>
+        <valueConverter:ExcludeToColorCode x:Key="ExcludeToColorCode"/>
+        <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
+        <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
+        <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>
+    </Page.Resources>
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titelbereich -->
+        <StackPanel Grid.Row="0" Margin="10,0,0,0">
+            <TextBlock Text="FH Brandenburg Mensa" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="4*"/>
+            </Grid.RowDefinitions>
+
+<!-- Date -->
+            <TextBlock Text="{Binding Date, Converter={StaticResource DateToStrigConverter}}" FontSize="24" Margin="0,0,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left" />
+
+<!-- Meal -->
+            <Grid Grid.Row="1" Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
+                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="{Binding Path=Meal.IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" RadiusX="5" RadiusY="5" />
+                <TextBlock Grid.Row="0" Text="{Binding Path=Meal.MealNumber, Converter={StaticResource MealNumberToOfferString}}" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
+                <TextBlock Grid.Row="1" Text="{Binding Meal.Name}" FontSize="18" Margin="10" FontFamily="Segoe WP" TextWrapping="WrapWholeWords"/>
+            </Grid>
+
+<!-- Nutrition -->
+            <Grid Grid.Row="2" Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
+                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="{Binding Path=Meal.IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" RadiusX="5" RadiusY="5" />
+                <TextBlock Grid.Row="0" Text="Ernährungsweise" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
+                <Image Grid.Row="0" Source="{Binding Path=Meal.IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" HorizontalAlignment="Right" Width="30" Height="30"/>
+
+                <ListView Grid.Row="1" ItemsSource="{Binding Meal.Symbols}" Margin="10">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Height" Value="25"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontSize="16" FontFamily="Segoe WP" MaxLines="1" TextTrimming="WordEllipsis"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>                
+            </Grid>
+            
+<!-- Additives -->
+            <Grid Grid.Row="3" Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
+                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="{Binding Path=Meal.IsSuitableAdditives, Converter={StaticResource SuitableToColorCode}}" RadiusX="5" RadiusY="5" />
+                <TextBlock Grid.Row="0" Text="Zusatzstoffe" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
+                <Image Grid.Row="0" Source="{Binding Path=Meal.IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" HorizontalAlignment="Right" Width="30" Height="30"/>
+
+                <ListView Grid.Row="1" ItemsSource="{Binding Meal.Additives}" Margin="10">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Height" Value="25"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Left" >
+                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" RadiusX="5" RadiusY="5" />
+                                <TextBlock Text="{Binding Definition}" FontSize="16" FontFamily="Segoe WP" MaxLines="1" TextTrimming="CharacterEllipsis" Margin="4,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            
+<!-- Allergens -->
+            <Grid Grid.Row="4" Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
+                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="{Binding Path=Meal.IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" RadiusX="5" RadiusY="5" />
+                <TextBlock Grid.Row="0" Text="Allergene" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
+                <Image Grid.Row="0" Source="{Binding Path=Meal.IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" HorizontalAlignment="Right" Width="30" Height="30"/>
+
+                <ListView Grid.Row="1" ItemsSource="{Binding Meal.Allergens}" Margin="10">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Height" Value="25"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Left" >
+                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" RadiusX="5" RadiusY="5" />
+                                <TextBlock Text="{Binding Definition}" FontSize="16" FontFamily="Segoe WP" MaxLines="1" TextTrimming="WordEllipsis" Margin="4,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

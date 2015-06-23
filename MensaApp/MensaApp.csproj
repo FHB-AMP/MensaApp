@@ -93,11 +93,16 @@
     <Compile Include="Converter\SuitableAdditiveToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableAllergensToImagePathConverter.cs" />
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converter\SuitableMealToColorCodeConverter.cs" />
+    <Compile Include="Converter\ExcludeToColorCodeConverter.cs" />
+    <Compile Include="Converter\SuitableToColorCodeConverter.cs" />
     <Compile Include="Converter\ShowInformationToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableNutritionToImagePathConverter.cs" />
     <Compile Include="DataModel\AdditivesAllergens.cs" />
     <Compile Include="DataModel\Days.cs" />
+    <Compile Include="DataModel\DetailPageParamModel.cs" />
+    <Compile Include="DetailPage.xaml.cs">
+      <DependentUpon>DetailPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -114,10 +119,11 @@
     </Compile>
     <Compile Include="ViewModel\AdditiveViewModel.cs" />
     <Compile Include="ViewModel\AllergenViewModel.cs" />
-    <Compile Include="ViewModel\ForecastViewModel.cs" />
+    <Compile Include="ViewModel\MealsPageViewModel.cs" />
+    <Compile Include="ViewModel\MealDetailPageViewModel.cs" />
     <Compile Include="ViewModel\MealViewModel.cs" />
     <Compile Include="ViewModel\DayViewModel.cs" />
-    <Compile Include="ViewModel\SettingViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -155,6 +161,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="DetailPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -30,7 +30,7 @@ namespace MensaApp
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        private SettingViewModel _settingViewModel = new SettingViewModel();
+        private SettingsPageViewModel _settingViewModel = new SettingsPageViewModel();
 
         public SettingPage()
         {

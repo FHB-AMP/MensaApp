@@ -14,15 +14,15 @@ namespace MensaApp.ViewModel
     /// It contains lists of the current day and the forecast days.
     /// Is used to manipulate front end.
     /// </summary>
-    class ForecastViewModel : INotifyPropertyChanged
+    class MealsPageViewModel : INotifyPropertyChanged
     {
-        public ForecastViewModel()
+        public MealsPageViewModel()
         {
             this.Today = new ObservableCollection<DayViewModel>();
             this.ForecastDays = new ObservableCollection<DayViewModel>();
         }
 
-        public ForecastViewModel(DayViewModel today, ObservableCollection<DayViewModel> forecastDays)
+        public MealsPageViewModel(DayViewModel today, ObservableCollection<DayViewModel> forecastDays)
         {
             this.Today = new ObservableCollection<DayViewModel>();
             this.Today.Add(today);
