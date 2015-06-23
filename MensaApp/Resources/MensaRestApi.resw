@@ -121,6 +121,10 @@
     <value>https://demo5044625.mockable.io/</value>
     <comment>Zusatzstoffe und Allergene Grundaufruf</comment>
   </data>
+  <data name="AdditivesJSONFile" xml:space="preserve">
+    <value>AdditivesJSONFile.txt</value>
+    <comment>Dateiname der JSON-Datei aller Zusatzstoffe und Allergene</comment>
+  </data>
   <data name="AdditivesURL" xml:space="preserve">
     <value />
     <comment>Zusatzstoffe und Allergene vertiefenen Struktur</comment>
@@ -128,6 +132,10 @@
   <data name="MealBaseURL" xml:space="preserve">
     <value>http://demo0299672.mockable.io/</value>
     <comment>Mahlzeiten Grundaufruf</comment>
+  </data>
+  <data name="MealJSONFile" xml:space="preserve">
+    <value>MealJSONFile.txt</value>
+    <comment>Dateiname der JSON-Datei fuer die Mahlzeitangebote</comment>
   </data>
   <data name="MealURL" xml:space="preserve">
     <value />
