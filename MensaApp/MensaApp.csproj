@@ -189,6 +189,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <PRIResource Include="Resources\MensaRestApi.resw" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0" />

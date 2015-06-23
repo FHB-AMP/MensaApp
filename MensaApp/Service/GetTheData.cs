@@ -124,7 +124,7 @@ namespace MensaApp.Service
         /// Hole die JSON-Daten vom Server ab.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetServerData()
+        public async Task<string> GetServerData(string serviceURI, string serviceURL)
         {
             string data = "";
 
@@ -132,12 +132,8 @@ namespace MensaApp.Service
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    /// TODO Holger wenn Jano seine PHP-Skripte angepasst hat hier einfuegen und alten entfernen
-                    //client.BaseAddress = new Uri("https://mobile-quality-research.org");
-                    //var url = "/services/meals/";
-
-                    client.BaseAddress = new Uri("http://demo0299672.mockable.io/");
-                    var url = "";
+                    client.BaseAddress = new Uri(serviceURI);
+                    string url = serviceURL;
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     HttpResponseMessage response = await client.GetAsync(url);
