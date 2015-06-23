@@ -15,7 +15,7 @@ using Windows.Storage;
 namespace MensaApp.Service
 {
 
-    class GetTheData
+    class ServingMealOffer
     {
         // Abspeichern und Lesen des JSON-Files
         Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
