@@ -174,6 +174,10 @@ namespace MensaApp.Service
             try
             {
                 StorageFile sampleFile = await localFolder.GetFileAsync("dataFile.txt");
+
+                // Abgleich mit dem heutigen Datum 
+                //System.DateTimeOffset fileCreationDate = sampleFile.DateCreated;
+
                 data = await FileIO.ReadTextAsync(sampleFile);
             }
             catch (Exception)

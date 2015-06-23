@@ -169,6 +169,10 @@ namespace MensaApp
         /// </summary>
         private async void synchronizeWithServer()
         {
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _mealsPageViewModel.Today.Clear();
+            _mealsPageViewModel.ForecastDays.Clear();
+
             // erzeuge neues Objekt
             GetTheData gTD = new GetTheData();
 
