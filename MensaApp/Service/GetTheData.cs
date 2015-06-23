@@ -3,11 +3,13 @@ using MensaApp.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 
 namespace MensaApp.Service
@@ -106,6 +108,10 @@ namespace MensaApp.Service
                     {
                         // anzuzeigende Eintraege hinzufuegen
                         dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, true, true, true, true));
+
+                        // Abgleich mit Settings fehlt noch komplett
+                        //dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, new ObservableCollection<string>(rootObject.days[i].meals[j].symbols),
+                        //    new ObservableCollection<string>(rootObject.days[i].meals[j].additives),  new ObservableCollection<string>(rootObject.days[i].meals[j].allergens)));
                     }
                 }
             }
@@ -142,8 +148,12 @@ namespace MensaApp.Service
                         // Hole JSON-File
                         data = await response.Content.ReadAsStringAsync();
 
+                        // Hole den Speicherort der JSON Datei
+                        ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+                        String dateiName = MensaRestApiResource.GetString("MealJSONFile");
+
                         // Write data to a file
-                        StorageFile sampleFile = await localFolder.CreateFileAsync("dataFile.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                        StorageFile sampleFile = await localFolder.CreateFileAsync(dateiName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
                         await FileIO.WriteTextAsync(sampleFile, data);
 
                     }
@@ -169,7 +179,11 @@ namespace MensaApp.Service
 
             try
             {
-                StorageFile sampleFile = await localFolder.GetFileAsync("dataFile.txt");
+                // Hole den Standort der JSON Datei
+                ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+                String dateiName = MensaRestApiResource.GetString("MealJSONFile");
+
+                StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
 
                 // Abgleich mit dem heutigen Datum 
                 //System.DateTimeOffset fileCreationDate = sampleFile.DateCreated;
