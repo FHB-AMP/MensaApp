@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AdditivesURI" xml:space="preserve">
+  <data name="AdditivesBaseURL" xml:space="preserve">
     <value>https://demo5044625.mockable.io/</value>
     <comment>Zusatzstoffe und Allergene Grundaufruf</comment>
   </data>
@@ -125,7 +125,7 @@
     <value />
     <comment>Zusatzstoffe und Allergene vertiefenen Struktur</comment>
   </data>
-  <data name="MealURI" xml:space="preserve">
+  <data name="MealBaseURL" xml:space="preserve">
     <value>http://demo0299672.mockable.io/</value>
     <comment>Mahlzeiten Grundaufruf</comment>
   </data>

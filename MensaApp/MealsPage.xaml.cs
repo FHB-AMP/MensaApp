@@ -176,7 +176,7 @@ namespace MensaApp
 
             // Hole die MensaRestSchnittstellen Parameter
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String MealURI = MensaRestApiResource.GetString("MealURI");
+            String MealURI = MensaRestApiResource.GetString("MealBaseURL");
             String MealURL = MensaRestApiResource.GetString("MealURL");
 
             // erzeuge neues Objekt
