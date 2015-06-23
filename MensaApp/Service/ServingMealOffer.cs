@@ -130,7 +130,7 @@ namespace MensaApp.Service
         /// Hole die JSON-Daten vom Server ab.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetServerData(string serviceURI, string serviceURL)
+        public async Task<string> GetServerData(string serviceURI, string serviceURL, string propertyName)
         {
             string data = "";
 
@@ -150,7 +150,7 @@ namespace MensaApp.Service
 
                         // Hole den Speicherort der JSON Datei
                         ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-                        String dateiName = MensaRestApiResource.GetString("MealJSONFile");
+                        String dateiName = MensaRestApiResource.GetString(propertyName);
 
                         // Write data to a file
                         StorageFile sampleFile = await localFolder.CreateFileAsync(dateiName, Windows.Storage.CreationCollisionOption.ReplaceExisting);

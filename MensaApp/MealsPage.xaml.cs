@@ -183,7 +183,7 @@ namespace MensaApp
             ServingMealOffer servingMO = new ServingMealOffer();
 
             // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(MealURI, MealURL);
+            await servingMO.GetServerData(MealURI, MealURL, "MealJSONFile");
 
             // Erstelle neue ViewModels fuer Heute
             DayViewModel dayVM = await servingMO.GetServerDataForToday();
