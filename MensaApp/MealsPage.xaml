@@ -13,7 +13,7 @@
         <CollectionViewSource x:Name="mealsForecast" IsSourceGrouped="True" ItemsPath="Meals"/>        
         <valueConverter:DateToStringConverter x:Key="DateToStrigConverter"/>
         <valueConverter:MealNumberToOfferString x:Key="MealNumberToOfferString"/>
-        <valueConverter:SuitableToColorCode x:Key="SuitableMealToColorCode"/>
+        <valueConverter:SuitableToColorCode x:Key="SuitableToColorCode"/>
         <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
         <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
         <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>
@@ -54,30 +54,107 @@
                     </ListView.GroupStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="100">
+                            <Grid Height="120">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="34"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="76"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="33"/>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="34"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="0" Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5"/>
-                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableMealToColorCode}}" Grid.RowSpan="3" Margin="0" RadiusX="5" RadiusY="5"/>
-                                <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="3" 
-    								        Margin="10" FontSize="18" MaxLines="3" TextTrimming="WordEllipsis" VerticalAlignment="Stretch"/>
-                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Row="0" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Row="1" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Row="2" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-19,0,0,0" MaxLines="1" Width="66" Height="25" FontSize="13.333" Grid.ColumnSpan="2" Grid.Row="1">
-                                    <TextBlock.RenderTransform>
-                                        <CompositeTransform Rotation="-90"/>
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
+                                <!--Tile Background-->
+                                <Path Fill="#FFFFFAD7" Grid.RowSpan="2" Grid.ColumnSpan="1">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 76,120"/>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="0,120">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="0,115"/>
+                                                                    <BezierSegment Point1="0,115" Point2="0,120" Point3="5,120"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Path Fill="#FFFFFAD7" Grid.RowSpan="2" Grid.ColumnSpan="1" Grid.Column="4">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,120"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="29,0"/>
+                                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,120">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="0,120"/>
+                                                                    <BezierSegment Point1="0,120" Point2="34,120" Point3="34,86"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="#FFFFFAD7" Grid.RowSpan="2" Grid.ColumnSpan="3" Grid.Column="1" Height="Auto" Margin="-2,0"/>
+
+                                <!--Tile Header-->
+                                <!-- meal -->
+                                <Path Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
+                                <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" HorizontalAlignment="Left" VerticalAlignment="Center" MaxLines="1" Width="Auto" Height="Auto" FontSize="16" Grid.Column="1" Margin="10,0,0,0" Foreground="#FF2C2C2C"/>
+                                <Image Source="assets/mealimages/fishMeal-240.png" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+
+                                <!-- allergens -->
+                                <Rectangle Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Margin="-5,0,0,0" Grid.ColumnSpan="1" Grid.Column="4" RadiusX="5" RadiusY="5"/>
+                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Column="4" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <!-- additives -->
+                                <Rectangle Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableToColorCode}}" Margin="-2,0,0,0" Grid.ColumnSpan="1" Grid.Column="3"/>
+                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Column="3" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <!-- nutrition -->
+                                <Rectangle Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Margin="-2,0,0,0" Grid.ColumnSpan="1" Grid.Column="2"/>
+                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <!-- Tile Content -->
+                                <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="1" 
+    								        Margin="10,5" FontSize="18" MaxLines="3" TextTrimming="CharacterEllipsis" VerticalAlignment="Stretch" Grid.Row="1" Grid.ColumnSpan="4" Foreground="#FF2C2C2C"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -106,30 +183,107 @@
                     </ListView.GroupStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="100">
+                            <Grid Height="120">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="34"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="76"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="33"/>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="34"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="0" Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Stroke="White" StrokeThickness="0"/>
-                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableMealToColorCode}}" Grid.RowSpan="3" Margin="0" StrokeThickness="0" RadiusX="5" RadiusY="5"/>
-                                <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="3" 
-    								        Margin="10" FontSize="18" MaxLines="3" TextTrimming="WordEllipsis" VerticalAlignment="Stretch"/>
-                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Row="0" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Row="1" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Row="2" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <TextBlock TextWrapping="Wrap" Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-19,0,0,0" MaxLines="1" Width="66" Height="25" FontSize="13.333" Grid.ColumnSpan="2" Grid.Row="1">
-                                    <TextBlock.RenderTransform>
-                                        <CompositeTransform Rotation="-90"/>
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
+                                <!--Tile Background-->
+                                <Path Fill="#FFFFFAD7" Grid.RowSpan="2" Grid.ColumnSpan="1">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 76,120"/>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="0,120">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="0,115"/>
+                                                                    <BezierSegment Point1="0,115" Point2="0,120" Point3="5,120"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Path Fill="#FFFFFAD7" Grid.RowSpan="2" Grid.ColumnSpan="1" Grid.Column="4">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,120"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="29,0"/>
+                                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,120">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="0,120"/>
+                                                                    <BezierSegment Point1="0,120" Point2="34,120" Point3="34,86"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="#FFFFFAD7" Grid.RowSpan="2" Grid.ColumnSpan="3" Grid.Column="1" Height="Auto" Margin="-2,0"/>
+
+                                <!--Tile Header-->
+                                <!-- meal -->
+                                <Path Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
+                                <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" HorizontalAlignment="Left" VerticalAlignment="Center" MaxLines="1" Width="Auto" Height="Auto" FontSize="16" Grid.Column="1" Margin="10,0,0,0" Foreground="#FF2C2C2C"/>
+                                <Image Source="assets/mealimages/fishMeal-240.png" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+
+                                <!-- allergens -->
+                                <Rectangle Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Margin="-5,0,0,0" Grid.ColumnSpan="1" Grid.Column="4" RadiusX="5" RadiusY="5"/>
+                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Column="4" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <!-- additives -->
+                                <Rectangle Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableToColorCode}}" Margin="-2,0,0,0" Grid.ColumnSpan="1" Grid.Column="3"/>
+                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Column="3" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <!-- nutrition -->
+                                <Rectangle Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Margin="-2,0,0,0" Grid.ColumnSpan="1" Grid.Column="2"/>
+                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <!-- Tile Content -->
+                                <TextBlock TextWrapping="WrapWholeWords" Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="1" 
+    								        Margin="10,5" FontSize="18" MaxLines="3" TextTrimming="CharacterEllipsis" VerticalAlignment="Stretch" Grid.Row="1" Grid.ColumnSpan="4" Foreground="#FF2C2C2C"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

@@ -51,21 +51,24 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition MinHeight="30"  Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition MinHeight="0" Height="auto"/>
                                     <RowDefinition Height="30"/>
                                 </Grid.RowDefinitions>
                                 <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                   Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Grid.RowSpan="3"/>
+								                   Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Grid.RowSpan="4"/>
                                 <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                Grid.Column="0" Height="Auto" Margin="0" Grid.Row="1"/>
-                                <StackPanel Margin="10,10,10,0">
-                                    <TextBlock Text="{Binding Path=Definition}" MaxLines="3" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontSize="16"/>
-                                    <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="0" Padding="0,-8,25.5,0"/>
-                                </StackPanel>
-                                <TextBlock Text="{Binding Path=Meaning}" TextWrapping="WrapWholeWords" Grid.Row="1" 
+								                Grid.Row="2" Grid.Column="0" Height="Auto" Margin="0"/>
+                                
+                                <TextBlock Text="{Binding Path=Definition}" MaxLines="3" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontSize="16" Margin="10,0" VerticalAlignment="Center"/>
+                                
+                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1"/>
+
+                                <TextBlock Text="{Binding Path=Meaning}" TextWrapping="WrapWholeWords" Grid.Row="2" 
 								                 Visibility="{Binding Path=ShowMeaning, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10" FontSize="16" MaxLines="5" TextTrimming="WordEllipsis" Width="Auto" VerticalAlignment="Center"/>
-                                <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="2" VerticalAlignment="Stretch" Margin="2,-8">
+                                
+                                <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8">
                                     <Button.Background>
                                         <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowMeaning, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
                                     </Button.Background>
@@ -88,21 +91,24 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition MinHeight="30"  Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition MinHeight="0" Height="auto"/>
                                     <RowDefinition Height="30"/>
                                 </Grid.RowDefinitions>
                                 <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                   Grid.Column="0" RadiusX="5" RadiusY="5" Grid.RowSpan="3"/>
+								                   Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Grid.RowSpan="4"/>
                                 <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                Grid.Column="0" Margin="0" Grid.Row="1"/>
-                                <StackPanel Margin="10,10,10,0">
-                                    <TextBlock Text="{Binding Path=Definition}" MaxLines="3" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontSize="16"/>
-                                    <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="0" Padding="0,-8,25.5,0"/>
-                                </StackPanel>
-                                <TextBlock Text="{Binding Path=ContainedIn}" TextWrapping="WrapWholeWords" Grid.Row="1" 
+								                Grid.Row="2" Grid.Column="0" Height="Auto" Margin="0"/>
+
+                                <TextBlock Text="{Binding Path=Definition}" MaxLines="3" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontSize="16" Margin="10,0" VerticalAlignment="Center"/>
+
+                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1"/>
+
+                                <TextBlock Text="{Binding Path=ContainedIn}" TextWrapping="WrapWholeWords" Grid.Row="2" 
 								                 Visibility="{Binding Path=ShowContainedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10" FontSize="16" MaxLines="5" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
-                                <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="0" FontWeight="Bold" Grid.Row="2" VerticalAlignment="Stretch" Margin="2,-8">
+                                
+                                <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="0" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8">
                                     <Button.Background>
                                         <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowContainedIn, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
                                     </Button.Background>

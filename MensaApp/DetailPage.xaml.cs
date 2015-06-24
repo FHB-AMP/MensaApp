@@ -45,13 +45,13 @@ namespace MensaApp
         private void populateTodayDetail() 
         {
             int mealNumber = 2;
-            string name = "Gebratene Hähnchenbrust-Streifen in Honig-Senf-Sauce mit Macadamia-Kartoffeln, dazu Salat mit Mandarinen-Joghurt-Dressing";
+            string name = "Seelachs in Sesampanade mit jungen Erbsen, dazu Grillkartoffeln oder Pommes frites";
             bool isSuitableMeal = false;
             bool isSuitableNutrition = true;
             bool isSuitableAdditives = false;
             bool isSuitableAllergens = true;
 
-            // Schwein
+            // Schwein und Rind
             ObservableCollection<string> symbols = new ObservableCollection<string>();
             symbols.Add("mit Schweinefleisch");
             symbols.Add("mit Rindfleisch");
