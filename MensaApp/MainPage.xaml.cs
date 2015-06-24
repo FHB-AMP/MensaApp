@@ -45,6 +45,11 @@ namespace MensaApp
             // wird dieses Ereignis für Sie behandelt.
         }
 
+        private void Button1_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MealDetailPage));
+        }
+
         private void Button2_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(MealsPage));

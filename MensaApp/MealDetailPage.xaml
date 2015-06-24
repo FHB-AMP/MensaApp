@@ -14,36 +14,9 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid x:Name="LayoutRoot">
 
-        <Grid.ChildrenTransitions>
-            <TransitionCollection>
-                <EntranceThemeTransition/>
-            </TransitionCollection>
-        </Grid.ChildrenTransitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <!-- Titelbereich -->
-        <StackPanel Grid.Row="0" Margin="19,0,0,0"/>
+    <TextBlock Name="Result" TextWrapping="Wrap" Text="TextBlock" Margin="0,7.333,0,-50.333"/>
 
-        <!--TODO: Inhalte sollten innerhalb des folgenden Rasters platziert werden,-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <TextBlock Name="Result" Height="100" TextWrapping="Wrap" Text="TextBlock" Margin="10,10,10,461"/>
-            <ListBox x:Name="LstServerData">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Background="DarkOrange" Width="460" Height="150" Margin="0,10,0,0">
-                            <StackPanel  Orientation="Vertical">
-                                <TextBlock Text="{Binding nameMeal}" Foreground="Black" FontSize="20" Margin="10,10,0,0" TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-    </Grid>
 </Page>

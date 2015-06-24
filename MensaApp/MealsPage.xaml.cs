@@ -11,6 +11,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -29,6 +30,7 @@ namespace MensaApp
     /// </summary>
     public sealed partial class MealsPage : Page
     {
+        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -182,8 +184,44 @@ namespace MensaApp
             // erzeuge neues Objekt
             ServingMealOffer servingMO = new ServingMealOffer();
 
-            // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(MealURI, MealURL, "MealJSONFile");
+            // Start taeglich einmalige Synchro
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Hole den Speicherort der JSON Datei
+            MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+            String dateiName = MensaRestApiResource.GetString("MealJSONFile");
+
+            // Helfer
+            DateTime myDate = DateTime.MinValue;
+
+            try
+            {
+                // Wenn nicht vorhanden FileNotFoundException
+                StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
+
+                // modified Zeitpunkt aus Properties holen
+                var check = new List<string>();
+                check.Add("System.DateModified");
+                var props = await sampleFile.Properties.RetrievePropertiesAsync(check);
+                var dateModified = props.SingleOrDefault().Value;
+
+                // Property als DateTime parsen
+                myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
+
+            }
+            catch (FileNotFoundException ex) 
+            { 
+                // Tue nichts :)
+            }
+
+            if (DateTime.Today != myDate)
+            {
+                // Hole das JSON und speichere in Datei
+                await servingMO.GetServerData(MealURI, MealURL, "MealJSONFile");
+            }
+
+            // Der Rest muss immer passieren
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Erstelle neue ViewModels fuer Heute
             DayViewModel dayVM = await servingMO.GetServerDataForToday();

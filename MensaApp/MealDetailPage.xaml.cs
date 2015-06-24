@@ -8,9 +8,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -35,6 +38,8 @@ namespace MensaApp
     /// </summary>
     public sealed partial class MealDetailPage : Page
     {
+
+        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -118,9 +123,83 @@ namespace MensaApp
 
         #endregion
 
-        private void GetJSON_Click(object sender, RoutedEventArgs e)
+        private async void GetJSON_Click(object sender, RoutedEventArgs e)
         {
-            GetServerData_HTTPClient(sender, e);
+            //GetServerData_HTTPClient(sender, e);
+            await GetServerData("http://demo0299672.mockable.io/", "", "haha.txt");
+            speichereWas();
+        }
+
+        private async void speichereWas()
+        {
+            // Helfer
+            string data = "";
+
+            try
+            {
+                // Hole den Standort der JSON Datei
+                ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+                String dateiName = MensaRestApiResource.GetString("MealJSONFile");
+
+                StorageFile sampleFile = await localFolder.GetFileAsync("haha.txt");
+
+                // Abgleich mit dem heutigen Datum TODO Holger
+                DateTimeOffset fileCreationDateOff = sampleFile.DateCreated;
+                DateTime fileCreationDate = fileCreationDateOff.Date;
+
+                // modified Zeitpunkt aus Properties holen
+                var check = new List<string>();
+                check.Add("System.DateModified");
+                var props = await sampleFile.Properties.RetrievePropertiesAsync(check);
+                var dateModified = props.SingleOrDefault().Value;
+
+                // Property als DateTime parsen
+                DateTime myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
+
+                data = await FileIO.ReadTextAsync(sampleFile);
+
+                Result.Text = myDate.Date.ToString();
+            }
+            catch (Exception)
+            {
+                // TODO Holger Fang etwas
+            }
+
+           
+        }
+
+        public async Task<string> GetServerData(string serviceURI, string serviceURL, string dateiName)
+        {
+            string data = "";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serviceURI);
+                    string url = serviceURL;
+
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Hole JSON-File
+                        data = await response.Content.ReadAsStringAsync();
+
+                        // Write data to a file
+                        StorageFile sampleFile = await localFolder.CreateFileAsync(dateiName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                        await FileIO.WriteTextAsync(sampleFile, data);
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO Holger Fehlerbehandlung einbauen
+            }
+
+            return data;
+
         }
 
         private async void GetServerData_HTTPClient(object sender, RoutedEventArgs e)
@@ -174,7 +253,7 @@ namespace MensaApp
                         }
 
                         // der Oberflaeche die Liste zur Verfuegung stellen
-                        LstServerData.ItemsSource = liste;
+                        //LstServerData.ItemsSource = liste;
 
                     }
                 }
