@@ -11,7 +11,7 @@ namespace MensaApp.DataModel
         public int mealNumber { get; set; }
         public string name { get; set; }
         public List<string> symbols { get; set; }
-        public List<object> additives { get; set; }
+        public List<string> additives { get; set; }
         public List<string> allergens { get; set; }
     }
 

@@ -176,17 +176,17 @@ namespace MensaApp
 
             // Hole die MensaRestSchnittstellen Parameter
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String MealURI = MensaRestApiResource.GetString("MealURI");
+            String MealURI = MensaRestApiResource.GetString("MealBaseURL");
             String MealURL = MensaRestApiResource.GetString("MealURL");
 
             // erzeuge neues Objekt
-            GetTheData gTD = new GetTheData();
+            ServingMealOffer servingMO = new ServingMealOffer();
 
             // Hole das JSON und speichere in Datei
-            await gTD.GetServerData(MealURI, MealURL);
+            await servingMO.GetServerData(MealURI, MealURL, "MealJSONFile");
 
             // Erstelle neue ViewModels fuer Heute
-            DayViewModel dayVM = await gTD.GetServerDataForToday();
+            DayViewModel dayVM = await servingMO.GetServerDataForToday();
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.Today.Clear();
@@ -194,7 +194,7 @@ namespace MensaApp
             _mealsPageViewModel.Today.Add(dayVM);
 
             // Erstelle neue ViewModels fuer die folgenden drei Tage
-            List<DayViewModel> listeForecast = await gTD.GetServerDataForNextDays(3);
+            List<DayViewModel> listeForecast = await servingMO.GetServerDataForNextDays(3);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.ForecastDays.Clear();

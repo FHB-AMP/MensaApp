@@ -1,4 +1,5 @@
 ﻿using MensaApp.Common;
+using MensaApp.Service;
 using MensaApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -116,8 +118,9 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            populateAdditives(); 
-            populateAllergens();
+            //populateAdditives(); 
+            //populateAllergens();
+            synchronizeWithServer();
         }
 
         /// <summary>
@@ -162,6 +165,46 @@ namespace MensaApp
         private void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Neu-Laden aller Zusatzstoffe und Allergene
+        /// </summary>
+        private async void synchronizeWithServer()
+        {
+            // Hole die MensaRestSchnittstellen Parameter
+            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+            String AdditivesURI = MensaRestApiResource.GetString("AdditivesBaseURL");
+            String AdditivesURL = MensaRestApiResource.GetString("AdditivesURL");
+
+            // erzeuge neues Objekt
+            ServingMealOffer servingMO = new ServingMealOffer();
+
+            // Hole das JSON und speichere in Datei
+            await servingMO.GetServerData(AdditivesURI, AdditivesURL, "AdditivesJSONFile");
+
+            // erzeuge neues Objekt
+            ServingAdditivesAndAllergenes servingAAA = new ServingAdditivesAndAllergenes();
+
+            // Erstelle Zusatzstoffe
+            List<AdditiveViewModel> listeZusatzstoffe = await servingAAA.GetAdditives();
+            List<AllergenViewModel> listeAllergene = await servingAAA.GetAllergenes();
+
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _settingViewModel.Additives.Clear();
+            _settingViewModel.Additives.Clear();
+
+            foreach (AdditiveViewModel additiveVM in listeZusatzstoffe)
+            {
+                // Alle SettingViewModel der GUI uebergeben
+                _settingViewModel.Additives.Add(additiveVM);
+            }
+
+            foreach (AllergenViewModel allergenVM in listeAllergene)
+            {
+                // Alle SettingViewModel der GUI uebergeben
+                _settingViewModel.Allergens.Add(allergenVM);
+            }
         }
 
     }
