@@ -118,9 +118,12 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
+            // DC MockUp
             //populateAdditives(); 
             //populateAllergens();
-            synchronizeWithServer();
+
+            // HK local-saved Settings, wenn nichts vorhanden vom Server
+            holeSettings();
         }
 
         /// <summary>
@@ -164,7 +167,63 @@ namespace MensaApp
 
         private void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            // Neuen Serializer erzeugen
+            SerializeSettings ss = new SerializeSettings();
 
+            // Hole den Standort der JSON Datei
+            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+            String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
+
+            // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Zusatzstoffe)
+            ss.serializeAdditives(_settingViewModel.Additives, dateiName);
+
+            dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
+
+            // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Allergene)
+            ss.serializeAllergenes(_settingViewModel.Allergens, dateiName);
+        }
+
+        private async void holeSettings()
+        {
+            SerializeSettings ss = new SerializeSettings();
+            ObservableCollection<ViewModel.AdditiveViewModel> oo = new ObservableCollection<ViewModel.AdditiveViewModel>();
+            ObservableCollection<ViewModel.AllergenViewModel> oo2 = new ObservableCollection<ViewModel.AllergenViewModel>();
+
+            // Hole den Standort der JSON Datei
+            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+            String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
+
+            oo = await ss.deserializeAdditives(dateiName);
+
+            if (oo.Count == 0)
+            {
+                synchronizeWithServer();
+            } else
+            {
+                _settingViewModel.Additives.Clear();
+                foreach (AdditiveViewModel addiVM in oo)
+                {
+                    _settingViewModel.Additives.Add(new AdditiveViewModel(addiVM.Id, addiVM.Definition, addiVM.Meaning, addiVM.IsExcluded));
+                }
+                
+            }
+
+            dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
+            oo2 = await ss.deserializeAllergenes(dateiName);
+
+            if (oo2.Count == 0)
+            {
+                synchronizeWithServer();
+            }
+            else
+            {
+                _settingViewModel.Allergens.Clear();
+                foreach (AllergenViewModel allergVM in oo2)
+                {
+                    _settingViewModel.Allergens.Add(new AllergenViewModel(allergVM.Id, allergVM.Definition, allergVM.ContainedIn, allergVM.IsExcluded));
+                }
+
+            }
         }
 
         /// <summary>
@@ -188,10 +247,13 @@ namespace MensaApp
 
             // Erstelle Zusatzstoffe
             List<AdditiveViewModel> listeZusatzstoffe = await servingAAA.GetAdditives();
+
+            // Hole das JSON und speichere in Datei
+            await servingMO.GetServerData(AdditivesURI, AdditivesURL, "AdditivesJSONFile");
+
             List<AllergenViewModel> listeAllergene = await servingAAA.GetAllergenes();
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
-            _settingViewModel.Additives.Clear();
             _settingViewModel.Additives.Clear();
 
             foreach (AdditiveViewModel additiveVM in listeZusatzstoffe)
@@ -199,6 +261,9 @@ namespace MensaApp
                 // Alle SettingViewModel der GUI uebergeben
                 _settingViewModel.Additives.Add(additiveVM);
             }
+
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _settingViewModel.Allergens.Clear();
 
             foreach (AllergenViewModel allergenVM in listeAllergene)
             {

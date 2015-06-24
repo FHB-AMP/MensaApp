@@ -14,7 +14,7 @@ namespace MensaApp.Service
     class ServingAdditivesAndAllergenes
     {
         // Abspeichern und Lesen des JSON-Files
-        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+        StorageFolder localFolder = ApplicationData.Current.LocalFolder;
 
         public async Task<List<ViewModel.AdditiveViewModel>> GetAdditives()
         {

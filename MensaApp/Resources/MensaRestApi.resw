@@ -141,4 +141,12 @@
     <value />
     <comment>Mahlzeiten vertiefenen Struktur</comment>
   </data>
+  <data name="SettingsAdditivesJSONFile" xml:space="preserve">
+    <value>SettingsAdditivesJSONFile.txt</value>
+    <comment>Settings der Zusatzstoffe als JSON gespeichert</comment>
+  </data>
+  <data name="SettingsAllergenesJSONFile" xml:space="preserve">
+    <value>SettingsAllergenesJSONFile.txt</value>
+    <comment>Settings der Allergene als JSON gepseichert</comment>
+  </data>
 </root>
