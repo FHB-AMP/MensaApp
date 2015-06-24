@@ -46,6 +46,12 @@ namespace MensaApp
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
 
+        public SettingsPageViewModel SettingsPageViewModel
+        {
+            get { return this._settingViewModel; }
+        }
+
+
         public void populateAdditives()
         {
             _settingViewModel.Additives.Add(new AdditiveViewModel("(1)", "mit Farbstoff", "Optische Aufwertung der wertbestimmenden Zutaten (z.B. höherer Fruchtanteil in der Kaltschale).", false));
@@ -88,6 +94,52 @@ namespace MensaApp
             _settingViewModel.Allergens.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
         }
 
+        private void populateNutritions()
+        {
+            // Add normal nutrition
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(NORM)", "Normal", new ObservableCollection<string>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
+
+            // Add Vegetarian nutrition
+            ObservableCollection<string> symbolsVegi = new ObservableCollection<string>();
+            ObservableCollection<AllergenViewModel> excludedAllergensVegi = new ObservableCollection<AllergenViewModel>();
+            ObservableCollection<AdditiveViewModel> excludedAdditivesVegi = new ObservableCollection<AdditiveViewModel>();
+            symbolsVegi.Add("mit Schweinefleisch");
+            symbolsVegi.Add("mit Rindfleisch");
+            symbolsVegi.Add("mit Lamm");
+            symbolsVegi.Add("mit Fisch");
+            symbolsVegi.Add("mit Geflügelfleisch");
+            excludedAdditivesVegi.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
+            excludedAllergensVegi.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+            excludedAllergensVegi.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
+            excludedAllergensVegi.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGI)", "Vegetarisch", symbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
+
+            // Add Vegan nutrion
+            ObservableCollection<string> symbolsVega = new ObservableCollection<string>();
+            ObservableCollection<AllergenViewModel> excludedAllergensVega = new ObservableCollection<AllergenViewModel>();
+            ObservableCollection<AdditiveViewModel> excludedAdditivesVega = new ObservableCollection<AdditiveViewModel>();
+            symbolsVega.Add("mit Schweinefleisch");
+            symbolsVega.Add("mit Rindfleisch");
+            symbolsVega.Add("mit Lamm");
+            symbolsVega.Add("mit Fisch");
+            symbolsVega.Add("mit Geflügelfleisch");
+
+            excludedAdditivesVega.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
+            excludedAdditivesVega.Add(new AdditiveViewModel("(13)", "mit Milcheiweiß", "", false));
+            excludedAdditivesVega.Add(new AdditiveViewModel("(14)", "mit Eiklar", "Einsatz von Fremdeiweiß, wird als Bindemittel verwendet.", false));
+            excludedAdditivesVega.Add(new AdditiveViewModel("(22)", "mit Milchpulver", "", false));
+            excludedAdditivesVega.Add(new AdditiveViewModel("(23)", "mit Molkenpulver", "", false));
+            excludedAdditivesVega.Add(new AdditiveViewModel("(TL)", "enthält tierisches Lab", "", false));
+            excludedAllergensVega.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+            excludedAllergensVega.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
+            excludedAllergensVega.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+            excludedAllergensVega.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
+            excludedAllergensVega.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGA)", "Vegan", symbolsVega, excludedAdditivesVega, excludedAllergensVega));
+
+            _settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
+        }
+
         /// <summary>
         /// Ruft den <see cref="NavigationHelper"/> ab, der mit dieser <see cref="Page"/> verknüpft ist.
         /// </summary>
@@ -121,6 +173,7 @@ namespace MensaApp
             // DC MockUp
             //populateAdditives(); 
             //populateAllergens();
+            populateNutritions();
 
             // HK local-saved Settings, wenn nichts vorhanden vom Server
             holeSettings();
@@ -181,6 +234,27 @@ namespace MensaApp
 
             // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Allergene)
             ss.serializeAllergenes(_settingViewModel.Allergens, dateiName);
+        }
+
+        /// <summary>
+        /// updates the settingsViewModel, when the selection of the nutrition combobox has been changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NutritionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox nutritionCombobox = sender as ComboBox;
+            NutritionViewModel selectedNutritionViewModel = nutritionCombobox.SelectedItem as NutritionViewModel;
+
+            if (selectedNutritionViewModel != null)
+            {
+                _settingViewModel.SelectedNutrition = selectedNutritionViewModel;
+
+                foreach (NutritionViewModel nutritionViewModel in _settingViewModel.Nutritions)
+                {
+                    nutritionViewModel.IsSelectedNutrition = nutritionViewModel.Id.Equals(selectedNutritionViewModel.Id) ? true : false;
+                }
+            }
         }
 
         private async void holeSettings()
