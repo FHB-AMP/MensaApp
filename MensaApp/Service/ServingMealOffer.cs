@@ -57,8 +57,90 @@ namespace MensaApp.Service
                         // so viele Meals wie es an dem Tag gibt hinzufuegen
                         for (int j = 0; j < rootObject.days[i].meals.Count; j++)
                         {
-                            // anzuzeigende Eintraege hinzufuegen
-                            dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, true, true, true, true));
+                            // Zusatzstoffe aus den Settings bereit stellen
+                            SerializeSettings ss = new SerializeSettings();
+                            ObservableCollection<ViewModel.AdditiveViewModel> oc = new ObservableCollection<ViewModel.AdditiveViewModel>();
+
+                            // Hole den Standort der JSON Datei
+                            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+                            String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
+
+                            // Alle Zusatzstoffe aus den Settings
+                            oc = await ss.deserializeAdditives(dateiName);
+
+                            // Helfer
+                            ObservableCollection<AdditiveViewModel> result = new ObservableCollection<AdditiveViewModel>();
+
+                            // Zusatzstoffe der jeweiligen Mahlzeit
+                            foreach (string addi in rootObject.days[i].meals[j].additives)
+                            {
+                                // Zusatzstoffe aus den Settings
+                                foreach (AdditiveViewModel addiVM in oc)
+                                {
+                                    // Ablgeich der Mahlzeiten-Zusatzstoffe mit denen aus den Settings
+                                    if (addi.Equals(addiVM.Id))
+                                    {
+                                        // Wenn die ID gleich ist hinzufuegen
+                                        result.Add(addiVM);
+                                    }
+                                }
+                            }
+
+                            // Allergene aus den Settings bereit stellen
+                            ObservableCollection<ViewModel.AllergenViewModel> oc2 = new ObservableCollection<ViewModel.AllergenViewModel>();
+
+                            // Hole den Standort der JSON Datei
+                            dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
+
+                            // Alle Allergene aus den Settings
+                            oc2 = await ss.deserializeAllergenes(dateiName);
+
+                            // Helfer
+                            ObservableCollection<AllergenViewModel> result2 = new ObservableCollection<AllergenViewModel>();
+
+                            // Allergene der jeweiligen Mahlzeit
+                            foreach (string allerg in rootObject.days[i].meals[j].allergens)
+                            {
+                                // Allergene aus den Settings
+                                foreach (AllergenViewModel allergVM in oc2)
+                                {
+                                    // Ablgeich der Mahlzeiten-Allergene mit denen aus den Settings
+                                    if (allerg.Equals(allergVM.Id))
+                                    {
+                                        // Wenn die ID gleich ist hinzufuegen
+                                        result2.Add(allergVM);
+                                    }
+                                }
+                            }
+
+                            // erlaubte Zusatzstoffe?
+
+                            // Helfer
+                            bool suitableAdditives = true;
+
+                            foreach (AdditiveViewModel addiVM in result)
+                            {
+                                if (addiVM.IsExcluded == true)
+                                {
+                                    suitableAdditives = false;
+                                }
+                            }
+
+                            // erlaubte Allergene?
+
+                            // Helfer
+                            bool suitableAllergens = true;
+
+                            foreach (AllergenViewModel allergVM in result2)
+                            {
+                                if (allergVM.IsExcluded == true)
+                                {
+                                    suitableAllergens = false;
+                                }
+                            }
+
+                            dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, new ObservableCollection<string>(rootObject.days[i].meals[j].symbols),
+                                result, result2, true, true, suitableAdditives, suitableAllergens));
                         }
                     }
                 }
@@ -106,12 +188,90 @@ namespace MensaApp.Service
                     // so viele Meals wie es an dem Tag gibt hinzufuegen
                     for (int j = 0; j < rootObject.days[i].meals.Count; j++)
                     {
-                        // anzuzeigende Eintraege hinzufuegen
-                        dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, true, true, true, true));
+                        // Zusatzstoffe aus den Settings bereit stellen
+                        SerializeSettings ss = new SerializeSettings();
+                        ObservableCollection<ViewModel.AdditiveViewModel> oc = new ObservableCollection<ViewModel.AdditiveViewModel>();
 
-                        // Abgleich mit Settings fehlt noch komplett
-                        //dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, new ObservableCollection<string>(rootObject.days[i].meals[j].symbols),
-                        //    new ObservableCollection<string>(rootObject.days[i].meals[j].additives),  new ObservableCollection<string>(rootObject.days[i].meals[j].allergens)));
+                        // Hole den Standort der JSON Datei
+                        ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+                        String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
+
+                        // Alle Zusatzstoffe aus den Settings
+                        oc = await ss.deserializeAdditives(dateiName);
+
+                        // Helfer
+                        ObservableCollection<AdditiveViewModel> result = new ObservableCollection<AdditiveViewModel>();
+
+                        // Zusatzstoffe der jeweiligen Mahlzeit
+                        foreach(string addi in rootObject.days[i].meals[j].additives)
+                        {
+                            // Zusatzstoffe aus den Settings
+                            foreach (AdditiveViewModel addiVM in oc)
+                            {
+                                // Ablgeich der Mahlzeiten-Zusatzstoffe mit denen aus den Settings
+                                if (addi.Equals(addiVM.Id))
+                                {
+                                    // Wenn die ID gleich ist hinzufuegen
+                                    result.Add(addiVM);
+                                }
+                            }
+                        }
+
+                        // Allergene aus den Settings bereit stellen
+                        ObservableCollection<ViewModel.AllergenViewModel> oc2 = new ObservableCollection<ViewModel.AllergenViewModel>();
+
+                        // Hole den Standort der JSON Datei
+                        dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
+
+                        // Alle Allergene aus den Settings
+                        oc2 = await ss.deserializeAllergenes(dateiName);
+
+                        // Helfer
+                        ObservableCollection<AllergenViewModel> result2 = new ObservableCollection<AllergenViewModel>();
+
+                        // Allergene der jeweiligen Mahlzeit
+                        foreach (string allerg in rootObject.days[i].meals[j].allergens)
+                        {
+                            // Allergene aus den Settings
+                            foreach (AllergenViewModel allergVM in oc2)
+                            {
+                                // Ablgeich der Mahlzeiten-Allergene mit denen aus den Settings
+                                if (allerg.Equals(allergVM.Id))
+                                {
+                                    // Wenn die ID gleich ist hinzufuegen
+                                    result2.Add(allergVM);
+                                }
+                            }
+                        }
+
+                        // erlaubte Zusatzstoffe?
+
+                        // Helfer
+                        bool suitableAdditives = true;
+
+                        foreach (AdditiveViewModel addiVM in result)
+                        {
+                            if (addiVM.IsExcluded == true)
+                            {
+                                suitableAdditives = false;
+                            }
+                        }
+
+                        // erlaubte Allergene?
+
+                        // Helfer
+                        bool suitableAllergens = true;
+
+                        foreach (AllergenViewModel allergVM in result2)
+                        {
+                            if (allergVM.IsExcluded == true)
+                            {
+                                suitableAllergens = false;
+                            }
+                        }
+
+                        dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, new ObservableCollection<string>(rootObject.days[i].meals[j].symbols),
+                            result, result2, true, true, suitableAdditives, suitableAllergens));
                     }
                 }
             }
