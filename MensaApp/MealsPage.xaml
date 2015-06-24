@@ -14,6 +14,7 @@
         <valueConverter:DateToStringConverter x:Key="DateToStrigConverter"/>
         <valueConverter:MealNumberToOfferString x:Key="MealNumberToOfferString"/>
         <valueConverter:SuitableToColorCode x:Key="SuitableToColorCode"/>
+        <valueConverter:IngredientsToImagePathConverter x:Key="IngredientsToImagePathConverter"/>
         <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
         <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
         <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>
@@ -138,7 +139,7 @@
                                 </Path>
                                 <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
                                 <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" HorizontalAlignment="Left" VerticalAlignment="Center" MaxLines="1" Width="Auto" Height="Auto" FontSize="16" Grid.Column="1" Margin="10,0,0,0" Foreground="#FF2C2C2C"/>
-                                <Image Source="assets/mealimages/fishMeal-240.png" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+                                <Image Source="{Binding Converter={StaticResource IngredientsToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
 
                                 <!-- allergens -->
                                 <Rectangle Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Margin="-5,0,0,0" Grid.ColumnSpan="1" Grid.Column="4" RadiusX="5" RadiusY="5"/>
@@ -267,7 +268,7 @@
                                 </Path>
                                 <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
                                 <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" HorizontalAlignment="Left" VerticalAlignment="Center" MaxLines="1" Width="Auto" Height="Auto" FontSize="16" Grid.Column="1" Margin="10,0,0,0" Foreground="#FF2C2C2C"/>
-                                <Image Source="assets/mealimages/fishMeal-240.png" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+                                <Image Source="{Binding Converter={StaticResource IngredientsToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
 
                                 <!-- allergens -->
                                 <Rectangle Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Margin="-5,0,0,0" Grid.ColumnSpan="1" Grid.Column="4" RadiusX="5" RadiusY="5"/>

@@ -96,6 +96,7 @@
     <Compile Include="Converter\SuitableAllergensToImagePathConverter.cs" />
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\ExcludeToColorCodeConverter.cs" />
+    <Compile Include="Converter\IngredientsToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableToColorCodeConverter.cs" />
     <Compile Include="Converter\ShowInformationToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableNutritionToImagePathConverter.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="ViewModel\MealDetailPageViewModel.cs" />
     <Compile Include="ViewModel\MealViewModel.cs" />
     <Compile Include="ViewModel\DayViewModel.cs" />
+    <Compile Include="ViewModel\NutritionViewModel.cs" />
     <Compile Include="ViewModel\SettingsPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -151,8 +153,16 @@
     </Content>
     <Content Include="Assets\Icon\nutrition-green-240.png" />
     <Content Include="Assets\Icon\nutrition-red-240.png" />
+    <Content Include="Assets\Ingredients\mit Geflügelfleisch-240.png" />
+    <Content Include="Assets\Ingredients\mit Rindfleisch-240.png" />
+    <Content Include="Assets\Ingredients\mit Fisch-240.png" />
+    <Content Include="Assets\Ingredients\mit Schweinefleisch-240.png" />
+    <Content Include="Assets\Ingredients\mit Lamm-240.png" />
+    <Content Include="Assets\Ingredients\mensaVital-240.png" />
+    <Content Include="Assets\Ingredients\unkown-240.png" />
+    <Content Include="Assets\Ingredients\vegan-240.png" />
+    <Content Include="Assets\Ingredients\ovo-lacto-vegetabil-240.png" />
     <Content Include="Assets\Logo.scale-240.png" />
-    <Content Include="Assets\MealImages\fishMeal-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square71x71Logo.scale-240.png" />

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MensaApp.ViewModel
 {
@@ -14,13 +15,44 @@ namespace MensaApp.ViewModel
     /// It contains lists of all available allergens and additives.
     /// Is used to manipulate front end.
     /// </summary>
-    class SettingsPageViewModel : INotifyPropertyChanged
+    public class SettingsPageViewModel : INotifyPropertyChanged
     {
         public SettingsPageViewModel()
         {
+            this.SelectedNutrition = new NutritionViewModel();
+            this.Nutritions = new ObservableCollection<NutritionViewModel>();
             this.Additives = new ObservableCollection<AdditiveViewModel>();
             this.Allergens = new ObservableCollection<AllergenViewModel>();
         }
+
+        public SettingsPageViewModel(ObservableCollection<NutritionViewModel> nutritions, 
+            NutritionViewModel selectedNutrition, ObservableCollection<AdditiveViewModel> additives, ObservableCollection<AllergenViewModel> allergens)
+        {
+            this.SelectedNutrition = selectedNutrition != null ? selectedNutrition : new NutritionViewModel();
+            this.Nutritions = nutritions != null ? nutritions : new ObservableCollection<NutritionViewModel>();
+            this.Additives = additives != null ? additives : new ObservableCollection<AdditiveViewModel>();
+            this.Allergens = allergens != null ? allergens : new ObservableCollection<AllergenViewModel>();
+        }
+
+        /// <summary>
+        /// List of all kinds of nutritions
+        /// </summary>
+        private ObservableCollection<NutritionViewModel> _nutritions;
+        public ObservableCollection<NutritionViewModel> Nutritions
+        {
+            get { return _nutritions; }
+            set { this.SetProperty(ref this._nutritions, value); }
+        }
+
+        /// <summary>
+        /// selected kind of nutrition by participant
+        /// </summary>
+        private NutritionViewModel _selectedNutrition;
+        public NutritionViewModel SelectedNutrition
+        {
+            get { return _selectedNutrition; }
+            set { this.SetProperty(ref this._selectedNutrition, value); }
+        }        
 
         /// <summary>
         /// The list of all additives which should be shown at the settings page.
@@ -41,7 +73,7 @@ namespace MensaApp.ViewModel
             get { return _allergens; }
             set { this.SetProperty(ref this._allergens, value); }
         }
-
+        
         // property changed logic by jump start
         public event PropertyChangedEventHandler PropertyChanged;
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
