@@ -118,8 +118,9 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            populateAdditives(); 
-            populateAllergens();
+            //populateAdditives(); 
+            //populateAllergens();
+            synchronizeWithServer();
         }
 
         /// <summary>
@@ -187,14 +188,22 @@ namespace MensaApp
 
             // Erstelle Zusatzstoffe
             List<AdditiveViewModel> listeZusatzstoffe = await servingAAA.GetAdditives();
+            List<AllergenViewModel> listeAllergene = await servingAAA.GetAllergenes();
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _settingViewModel.Additives.Clear();
             _settingViewModel.Additives.Clear();
 
             foreach (AdditiveViewModel additiveVM in listeZusatzstoffe)
             {
                 // Alle SettingViewModel der GUI uebergeben
                 _settingViewModel.Additives.Add(additiveVM);
+            }
+
+            foreach (AllergenViewModel allergenVM in listeAllergene)
+            {
+                // Alle SettingViewModel der GUI uebergeben
+                _settingViewModel.Allergens.Add(allergenVM);
             }
         }
 
