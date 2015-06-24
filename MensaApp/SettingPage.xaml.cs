@@ -317,15 +317,17 @@ namespace MensaApp
             await servingMO.GetServerData(AdditivesURI, AdditivesURL, "AdditivesJSONFile");
 
             // erzeuge neues Objekt
-            ServingAdditivesAndAllergenes servingAAA = new ServingAdditivesAndAllergenes();
+            ServingAdditivesAndAllergenes servingAAA1 = new ServingAdditivesAndAllergenes();
 
             // Erstelle Zusatzstoffe
-            List<AdditiveViewModel> listeZusatzstoffe = await servingAAA.GetAdditives();
+            List<AdditiveViewModel> listeZusatzstoffe = await servingAAA1.GetAdditives();
 
             // Hole das JSON und speichere in Datei
             await servingMO.GetServerData(AdditivesURI, AdditivesURL, "AdditivesJSONFile");
 
-            List<AllergenViewModel> listeAllergene = await servingAAA.GetAllergenes();
+            // erzeuge neues Objekt
+            ServingAdditivesAndAllergenes servingAAA2 = new ServingAdditivesAndAllergenes();
+            List<AllergenViewModel> listeAllergene = await servingAAA2.GetAllergenes();
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _settingViewModel.Additives.Clear();
