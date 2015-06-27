@@ -15,11 +15,11 @@ namespace MensaApp.Converter
 
             if (isSuitable)
             {
-                return "assets/icon/additives-green-240.png";
+                return "assets/icon/additives-240.png";
             }
             else
             {
-                return "assets/icon/additives-red-240.png";
+                return "assets/icon/additives-240.png";
             }
         }
 

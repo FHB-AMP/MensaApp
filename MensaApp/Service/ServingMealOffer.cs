@@ -280,7 +280,7 @@ namespace MensaApp.Service
             if (saSo == true)
             {
                 // TODO Holger Was ist besser alles auf "false" oder alles auf "true"
-                dayVM.Meals.Add(new MealViewModel(1, "Heute gibt es leider kein Angebot. Ihr Versorger.", false, false, false, false));
+                // dayVM.Meals.Add(new MealViewModel(1, "Heute gibt es leider kein Angebot. Ihr Versorger.", false, false, false, false));
             }
 
             return dayVM;

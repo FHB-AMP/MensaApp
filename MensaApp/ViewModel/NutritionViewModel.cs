@@ -22,20 +22,21 @@ namespace MensaApp.ViewModel
             this.IsSelectedNutrition = false;
         }
 
-        public NutritionViewModel(string id, string name, ObservableCollection<string> excludedSymbols,
+        public NutritionViewModel(string id, string name, string definition, ObservableCollection<string> excludedSymbols,
             ObservableCollection<AdditiveViewModel> excludedAdditives, ObservableCollection<AllergenViewModel> excludedAllergens)
         {
             this.Id = id;
             this.Name = name;
+            this.Definition = definition;
             this.ExcludedSymbols = excludedSymbols != null ? excludedSymbols : new ObservableCollection<string>();
             this.ExcludedAdditives = excludedAdditives != null ? excludedAdditives : new ObservableCollection<AdditiveViewModel>();
             this.ExcludedAllergens = excludedAllergens != null ? excludedAllergens : new ObservableCollection<AllergenViewModel>();
             this.IsSelectedNutrition = false;
         }
 
-        public NutritionViewModel(string id, string name, ObservableCollection<string> excludedSymbols, ObservableCollection<AdditiveViewModel> excludedAdditives,
+        public NutritionViewModel(string id, string name, string definition, ObservableCollection<string> excludedSymbols, ObservableCollection<AdditiveViewModel> excludedAdditives,
             ObservableCollection<AllergenViewModel> excludedAllergens, bool isSelectedNutrition)
-            : this(id, name, excludedSymbols, excludedAdditives, excludedAllergens)
+            : this(id, name, definition, excludedSymbols, excludedAdditives, excludedAllergens)
         {
             this.IsSelectedNutrition = isSelectedNutrition;
         }
@@ -59,6 +60,17 @@ namespace MensaApp.ViewModel
             get { return _name; }
             set { this.SetProperty(ref this._name, value); }
         }
+
+        /// <summary>
+        /// Text which describes the nutrition shortly
+        /// </summary>
+        private string _definition;
+        public string Definition
+        {
+            get { return _definition; }
+            set { this.SetProperty(ref this._definition, value); }
+        }
+        
 
         /// <summary>
         /// List of symbols which are excluded by the certain nutrition

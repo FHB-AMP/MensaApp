@@ -15,11 +15,11 @@ namespace MensaApp.Converter
 
             if (isSuitable)
             {
-                return "assets/icon/allergens-green-240.png";
+                return "assets/icon/allergens-240.png";
             }
             else
             {
-                return "assets/icon/allergens-red-240.png";
+                return "assets/icon/allergens-240.png";
             }
         }
 

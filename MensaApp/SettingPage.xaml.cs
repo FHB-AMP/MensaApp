@@ -38,9 +38,6 @@ namespace MensaApp
         {
             this.InitializeComponent();
 
-            additives.Source = _settingViewModel.Additives;
-            allergens.Source = _settingViewModel.Allergens;
-
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
@@ -97,7 +94,8 @@ namespace MensaApp
         private void populateNutritions()
         {
             // Add normal nutrition
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(NORM)", "Normal", new ObservableCollection<string>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
+            string normalDefinition = "Keine Einschränkungen.";
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(NORMAL)", "Normal", normalDefinition, new ObservableCollection<string>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
 
             // Add Vegetarian nutrition
             ObservableCollection<string> symbolsVegi = new ObservableCollection<string>();
@@ -112,7 +110,8 @@ namespace MensaApp
             excludedAllergensVegi.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
             excludedAllergensVegi.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
             excludedAllergensVegi.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGI)", "Vegetarisch", symbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
+            string veggieDefinition = "Ovo-Lacto-Vegetarier essen nichts vom toten Tier.";
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGGIE)", "Ovo-Lacto-Vegetarisch", veggieDefinition, symbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
 
             // Add Vegan nutrion
             ObservableCollection<string> symbolsVega = new ObservableCollection<string>();
@@ -135,7 +134,8 @@ namespace MensaApp
             excludedAllergensVega.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
             excludedAllergensVega.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
             excludedAllergensVega.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGA)", "Vegan", symbolsVega, excludedAdditivesVega, excludedAllergensVega));
+            string veganDefinition = "Veganer essen gar keine tierischen Produkte.";
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGAN)", "Vegan", veganDefinition, symbolsVega, excludedAdditivesVega, excludedAllergensVega));
 
             _settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
         }

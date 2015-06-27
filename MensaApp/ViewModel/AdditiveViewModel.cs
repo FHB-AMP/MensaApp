@@ -102,7 +102,7 @@ namespace MensaApp.ViewModel
         public bool IsExcluded
         {
             get { return _isExcluded; }
-            set { _isExcluded = value; }
+            set { this.SetProperty(ref this._isExcluded, value); }
         }
 
         /// <summary>

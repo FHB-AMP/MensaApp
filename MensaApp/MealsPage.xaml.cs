@@ -39,55 +39,16 @@ namespace MensaApp
         public MealsPage()
         {
             this.InitializeComponent();
-
-            mealsToday.Source = _mealsPageViewModel.Today;
-            mealsForecast.Source = _mealsPageViewModel.ForecastDays;
-
+            
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-
         }
 
-        private void populateTodayWithMeals()
+        public MealsPageViewModel MealsPageViewModel
         {
-            DayViewModel dayVM = new DayViewModel();
-            dayVM.Date = DateTime.Now;
-            dayVM.Meals.Add(new MealViewModel(1, "Italienisches Nudelgericht mit Salami- oder Tofustreifen, dazu Reibekäse", false, true, false, false));
-            dayVM.Meals.Add(new MealViewModel(2, "Rostbratwurst mit Pommes frites und buntem Salatmix", true, true, true, true));
-            dayVM.Meals.Add(new MealViewModel(3, "Seefischfilet, gebraten mit Dillsauce Salzkartoffeln oder Reis dazu frischer Gurkensalat", false, true, false, true));
-            dayVM.Meals.Add(new MealViewModel(4, "Kartoffel-Spargel-Auflauf,dazu Saisonsalat mit Sonnenblumenkernen", true, true, true, true));
-            dayVM.Meals.Add(new MealViewModel(5, "Wiener Schnitzel mit lauwarmen Kartoffel - Gurkensalat und kleiner Salatgarnitur", false, false, true, true));
-            _mealsPageViewModel.Today.Add(dayVM);
+            get { return _mealsPageViewModel; }
         }
-
-        private void populateForecastDaysWithMeals()
-        {
-            DayViewModel dayVM1 = new DayViewModel();
-            dayVM1.Date = DateTime.Now.AddDays(1);
-            dayVM1.Meals.Add(new MealViewModel(1, "Märkische Kartoffelsuppe mit Wiener Würstchen oder Sojawürfeln (vegan), dazu Roggenbrot", false, true, false, false));
-            dayVM1.Meals.Add(new MealViewModel(2, "Pfannengyros mit Tzatziki und Langkornreis, dazu bunter Weißkraut-Möhrensalat", true, true, true, true));
-            dayVM1.Meals.Add(new MealViewModel(3, "Gegrillte Hähnchenkeule mit Letscho und gebackenen Kartoffelecken", false, true, false, true));
-            dayVM1.Meals.Add(new MealViewModel(4, "Brokkoli, Blumenkohl und Kartoffeln mit Gorgonzola gratiniert, dazu roter Linsensalat", true, true, true, true));
-            _mealsPageViewModel.ForecastDays.Add(dayVM1);
-
-            DayViewModel dayVM2 = new DayViewModel();
-            dayVM2.Date = DateTime.Now.AddDays(2);
-            dayVM2.Meals.Add(new MealViewModel(1, "Panierte Jagdwurst oder Tofusteak mit Nudeln und veganer Tomatensauce", false, true, false, true));
-            dayVM2.Meals.Add(new MealViewModel(2, "Rügener Rauch-Matjestopf mit Preiselbeerrahm, dazu Stangenbohnen und Bratkartoffeln", false, false, true, true));
-            dayVM2.Meals.Add(new MealViewModel(3, "Kalbsschnitzel mit lauwarmen Kartoffelsalat und Blattsalat", false, true, true, false));
-            dayVM2.Meals.Add(new MealViewModel(4, "Lasagne mit Sojabolognaise und Salatmix", true, true, true, true));
-            _mealsPageViewModel.ForecastDays.Add(dayVM2);
-
-            DayViewModel dayVM3 = new DayViewModel();
-            dayVM3.Date = DateTime.Now.AddDays(3);
-            dayVM3.Meals.Add(new MealViewModel(1, "Kräuterquark mit Leinöl und Salzkartoffeln", true, true, true, true));
-            dayVM3.Meals.Add(new MealViewModel(2, "Leberkäse mit süßem Senf und Bratkartoffeln, Gewürzgurke", true, true, true, true));
-            dayVM3.Meals.Add(new MealViewModel(3, "Hähnchen CordonBleu mit Sauce Bernaise und Brokkoli, dazu Kroketten oder Salzkartoffeln", true, true, true, true));
-            dayVM3.Meals.Add(new MealViewModel(4, "Sojagyros mit Tzatziki oder Ayvar und Couscous, dazu Weißkrautsalat", true, true, true, true));
-            _mealsPageViewModel.ForecastDays.Add(dayVM3);
-        }
-
 
         /// <summary>
         /// Ruft den <see cref="NavigationHelper"/> ab, der mit dieser <see cref="Page"/> verknüpft ist.
@@ -119,8 +80,6 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            //populateTodayWithMeals();
-            //populateForecastDaysWithMeals();
             synchronizeWithServer();
         }
 
@@ -212,6 +171,7 @@ namespace MensaApp
             catch (FileNotFoundException ex) 
             { 
                 // Tue nichts :)
+                // debug message könnte man hier vll ablegen.
             }
 
             if (DateTime.Today != myDate)
@@ -265,10 +225,16 @@ namespace MensaApp
 
             if (selectedMeal != null)
             {
+                // TODO insert correct datetime.
                 DetailPageParamModel paramModel = new DetailPageParamModel(DateTime.Now, selectedMeal);
                 Frame.Navigate(typeof(DetailPage), paramModel);
             }
 
+        }
+
+        private void FummelAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MealDetailPage));
         }
     }
 }

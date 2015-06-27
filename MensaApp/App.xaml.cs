@@ -91,7 +91,7 @@ namespace MensaApp
                 // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
                 // und die neue Seite konfigurieren, indem die erforderlichen Informationen als Navigationsparameter
                 // übergeben werden
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
+                if (!rootFrame.Navigate(typeof(MealsPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }

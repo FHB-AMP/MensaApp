@@ -14,7 +14,7 @@ namespace MensaApp.ViewModel
     /// It contains the date of day and the meals which are available at that certain day
     /// Is used to manipulate front end.
     /// </summary>
-    class DayViewModel : INotifyPropertyChanged
+    public class DayViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Constructor to create a day with the current date and an empty list of meals.

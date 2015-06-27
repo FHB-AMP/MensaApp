@@ -9,21 +9,8 @@
     x:Class="MensaApp.SettingPage"
     mc:Ignorable="d"
     DataContext="{Binding SettingsPageViewModel, RelativeSource={RelativeSource Self}}"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource MensaPageBackgroundBrush}">
 
-    <Page.Resources>
-        <valueConverter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <valueConverter:ShowInformationToImagePathConverter x:Key="ShowInformationToImagePathConverter"/>
-        <valueConverter:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
-        <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
-        <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
-        <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>
-        <valueConverter:ListEmptyToAlternativeVisibilityConverter x:Key="ListEmptyToAlternativeVisibilityConverter"/>
-        <valueConverter:ListNotEmptyToVisibilityConverter x:Key="ListNotEmptyToVisibilityConverter"/>
-        <CollectionViewSource x:Name="nutrition"/>
-        <CollectionViewSource x:Name="additives"/>
-        <CollectionViewSource x:Name="allergens"/>
-    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Icon="Save" Label="Speichern" Click="SaveSettingsAppBarButton_Click" />
@@ -38,6 +25,7 @@
             </TransitionCollection>
         </Grid.ChildrenTransitions>
 
+        <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
         <!-- Pivot -->
         <Pivot Margin="-8,0,0,0" Title="FH Brandenburg Mensa" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <!-- First PivotItem -->
@@ -48,7 +36,7 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <ComboBox Grid.Row="0" ItemsSource="{Binding Path=Nutritions}" SelectedItem="{Binding Path=SelectedNutrition}" SelectionChanged="NutritionComboBox_SelectionChanged" >
+                    <ComboBox Grid.Row="0" ItemsSource="{Binding Path=Nutritions}" SelectedItem="{Binding Path=SelectedNutrition}" SelectionChanged="NutritionComboBox_SelectionChanged" Margin="8,0" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -58,124 +46,267 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
+                    <!-- Properties Title -->
                     <TextBlock Grid.Row="1" Text="Eigenschaften" FontSize="24" Margin="0,0,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left" />
+                    <!-- Properties -->
 
-                    <ListView Grid.Row="3">
+                    <ListView Grid.Row="3" Background="{x:Null}" BorderThickness="0" SelectionMode="None">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="8,0,8,8"/>
                             </Style>
                         </ListView.ItemContainerStyle>
 
-                        <ListViewItem>
-                            <!-- Nutrition -->
+                        <!-- Nutrition -->
+                        <ListViewItem IsHitTestVisible="False">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="34"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
-                                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="#FFED5959" RadiusX="5" RadiusY="5" />
-                                <TextBlock Grid.Row="0" Text="ausgeschlossene Symbole" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="34"/>
+                                </Grid.ColumnDefinitions>
+                                <!--Tile Background-->
+                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0"  />
+                                <!--Tile HeaderBackground-->
+                                <Path Fill="{StaticResource MensaRedBrush}">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="0,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="5,0"/>
+                                                                    <BezierSegment Point1="5,0" Point2="0,0" Point3="0,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="{StaticResource MensaRedBrush}" Grid.Column="1" Margin="-2,0" />
+                                <Path Fill="{StaticResource MensaRedBrush}" Grid.Column="2">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="29,0"/>
+                                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
 
-                                <ListView Grid.Row="1" ItemsSource="{Binding Path=SelectedNutrition.ExcludedSymbols}" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                        Visibility="{Binding SelectedNutrition.ExcludedSymbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}">
+                                <TextBlock Text="ausgeschlossene Symbole" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
+                                <!-- Content List -->
+                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedSymbols}"  
+                                 Visibility="{Binding SelectedNutrition.ExcludedSymbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="Height" Value="25"/>
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" FontSize="16" FontFamily="Segoe WP" MaxLines="1" TextTrimming="WordEllipsis"/>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <!--Alternativ will shown if list is empty-->
-                                <TextBlock Grid.Row="1" Text="keine Angaben" FontSize="16" FontFamily="Segoe WP" Margin="10"
-                                        Visibility="{Binding SelectedNutrition.ExcludedSymbols.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}"/>
-
-                            </Grid>
-                        </ListViewItem>
-
-                        <ListViewItem>
-                            <!-- Additives -->
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
-                                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="#FFED5959" RadiusX="5" RadiusY="5" />
-                                <TextBlock Grid.Row="0" Text="ausgeschlossene Zusatzstoffe" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
-
-                                <ListView Grid.Row="1" ItemsSource="{Binding Path=SelectedNutrition.ExcludedAdditives}" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
-                                        Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}">
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem">
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="Height" Value="25"/>
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid HorizontalAlignment="Left" >
-                                                <TextBlock Text="{Binding Definition}" FontSize="16" FontFamily="Segoe WP" MaxLines="1" TextTrimming="CharacterEllipsis" Margin="4,0"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <!--Alternativ will shown if list is empty-->
-                                <TextBlock Grid.Row="1" Text="keine Angaben" FontSize="16" FontFamily="Segoe WP" Margin="10"  
-                                        Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}"/>
-                            </Grid>
-                        </ListViewItem>
-
-                        <ListViewItem>
-                            <!-- Allergens -->
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Rectangle Grid.Row="0" Grid.RowSpan="2" Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" RadiusX="5" RadiusY="5" />
-                                <Rectangle Grid.Row="0" Grid.RowSpan="1" Fill="#FFED5959" RadiusX="5" RadiusY="5" />
-                                <TextBlock Grid.Row="0" Text="ausgeschlossene Allergene" FontSize="16" Margin="10,0" FontFamily="Segoe WP" VerticalAlignment="Center" />
-
-                                <ListView Grid.Row="1" ItemsSource="{Binding Path=SelectedNutrition.ExcludedAllergens}" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                        Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}">
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem">
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="Height" Value="25"/>
                                         </Style>
                                     </ListView.ItemContainerStyle>
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Left" >
-                                                <TextBlock Text="{Binding Definition}" FontSize="16" FontFamily="Segoe WP" MaxLines="1" TextTrimming="WordEllipsis" Margin="4,0"/>
+                                                <TextBlock Text="{Binding}" Style="{StaticResource MensaTileListContent}"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
                                 <!--Alternativ will shown if list is empty-->
-                                <TextBlock Grid.Row="1" Text="keine Angaben" FontSize="16" FontFamily="Segoe WP" Margin="10"
-                                        Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}"/>
+                                <TextBlock Grid.Row="1" Text="keine Angaben" Style="{StaticResource MensaTileListContent}" Visibility="{Binding SelectedNutrition.ExcludedSymbols.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" Grid.Column="1" Margin="10" Grid.ColumnSpan="2"/>
+                            </Grid>
+                        </ListViewItem>
+
+                        <!-- Additives -->
+                        <ListViewItem IsHitTestVisible="False">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="34"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="34"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--Tile Background-->
+                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0"  />
+                                <!--Tile HeaderBackground-->
+                                <Path Fill="{StaticResource MensaRedBrush}">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="0,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="5,0"/>
+                                                                    <BezierSegment Point1="5,0" Point2="0,0" Point3="0,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="{StaticResource MensaRedBrush}" Grid.Column="1" Margin="-2,0" />
+                                <Path Fill="{StaticResource MensaRedBrush}" Grid.Column="2">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="29,0"/>
+                                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Image Source="/Assets/Icon/additives-240.png" HorizontalAlignment="Center"/>
+                                <TextBlock Text="ausgeschlossene Zusatzstoffe" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
+                                <!-- Content List -->
+                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAdditives}" Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" >
+                                                <TextBlock Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <!--Alternativ will shown if list is empty-->
+                                <TextBlock Grid.Row="1" Text="keine Angaben" Style="{StaticResource MensaTileListContent}" Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" Grid.Column="1" Margin="10" Grid.ColumnSpan="2"/>
+                            </Grid>
+                        </ListViewItem>
+
+                        <!-- Allergens -->
+                        <ListViewItem IsHitTestVisible="False">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="34"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="34"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--Tile Background-->
+                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0"  />
+                                <!--Tile HeaderBackground-->
+                                <Path Fill="{StaticResource MensaRedBrush}">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="0,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="5,0"/>
+                                                                    <BezierSegment Point1="5,0" Point2="0,0" Point3="0,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Fill="{StaticResource MensaRedBrush}" Grid.Column="1" Margin="-2,0" />
+                                <Path Fill="{StaticResource MensaRedBrush}" Grid.Column="2">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <RectangleGeometry Rect="0,0 34,34"/>
+                                            <PathGeometry>
+                                                <PathGeometry.Figures>
+                                                    <PathFigureCollection>
+                                                        <PathFigure IsClosed="true" StartPoint="34,0">
+                                                            <PathFigure.Segments>
+                                                                <PathSegmentCollection>
+                                                                    <LineSegment Point="29,0"/>
+                                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                                                </PathSegmentCollection>
+                                                            </PathFigure.Segments>
+                                                        </PathFigure>
+                                                    </PathFigureCollection>
+                                                </PathGeometry.Figures>
+                                            </PathGeometry>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
+                                <TextBlock Text="ausgeschlossene Allergene" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
+                                <Image Source="/Assets/Icon/allergens-240.png" HorizontalAlignment="Center"/>
+                                <!-- Content List -->
+                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAllergens}" Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" >
+                                                <TextBlock Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <!--Alternativ will shown if list is empty-->
+                                <TextBlock Grid.Row="1" Text="keine Angaben" Style="{StaticResource MensaTileListContent}" Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" Grid.Column="1" Margin="10" Grid.ColumnSpan="2"/>
                             </Grid>
                         </ListViewItem>
                     </ListView>
                 </Grid>
             </PivotItem>
-
-
-
-
-
 
             <!-- Secound PivotItem -->
             <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Zusatzstoffe">
@@ -190,24 +321,30 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition MinHeight="30"  Height="auto"/>
+                                    <RowDefinition MinHeight="34" Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition MinHeight="0" Height="auto"/>
                                     <RowDefinition Height="30"/>
                                 </Grid.RowDefinitions>
-                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                   Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Grid.RowSpan="4"/>
-                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                Grid.Row="2" Grid.Column="0" Height="Auto" Margin="0"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="34"/>
+                                </Grid.ColumnDefinitions>
+                                <!--Tile Background-->
+                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
+                                <!--Tile HeaderBackground-->
+                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
+                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
 
-                                <TextBlock Text="{Binding Path=Definition}" MaxLines="3" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontSize="16" Margin="10,0" VerticalAlignment="Center"/>
+                                <Image Source="{Binding Path=IsExcluded, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
+                                <!-- Content List -->
+                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
 
-                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1"/>
+                                <TextBlock Text="{Binding Path=Meaning}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowMeaning, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
 
-                                <TextBlock Text="{Binding Path=Meaning}" TextWrapping="WrapWholeWords" Grid.Row="2" 
-								                 Visibility="{Binding Path=ShowMeaning, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10" FontSize="16" MaxLines="5" TextTrimming="WordEllipsis" Width="Auto" VerticalAlignment="Center"/>
-
-                                <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8">
+                                <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
                                     <Button.Background>
                                         <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowMeaning, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
                                     </Button.Background>
@@ -235,24 +372,30 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition MinHeight="30"  Height="auto"/>
+                                    <RowDefinition MinHeight="34" Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition MinHeight="0" Height="auto"/>
                                     <RowDefinition Height="30"/>
                                 </Grid.RowDefinitions>
-                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                   Grid.Column="0" Height="Auto" RadiusX="5" RadiusY="5" Grid.RowSpan="4"/>
-                                <Rectangle Fill="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}" 
-								                Grid.Row="2" Grid.Column="0" Height="Auto" Margin="0"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="34"/>
+                                </Grid.ColumnDefinitions>
+                                <!--Tile Background-->
+                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
+                                <!--Tile HeaderBackground-->
+                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
+                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
 
-                                <TextBlock Text="{Binding Path=Definition}" MaxLines="3" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontSize="16" Margin="10,0" VerticalAlignment="Center"/>
+                                <Image Source="{Binding Path=IsExcluded, Converter={StaticResource SuitableAllergensToImagePathConverter}}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
+                                <!-- Content List -->
+                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
 
-                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1"/>
+                                <TextBlock Text="{Binding Path=ContainedIn}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowContainedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
 
-                                <TextBlock Text="{Binding Path=ContainedIn}" TextWrapping="WrapWholeWords" Grid.Row="2" 
-								                 Visibility="{Binding Path=ShowContainedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10" FontSize="16" MaxLines="5" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
-
-                                <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="0" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8">
+                                <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
                                     <Button.Background>
                                         <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowContainedIn, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
                                     </Button.Background>

@@ -14,7 +14,7 @@ namespace MensaApp.ViewModel
     /// It contains lists of the current day and the forecast days.
     /// Is used to manipulate front end.
     /// </summary>
-    class MealsPageViewModel : INotifyPropertyChanged
+    public class MealsPageViewModel : INotifyPropertyChanged
     {
         public MealsPageViewModel()
         {

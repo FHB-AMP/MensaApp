@@ -21,7 +21,7 @@ namespace MensaApp.Converter
             else
             {
                 //none color
-                return "#00000000";
+                return "#ff50b550";
             }
         }
 
