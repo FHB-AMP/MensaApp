@@ -23,7 +23,7 @@ namespace MensaApp.ViewModel
             this.IsSuitableNutrition = true;
             this.IsSuitableAdditives = true;
             this.IsSuitableAllergens = true;
-            this.Symbols = new ObservableCollection<string>();
+            this.InfoSymbols = new ObservableCollection<InfoSymbolViewModel>();
             this.Additives = new ObservableCollection<AdditiveViewModel>();
             this.Allergens = new ObservableCollection<AllergenViewModel>();
         }
@@ -44,17 +44,17 @@ namespace MensaApp.ViewModel
             this.IsSuitableAllergens = suitableAllergens;
         }
 
-        public MealViewModel(int mealNumber, string name, ObservableCollection<string> symbols, ObservableCollection<AdditiveViewModel> additives, ObservableCollection<AllergenViewModel> allergens)
+        public MealViewModel(int mealNumber, string name, ObservableCollection<InfoSymbolViewModel> infoSymbols, ObservableCollection<AdditiveViewModel> additives, ObservableCollection<AllergenViewModel> allergens)
             : this(mealNumber, name)
         {
-            this.Symbols = symbols;
+            this.InfoSymbols = infoSymbols;
             this.Additives = additives;
             this.Allergens = allergens;
         }
 
-        public MealViewModel(int mealNumber, string name, ObservableCollection<string> symbols, ObservableCollection<AdditiveViewModel> additives, 
+        public MealViewModel(int mealNumber, string name, ObservableCollection<InfoSymbolViewModel> infoSymbols, ObservableCollection<AdditiveViewModel> additives, 
             ObservableCollection<AllergenViewModel> allergens, bool suitableMeal, bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
-            : this(mealNumber, name, symbols, additives, allergens)
+            : this(mealNumber, name, infoSymbols, additives, allergens)
         {
             this.IsSuitableMeal = suitableMeal;
             this.IsSuitableNutrition = suitableNutrition;
@@ -105,11 +105,11 @@ namespace MensaApp.ViewModel
         /// <summary>
         /// Symbols of the meal. Given by API.
         /// </summary>
-        private ObservableCollection<string> _symbols;
-        public ObservableCollection<string> Symbols
+        private ObservableCollection<InfoSymbolViewModel> _infoSymbols;
+        public ObservableCollection<InfoSymbolViewModel> InfoSymbols
         {
-            get { return _symbols; }
-            set { this.SetProperty(ref this._symbols, value); }
+            get { return _infoSymbols; }
+            set { this.SetProperty(ref this._infoSymbols, value); }
         }
 
         /// <summary>

@@ -20,7 +20,7 @@
         <valueConverter:MealNumberToOfferString x:Key="MealNumberToOfferString"/>
         <valueConverter:SuitableToColorCode x:Key="SuitableToColorCode"/>
         <valueConverter:ExcludeToColorCode x:Key="ExcludeToColorCode"/>
-        <valueConverter:IngredientsToImagePathConverter x:Key="IngredientsToImagePathConverter"/>
+        <valueConverter:InfoSymbolToImagePathConverter x:Key="InfoSymbolToImagePathConverter"/>
         <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
         <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
         <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>

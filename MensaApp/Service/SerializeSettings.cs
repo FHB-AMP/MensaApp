@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MensaApp.ViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,7 @@ namespace MensaApp.Service
 {
     class SerializeSettings
     {
-        internal async void serializeAdditives(ObservableCollection<ViewModel.AdditiveViewModel> observableCollection, string dateiname)
+        internal async void serializeAdditives(ObservableCollection<AdditiveViewModel> observableCollection, string dateiname)
         {
             // Serialize our Product class into a string             
             string jsonContents = JsonConvert.SerializeObject(observableCollection);
@@ -35,10 +36,10 @@ namespace MensaApp.Service
             }
         }
 
-        internal async Task<ObservableCollection<ViewModel.AdditiveViewModel>> deserializeAdditives(string dateiname)
+        internal async Task<ObservableCollection<AdditiveViewModel>> deserializeAdditives(string dateiname)
         {
             // Helfer
-            ObservableCollection<ViewModel.AdditiveViewModel> observableCollection = new ObservableCollection<ViewModel.AdditiveViewModel>();
+            ObservableCollection<AdditiveViewModel> observableCollection = new ObservableCollection<AdditiveViewModel>();
 
             try
             {
@@ -49,7 +50,7 @@ namespace MensaApp.Service
                 var data = await FileIO.ReadTextAsync(sampleFile);
 
                 // JSON-File in Objekte verwandeln
-                observableCollection = JsonConvert.DeserializeObject<ObservableCollection<ViewModel.AdditiveViewModel>>(data);
+                observableCollection = JsonConvert.DeserializeObject<ObservableCollection<AdditiveViewModel>>(data);
             }
             catch (Exception)
             {
@@ -59,7 +60,7 @@ namespace MensaApp.Service
             return observableCollection;
         }
 
-        internal async void serializeAllergenes(ObservableCollection<ViewModel.AllergenViewModel> observableCollection, string dateiname)
+        internal async void serializeAllergenes(ObservableCollection<AllergenViewModel> observableCollection, string dateiname)
         {
             // Serialize our Product class into a string             
             string jsonContents = JsonConvert.SerializeObject(observableCollection);
@@ -81,10 +82,10 @@ namespace MensaApp.Service
             }
         }
 
-        internal async Task<ObservableCollection<ViewModel.AllergenViewModel>> deserializeAllergenes(string dateiname)
+        internal async Task<ObservableCollection<AllergenViewModel>> deserializeAllergenes(string dateiname)
         {
             // Helfer
-            ObservableCollection<ViewModel.AllergenViewModel> observableCollection = new ObservableCollection<ViewModel.AllergenViewModel>();
+            ObservableCollection<AllergenViewModel> observableCollection = new ObservableCollection<AllergenViewModel>();
 
             try
             {
@@ -95,7 +96,7 @@ namespace MensaApp.Service
                 var data = await FileIO.ReadTextAsync(sampleFile);
 
                 // JSON-File in Objekte verwandeln
-                observableCollection = JsonConvert.DeserializeObject<ObservableCollection<ViewModel.AllergenViewModel>>(data);
+                observableCollection = JsonConvert.DeserializeObject<ObservableCollection<AllergenViewModel>>(data);
             }
             catch (Exception)
             {

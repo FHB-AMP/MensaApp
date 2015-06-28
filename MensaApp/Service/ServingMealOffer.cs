@@ -18,272 +18,220 @@ namespace MensaApp.Service
     class ServingMealOffer
     {
         // Abspeichern und Lesen des JSON-Files
-        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+        private StorageFolder _localFolder = ApplicationData.Current.LocalFolder;
+        private SerializeSettings _serializeSettings;
 
-        /// <summary>
-        /// Stelle die Mahlzeit-Daten fuer die Vorhersage bereit.
-        /// </summary>
-        /// <param name="forecast">wie viele Tage in der Zukunft moechte man haben</param>
-        /// <returns>Liste aus DayViewModellen, fuer jeden Tag ein DayViewModel, es sei denn es ist Samstag oder Sonntag</returns>
-        public async Task<List<DayViewModel>> GetServerDataForNextDays(int forecast)
+        private string _symbolInfosFilename;
+        private string _additivesFilename;
+        private string _allergensFilename;
+
+        public ServingMealOffer()
         {
-            // Helfer
-            List<DayViewModel> liste = new List<DayViewModel>();
+            _serializeSettings = new SerializeSettings();
 
-            // Lese das gespeicherte JSON
-            string data = await ReadSavedJSON();
-
-            // JSON-File in Objekte verwandeln
-            var rootObject = JsonConvert.DeserializeObject<RootObjectDays>(data);
-
-            for (int k = 1; k < forecast + 1; k++)
-            {
-                DayViewModel dayVM = new DayViewModel();
-                // Fuege Datum hinzu
-                dayVM.Date = DateTime.Today.AddDays(k);
-
-                // heutige Tag ohne Zeit
-                DateTime nextDay = DateTime.Today.AddDays(k);
-
-                // Mahlzeit (Objekt) des gewuenschten Tages finden
-                for (int i = 0; i < rootObject.days.Count; i++)
-                {
-                    // Cast von String zu DateTime
-                    DateTime listenTag = zerlegeJSONDate(rootObject.days[i].date);
-
-                    // finde den gewuenschten Tag
-                    if (DateTime.Compare(listenTag, nextDay) == 0)
-                    {
-                        // so viele Meals wie es an dem Tag gibt hinzufuegen
-                        for (int j = 0; j < rootObject.days[i].meals.Count; j++)
-                        {
-                            // Zusatzstoffe aus den Settings bereit stellen
-                            SerializeSettings ss = new SerializeSettings();
-                            ObservableCollection<ViewModel.AdditiveViewModel> oc = new ObservableCollection<ViewModel.AdditiveViewModel>();
-
-                            // Hole den Standort der JSON Datei
-                            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-                            String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
-
-                            // Alle Zusatzstoffe aus den Settings
-                            oc = await ss.deserializeAdditives(dateiName);
-
-                            // Helfer
-                            ObservableCollection<AdditiveViewModel> result = new ObservableCollection<AdditiveViewModel>();
-
-                            // Zusatzstoffe der jeweiligen Mahlzeit
-                            foreach (string addi in rootObject.days[i].meals[j].additives)
-                            {
-                                // Zusatzstoffe aus den Settings
-                                foreach (AdditiveViewModel addiVM in oc)
-                                {
-                                    // Ablgeich der Mahlzeiten-Zusatzstoffe mit denen aus den Settings
-                                    if (addi.Equals(addiVM.Id))
-                                    {
-                                        // Wenn die ID gleich ist hinzufuegen
-                                        result.Add(addiVM);
-                                    }
-                                }
-                            }
-
-                            // Allergene aus den Settings bereit stellen
-                            ObservableCollection<ViewModel.AllergenViewModel> oc2 = new ObservableCollection<ViewModel.AllergenViewModel>();
-
-                            // Hole den Standort der JSON Datei
-                            dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
-
-                            // Alle Allergene aus den Settings
-                            oc2 = await ss.deserializeAllergenes(dateiName);
-
-                            // Helfer
-                            ObservableCollection<AllergenViewModel> result2 = new ObservableCollection<AllergenViewModel>();
-
-                            // Allergene der jeweiligen Mahlzeit
-                            foreach (string allerg in rootObject.days[i].meals[j].allergens)
-                            {
-                                // Allergene aus den Settings
-                                foreach (AllergenViewModel allergVM in oc2)
-                                {
-                                    // Ablgeich der Mahlzeiten-Allergene mit denen aus den Settings
-                                    if (allerg.Equals(allergVM.Id))
-                                    {
-                                        // Wenn die ID gleich ist hinzufuegen
-                                        result2.Add(allergVM);
-                                    }
-                                }
-                            }
-
-                            // erlaubte Zusatzstoffe?
-
-                            // Helfer
-                            bool suitableAdditives = true;
-
-                            foreach (AdditiveViewModel addiVM in result)
-                            {
-                                if (addiVM.IsExcluded == true)
-                                {
-                                    suitableAdditives = false;
-                                }
-                            }
-
-                            // erlaubte Allergene?
-
-                            // Helfer
-                            bool suitableAllergens = true;
-
-                            foreach (AllergenViewModel allergVM in result2)
-                            {
-                                if (allergVM.IsExcluded == true)
-                                {
-                                    suitableAllergens = false;
-                                }
-                            }
-
-                            dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, new ObservableCollection<string>(rootObject.days[i].meals[j].symbols),
-                                result, result2, true, true, suitableAdditives, suitableAllergens));
-                        }
-                    }
-                }
-                liste.Add(dayVM);
-            }
-            return liste;
+            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+            _symbolInfosFilename = MensaRestApiResource.GetString("SettingsSymbolInfoJSONFile");
+            _additivesFilename = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
+            _allergensFilename = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
         }
 
         /// <summary>
-        /// Stellt die Mahlzeit-Daten fuer heute bereit. 
+        /// Stelle die Mahlzeit-Daten für eine bestimmte Anzahl an Tagen bereit.
         /// </summary>
-        /// <returns>DayViewModel fuer den heutigen Tag</returns>
-        public async Task<DayViewModel> GetServerDataForToday()
+        /// <param name="forecast">Anzahl der Tage einschließlich des aktuellen</param>
+        /// <returns>Liste aus DayViewModellen, fuer jeden Tag ein DayViewModel, es sei denn es ist Samstag oder Sonntag</returns>
+        public async Task<List<DayViewModel>> FindMealOffersForCertainAmountOfDays(int amountOfDays)
         {
-            // Lese das gespeicherte JSON
+            List<DayViewModel> resultDays = new List<DayViewModel>();
+
             string data = await ReadSavedJSON();
-
-            // Helfer
-            DayViewModel dayVM = new DayViewModel();
-
-            // Fuege Datum hinzu
-            dayVM.Date = DateTime.Today;
-
             // JSON-File in Objekte verwandeln
             var rootObject = JsonConvert.DeserializeObject<RootObjectDays>(data);
 
-            // heutige Tag ohne Zeit
-            DateTime today = DateTime.Today;
+            NutritionViewModel nutrition = new NutritionViewModel();
+            // Alle InfoSymbole aus den Settings 
+            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbols = new ObservableCollection<InfoSymbolViewModel>();
+            // Alle Zusatzstoffe aus den Settings
+            ObservableCollection<AdditiveViewModel> deserializedAdditives = await _serializeSettings.deserializeAdditives(_additivesFilename);
+            // Alle Allergene aus den Settings
+            ObservableCollection<AllergenViewModel> deserializedAllergens = await _serializeSettings.deserializeAllergenes(_allergensFilename);
 
-            // es ist Samstag oder Sonntag
-            Boolean saSo = true;
-
-            // Mahlzeit (Objekt) des heutigen Tages finden
-            for (int i = 0; i < rootObject.days.Count; i++)
+            for (int i = 0; i < amountOfDays; i++)
             {
-                // Cast von String zu DateTime
-                DateTime listenTag = zerlegeJSONDate(rootObject.days[i].date);
+                // setze das datum für den gesuchten Tag.
+                DateTime requiredDate = DateTime.Today.AddDays(i);
 
-                // finde heute
-                if (DateTime.Compare(listenTag, today) == 0)
+                DayViewModel resultDay = new DayViewModel();
+                resultDay.Date = requiredDate;
+                // Mahlzeit (Objekt) des gewuenschten Tages finden
+                foreach (Day day in rootObject.days)
                 {
-                    // doch kein Samstag oder Sonntag
-                    saSo = false;
-
-                    // so viele Meals wie es an dem Tag gibt hinzufuegen
-                    for (int j = 0; j < rootObject.days[i].meals.Count; j++)
+                    // Parse von String zu DateTime
+                    DateTime DateOfMealDay = parseDateTimeFromJsonString(day.date);
+                    // finde den gewuenschten Tag
+                    if (DateOfMealDay.CompareTo(requiredDate) == 0)
                     {
-                        // Zusatzstoffe aus den Settings bereit stellen
-                        SerializeSettings ss = new SerializeSettings();
-                        ObservableCollection<ViewModel.AdditiveViewModel> oc = new ObservableCollection<ViewModel.AdditiveViewModel>();
-
-                        // Hole den Standort der JSON Datei
-                        ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-                        String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
-
-                        // Alle Zusatzstoffe aus den Settings
-                        oc = await ss.deserializeAdditives(dateiName);
-
-                        // Helfer
-                        ObservableCollection<AdditiveViewModel> result = new ObservableCollection<AdditiveViewModel>();
-
-                        // Zusatzstoffe der jeweiligen Mahlzeit
-                        foreach(string addi in rootObject.days[i].meals[j].additives)
+                        foreach (Meal meal in day.meals)
                         {
-                            // Zusatzstoffe aus den Settings
-                            foreach (AdditiveViewModel addiVM in oc)
-                            {
-                                // Ablgeich der Mahlzeiten-Zusatzstoffe mit denen aus den Settings
-                                if (addi.Equals(addiVM.Id))
-                                {
-                                    // Wenn die ID gleich ist hinzufuegen
-                                    result.Add(addiVM);
-                                }
-                            }
+                            List<string> symbolIds = meal.symbols;
+                            List<string> additivesIds = meal.additives;
+                            List<string> allergenIds = meal.allergens;
+
+                            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(symbolIds, deserializedInfoSymbols);
+                            ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(additivesIds, deserializedAdditives);
+                            ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(allergenIds, deserializedAllergens);
+
+                            bool suitableNutrition = EvaluateIsSuitableNutrition(nutrition, resultInfoSymbols, resultAdditives, resultAllergens);
+                            bool suitableAdditives = EvaluateIsSuitableAdditives(resultAdditives);
+                            bool suitableAllergens = EvaluateIsSuitableAllergens(resultAllergens);
+                            bool suitableMeal = EvaluateSuitableMeal(suitableNutrition, suitableAdditives, suitableAllergens);
+
+                            resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, suitableAdditives, suitableAllergens));
                         }
+                        // Der gewünschte Tag wurde gefunden. Darum muss an dieser Stelle nicht weiter danach gesucht werden. -> break; (Schmidt will hate me. xD)
+                        break;
+                    }
+                }
+                resultDays.Add(resultDay);
+            }
+            return resultDays;
+        }
 
-                        // Allergene aus den Settings bereit stellen
-                        ObservableCollection<ViewModel.AllergenViewModel> oc2 = new ObservableCollection<ViewModel.AllergenViewModel>();
+        /// <summary>
+        /// evaluates whether the meal suitable at all.
+        /// </summary>
+        /// <param name="suitableNutrition"></param>
+        /// <param name="suitableAdditives"></param>
+        /// <param name="suitableAllergens"></param>
+        /// <returns></returns>
+        private bool EvaluateSuitableMeal(bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
+        {
+            if (!suitableNutrition || !suitableAdditives || !suitableAllergens)
+            {
+                return false;
+            }
+            return true;
+        }
 
-                        // Hole den Standort der JSON Datei
-                        dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
+        /// <summary>
+        /// evaluates whether the meal is suitable to the nutrition from the settings.
+        /// </summary>
+        /// <param name="nutrition"></param>
+        /// <param name="resultInfoSymbols"></param>
+        /// <param name="resultAdditives"></param>
+        /// <param name="resultAllergens"></param>
+        /// <returns></returns>
+        private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, ObservableCollection<InfoSymbolViewModel> resultInfoSymbols, 
+            ObservableCollection<AdditiveViewModel> resultAdditives, ObservableCollection<AllergenViewModel> resultAllergens)
+        {
+            return true;
+        }
 
-                        // Alle Allergene aus den Settings
-                        oc2 = await ss.deserializeAllergenes(dateiName);
+        /// <summary>
+        /// evaluate whether the collection of allergens contains any excluded.
+        /// </summary>
+        /// <param name="resultAllergens"></param>
+        /// <returns></returns>
+        private static bool EvaluateIsSuitableAllergens(ObservableCollection<AllergenViewModel> resultAllergens)
+        {
+            foreach (AllergenViewModel allergen in resultAllergens)
+            {
+                if (allergen.IsExcluded)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-                        // Helfer
-                        ObservableCollection<AllergenViewModel> result2 = new ObservableCollection<AllergenViewModel>();
+        /// <summary>
+        /// evaluate whether the collection of additives contains any excluded.
+        /// </summary>
+        /// <param name="resultAdditives"></param>
+        /// <returns></returns>
+        private static bool EvaluateIsSuitableAdditives(ObservableCollection<AdditiveViewModel> resultAdditives)
+        {
+            foreach (AdditiveViewModel additives in resultAdditives)
+            {
+                if (additives.IsExcluded)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-                        // Allergene der jeweiligen Mahlzeit
-                        foreach (string allerg in rootObject.days[i].meals[j].allergens)
-                        {
-                            // Allergene aus den Settings
-                            foreach (AllergenViewModel allergVM in oc2)
-                            {
-                                // Ablgeich der Mahlzeiten-Allergene mit denen aus den Settings
-                                if (allerg.Equals(allergVM.Id))
-                                {
-                                    // Wenn die ID gleich ist hinzufuegen
-                                    result2.Add(allergVM);
-                                }
-                            }
-                        }
-
-                        // erlaubte Zusatzstoffe?
-
-                        // Helfer
-                        bool suitableAdditives = true;
-
-                        foreach (AdditiveViewModel addiVM in result)
-                        {
-                            if (addiVM.IsExcluded == true)
-                            {
-                                suitableAdditives = false;
-                            }
-                        }
-
-                        // erlaubte Allergene?
-
-                        // Helfer
-                        bool suitableAllergens = true;
-
-                        foreach (AllergenViewModel allergVM in result2)
-                        {
-                            if (allergVM.IsExcluded == true)
-                            {
-                                suitableAllergens = false;
-                            }
-                        }
-
-                        dayVM.Meals.Add(new MealViewModel(rootObject.days[i].meals[j].mealNumber, rootObject.days[i].meals[j].name, new ObservableCollection<string>(rootObject.days[i].meals[j].symbols),
-                            result, result2, true, true, suitableAdditives, suitableAllergens));
+        /// <summary>
+        /// Matchs the allergen ids of the meal with the deserialized allergens form the settings.
+        /// </summary>
+        /// <param name="allergenIds"></param>
+        /// <param name="deserializedAllergens"></param>
+        /// <returns></returns>
+        private static ObservableCollection<AllergenViewModel> MatchAllergenIdsWithAllergensFromSettings(List<string> allergenIds, ObservableCollection<AllergenViewModel> deserializedAllergens)
+        {
+            ObservableCollection<AllergenViewModel> allergensResult = new ObservableCollection<AllergenViewModel>();
+            foreach (string allergenId in allergenIds)
+            {
+                foreach (AllergenViewModel deserializedAllergen in deserializedAllergens)
+                {
+                    if (allergenId.Equals(deserializedAllergen.Id))
+                    {
+                        allergensResult.Add(deserializedAllergen);
                     }
                 }
             }
+            return allergensResult;
+        }
 
-            // wenn das heutige Datum mit keinem Listendatum passte dann ist Samstag, oder Sonntag 
-            if (saSo == true)
+        /// <summary>
+        /// Matchs the additive ids of the meal with the deserialized additives form the settings.
+        /// </summary>
+        /// <param name="additiveIds"></param>
+        /// <param name="deserializedAdditives"></param>
+        /// <returns></returns>
+        private static ObservableCollection<AdditiveViewModel> MatchAdditiveIdsWithAdditivesFromSettings(List<string> additiveIds, ObservableCollection<AdditiveViewModel> deserializedAdditives)
+        {
+            ObservableCollection<AdditiveViewModel> additivesResult = new ObservableCollection<AdditiveViewModel>();
+
+            foreach (string additiveId in additiveIds)
             {
-                // TODO Holger Was ist besser alles auf "false" oder alles auf "true"
-                // dayVM.Meals.Add(new MealViewModel(1, "Heute gibt es leider kein Angebot. Ihr Versorger.", false, false, false, false));
+                foreach (AdditiveViewModel deserializedAdditive in deserializedAdditives)
+                {
+                    if (additiveId.Equals(deserializedAdditive.Id))
+                    {
+                        additivesResult.Add(deserializedAdditive);
+                        break;
+                    }
+                }
             }
+            return additivesResult;
+        }
 
-            return dayVM;
+        /// <summary>
+        /// Matchs the InfoSymbol ids of the meal with the deserialized InfoSymbols form the settings.
+        /// </summary>
+        /// <param name="symbolIds"></param>
+        /// <param name="deserializedInfoSymbols"></param>
+        /// <returns></returns>
+        private static ObservableCollection<InfoSymbolViewModel> MatchInfoSymbolIdsWithInfoSymbolsFromSettings(List<string> symbolIds, ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbols)
+        {
+            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = new ObservableCollection<InfoSymbolViewModel>();
+
+            foreach (string symbolId in symbolIds)
+            {
+                // TODO Diese Zeile löschen, wenn symbole gespeichert wurden.
+                resultInfoSymbols.Add(new InfoSymbolViewModel(symbolId, symbolId));
+
+                foreach (InfoSymbolViewModel deserializedSymbolInfo in deserializedInfoSymbols)
+                {
+                    if (symbolId.Equals(deserializedSymbolInfo.Id))
+                    {
+                        resultInfoSymbols.Add(deserializedSymbolInfo);
+                        break;
+                    }
+                }
+            }
+            return resultInfoSymbols;
         }
 
         /// <summary>
@@ -313,7 +261,7 @@ namespace MensaApp.Service
                         String dateiName = MensaRestApiResource.GetString(propertyName);
 
                         // Write data to a file
-                        StorageFile sampleFile = await localFolder.CreateFileAsync(dateiName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                        StorageFile sampleFile = await _localFolder.CreateFileAsync(dateiName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
                         await FileIO.WriteTextAsync(sampleFile, data);
 
                     }
@@ -343,7 +291,7 @@ namespace MensaApp.Service
                 ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
                 String dateiName = MensaRestApiResource.GetString("MealJSONFile");
 
-                StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
+                StorageFile sampleFile = await _localFolder.GetFileAsync(dateiName);
 
                 // Abgleich mit dem heutigen Datum TODO Holger
                 //DateTimeOffset fileCreationDateOff = sampleFile.DateCreated;
@@ -364,7 +312,7 @@ namespace MensaApp.Service
         /// </summary>
         /// <param name="dateString">Datum eines Tages durch Bindestriche "-" getrennt</param>
         /// <returns>DateTime des uebergebenen Strings</returns>
-        private DateTime zerlegeJSONDate(string dateString)
+        private DateTime parseDateTimeFromJsonString(string dateString)
         {
             // Trenner uebergeben
             string[] separators = { "-" };
@@ -376,6 +324,35 @@ namespace MensaApp.Service
             DateTime result = new DateTime(Int32.Parse(dateParts[0]), Int32.Parse(dateParts[1]), Int32.Parse(dateParts[2]));
 
             return result;
+        }
+
+        internal DayViewModel GetMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
+        {
+            foreach (DayViewModel day in AllDaysWithMeals)
+            {
+                // Vergleiche explizit das Datum ohne Uhrzeit.
+                if (day.Date.Date.CompareTo(currentDate.Date) == 0)
+                {
+                    return day;
+                }
+            }
+            return null;
+        }
+
+        internal ObservableCollection<DayViewModel> GetMealOfForecast(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
+        {
+            ObservableCollection<DayViewModel> resultDays = new ObservableCollection<DayViewModel>(); 
+
+            foreach (DayViewModel day in AllDaysWithMeals)
+            {
+                // Wähle nur Tage, die in der Zukunft liegen aus.
+                // Vergleiche explizit das Datum ohne Uhrzeit.
+                if (day.Date.Date.CompareTo(currentDate.Date) > 0)
+                {
+                    resultDays.Add(day);
+                }
+            }
+            return resultDays;
         }
     }
 }

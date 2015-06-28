@@ -42,40 +42,6 @@ namespace MensaApp
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
 
-        private void populateTodayDetail() 
-        {
-            int mealNumber = 2;
-            string name = "Seelachs in Sesampanade mit jungen Erbsen, dazu Grillkartoffeln oder Pommes frites";
-            bool isSuitableMeal = false;
-            bool isSuitableNutrition = true;
-            bool isSuitableAdditives = false;
-            bool isSuitableAllergens = true;
-
-            // Schwein und Rind
-            ObservableCollection<string> symbols = new ObservableCollection<string>();
-            symbols.Add("mit Schweinefleisch");
-            symbols.Add("mit Rindfleisch");
-
-            // (2)(3)(8)
-            ObservableCollection<AdditiveViewModel> additives = new ObservableCollection<AdditiveViewModel>();
-            additives.Add(new AdditiveViewModel("(2)", "mit Konservierungsstoff", "Erhaltung bzw. Verlängerung der Genusstauglichkeit des Lebensmittels.", false));
-            additives.Add(new AdditiveViewModel("(3)", "mit Antioxidationsmittel", "wie (1) und (2)", false));
-            additives.Add(new AdditiveViewModel("(8)", "mit Phosphat", "Bestandteil des Erbgutes aller Lebewesen und ist in Lebensmitteln tierischen Ursprungs enthalten. Phosphatverbindungen werden u.a. als Säuerungsmittel in Cola, Wurstwaren eingesetzt", true));
-
-            // (A)(G)(C)(F)(I)
-            ObservableCollection<AllergenViewModel> allergens = new ObservableCollection<AllergenViewModel>();
-            allergens.Add(new AllergenViewModel("(A)", "Gluten ist das Klebereiweiß in den Getreidesorten Weizen, Dinkel, Roggen, Gerste Hafer und Kamut", "Saucen, panierte Speisen, Puddings, Bulgur, Couscous, Grießspeisen, Backwaren, Saitan, verzehrfertige Joghurt-und Quarkspeisen, Feinkostsalate, Wurstwaren, Schimmel- und Schmelzkäse", false));
-            allergens.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
-            allergens.Add(new AllergenViewModel("(F)", "Soja", "Milch- und Sahneersatz auf Sojabasis, Tofu, Sojasauce, Zusatzstoff in Süsswaren v.a. in Schokolade, Wurst- und Fleischwaren", false));
-            allergens.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
-            allergens.Add(new AllergenViewModel("(I)", "Sellerie", "Gewürzmischungen, Salatsaucenbasis, Instant-Brühen, Fleischwaren, Ketchup, Bratlinge", false));
-            
-            MealViewModel mealVM = new MealViewModel(mealNumber, name, symbols, additives, allergens, isSuitableMeal, isSuitableNutrition, isSuitableAdditives, isSuitableAllergens);
-
-            _mealDetailPageViewModel.Date = DateTime.Now;
-            _mealDetailPageViewModel.Meal = mealVM;
-        }
-
         /// <summary>
         /// Ruft den <see cref="NavigationHelper"/> ab, der mit dieser <see cref="Page"/> verknüpft ist.
         /// </summary>
@@ -116,10 +82,6 @@ namespace MensaApp
                 DetailPageParamModel paramModel = e.NavigationParameter as DetailPageParamModel;
                 _mealDetailPageViewModel.Date = paramModel.date;
                 _mealDetailPageViewModel.Meal = paramModel.meal;
-            }
-            else
-            {
-                populateTodayDetail();
             }
         }
 

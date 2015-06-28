@@ -4,6 +4,7 @@ using MensaApp.Service;
 using MensaApp.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -141,7 +142,7 @@ namespace MensaApp
             String MealURL = MensaRestApiResource.GetString("MealURL");
 
             // erzeuge neues Objekt
-            ServingMealOffer servingMO = new ServingMealOffer();
+            ServingMealOffer servingMealOffer = new ServingMealOffer();
 
             // Start taeglich einmalige Synchro
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,29 +178,28 @@ namespace MensaApp
             if (DateTime.Today != myDate)
             {
                 // Hole das JSON und speichere in Datei
-                await servingMO.GetServerData(MealURI, MealURL, "MealJSONFile");
+                await servingMealOffer.GetServerData(MealURI, MealURL, "MealJSONFile");
             }
 
             // Der Rest muss immer passieren
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            // Erstelle neue ViewModels fuer Heute
-            DayViewModel dayVM = await servingMO.GetServerDataForToday();
+            int amountOfDays = 6;
+            List<DayViewModel> AllDaysWithMeals = await servingMealOffer.FindMealOffersForCertainAmountOfDays(amountOfDays);
+
+            DayViewModel today = servingMealOffer.GetMealsOfToday(DateTime.Today, AllDaysWithMeals);
+            ObservableCollection<DayViewModel> forecast = servingMealOffer.GetMealOfForecast(DateTime.Today, AllDaysWithMeals);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.Today.Clear();
             // DayViewModel der GUI uebergeben
-            _mealsPageViewModel.Today.Add(dayVM);
-
-            // Erstelle neue ViewModels fuer die folgenden drei Tage
-            List<DayViewModel> listeForecast = await servingMO.GetServerDataForNextDays(3);
+            _mealsPageViewModel.Today.Add(today);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.ForecastDays.Clear();
-            foreach (DayViewModel dayVMForecast in listeForecast)
-            {
-                _mealsPageViewModel.ForecastDays.Add(dayVMForecast);
-            }
+            // DayViewModels der GUI uebergeben
+            _mealsPageViewModel.ForecastDays = forecast;
+
             ProgressBar.Visibility = Visibility.Collapsed;
         }
 

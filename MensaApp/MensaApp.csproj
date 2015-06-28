@@ -96,7 +96,7 @@
     <Compile Include="Converter\SuitableAllergensToImagePathConverter.cs" />
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\ExcludeToColorCodeConverter.cs" />
-    <Compile Include="Converter\IngredientsToImagePathConverter.cs" />
+    <Compile Include="Converter\InfoSymbolToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableToColorCodeConverter.cs" />
     <Compile Include="Converter\ShowInformationToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableNutritionToImagePathConverter.cs" />
@@ -122,6 +122,7 @@
     <Compile Include="SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\InfoSymbolViewModel.cs" />
     <Compile Include="ViewModel\AdditiveViewModel.cs" />
     <Compile Include="ViewModel\AllergenViewModel.cs" />
     <Compile Include="ViewModel\MealsPageViewModel.cs" />
@@ -144,6 +145,7 @@
     <Content Include="Assets\Icon\info-240.png" />
     <Content Include="Assets\Icon\infoIcon-240.png" />
     <Content Include="Assets\Icon\nutrition-240.png" />
+    <Content Include="Assets\Icon\RedCross-240.png" />
     <Content Include="Assets\Ingredients\mensaVital-240.png" />
     <Content Include="Assets\Ingredients\mit Fisch-240.png" />
     <Content Include="Assets\Ingredients\mit Geflügelfleisch-240.png" />

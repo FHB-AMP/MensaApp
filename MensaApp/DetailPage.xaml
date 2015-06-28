@@ -98,7 +98,7 @@
                 <!-- Number of offer -->
                 <TextBlock Text="{Binding Path=Meal.MealNumber, Converter={StaticResource MealNumberToOfferString}}" Style="{StaticResource MensaTileTitle}" Grid.Column="1"/>
                 <!-- Nutrition Image -->
-                <Image Source="{Binding Path=Meal.Symbols, Converter={StaticResource IngredientsToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+                <Image Source="{Binding Path=Meal.InfoSymbols, Converter={StaticResource InfoSymbolToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
                 <!-- Icons -->
                 <Image Source="{Binding Path=Meal.IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Column="2"/>
                 <Image Source="{Binding Path=Meal.IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Column="3"/>
@@ -179,9 +179,9 @@
                             </Path>
 
                         <TextBlock Text="Zusatzinformation" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
-                        <Image Source="/assets/icon/info-240.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" UseLayoutRounding="False"/>
+                        <Image Source="/assets/icon/infoIcon-240.png" Margin="4" UseLayoutRounding="False"/>
                         <!-- Content List -->
-                        <ListView Grid.Row="1" ItemsSource="{Binding Meal.Symbols}" Visibility="{Binding Meal.Symbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
+                        <ListView Grid.Row="1" ItemsSource="{Binding Meal.InfoSymbols}" Visibility="{Binding Meal.InfoSymbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -190,14 +190,19 @@
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Left" >
-                                        <TextBlock Text="{Binding}" Style="{StaticResource MensaTileListContent}"/>
+                                    <Grid HorizontalAlignment="Left">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="34"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsExcluded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}" VerticalAlignment="Center"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
                         <!--Alternativ will shown if list is empty-->
-                        <TextBlock Grid.Row="1" Text="keine Angaben" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Meal.Symbols.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" Grid.Column="1" Margin="10" Grid.ColumnSpan="2"/>
+                        <TextBlock Grid.Row="1" Text="keine Angaben" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Meal.InfoSymbols.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" Grid.Column="1" Margin="10" Grid.ColumnSpan="2"/>
                     </Grid>
                 </ListViewItem>
                 
@@ -263,8 +268,8 @@
                         <TextBlock Text="Zusatzstoffe" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
                         <Image Source="/assets/icon/additives-240.png" HorizontalAlignment="Center"/>
                         <!-- Content List -->
-                        <ListView Grid.Row="1" ItemsSource="{Binding Meal.Additives}" Background="{x:Null}" BorderThickness="0" 
-                                Visibility="{Binding Meal.Additives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
+                        <ListView Grid.Row="1" ItemsSource="{Binding Meal.Additives}"
+                                Visibility="{Binding Meal.Additives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.ColumnSpan="3" Margin="0,10">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -273,9 +278,13 @@
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Left" >
-                                        <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" RadiusX="5" RadiusY="5" />
-                                        <TextBlock Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}"/>
+                                    <Grid HorizontalAlignment="Left">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="34"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsExcluded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <TextBlock Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}" Grid.Column="1" VerticalAlignment="Center"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -347,8 +356,8 @@
                         <TextBlock Text="Allergene" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
                         <Image Source="/assets/icon/allergens-240.png" HorizontalAlignment="Center"/>
                         <!-- Content List -->
-                        <ListView Grid.Row="1" ItemsSource="{Binding Meal.Allergens}" Background="{x:Null}" BorderThickness="0" 
-                                Visibility="{Binding Meal.Allergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
+                        <ListView Grid.Row="1" ItemsSource="{Binding Meal.Allergens}" 
+                                Visibility="{Binding Meal.Allergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -358,8 +367,12 @@
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Left" >
-                                        <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" RadiusX="5" RadiusY="5" />
-                                        <TextBlock Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}"/>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="34"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsExcluded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}" VerticalAlignment="Center"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
