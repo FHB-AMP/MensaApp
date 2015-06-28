@@ -41,7 +41,7 @@
             <Grid Grid.Row="1" Margin="8,0,8,8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="34"/>
-                    <RowDefinition MinHeight="44" Height="*"/>
+                    <RowDefinition MinHeight="86" Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="76"/>
@@ -176,9 +176,10 @@
                                         </PathGeometry>
                                     </GeometryGroup>
                                 </Path.Data>
-                            </Path> 
+                            </Path>
 
-                        <TextBlock Text="Symbole" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
+                        <TextBlock Text="Zusatzinformation" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
+                        <Image Source="/assets/icon/info-240.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" UseLayoutRounding="False"/>
                         <!-- Content List -->
                         <ListView Grid.Row="1" ItemsSource="{Binding Meal.Symbols}" Visibility="{Binding Meal.Symbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
                             <ListView.ItemContainerStyle>
@@ -260,7 +261,7 @@
                             </Path.Data>
                         </Path>
                         <TextBlock Text="Zusatzstoffe" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
-                        <Image Source="{Binding Path=Meal.IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" HorizontalAlignment="Center"/>
+                        <Image Source="/assets/icon/additives-240.png" HorizontalAlignment="Center"/>
                         <!-- Content List -->
                         <ListView Grid.Row="1" ItemsSource="{Binding Meal.Additives}" Background="{x:Null}" BorderThickness="0" 
                                 Visibility="{Binding Meal.Additives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">
@@ -344,7 +345,7 @@
                             </Path.Data>
                         </Path>
                         <TextBlock Text="Allergene" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
-                        <Image Source="{Binding Path=Meal.IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" HorizontalAlignment="Center"/>
+                        <Image Source="/assets/icon/allergens-240.png" HorizontalAlignment="Center"/>
                         <!-- Content List -->
                         <ListView Grid.Row="1" ItemsSource="{Binding Meal.Allergens}" Background="{x:Null}" BorderThickness="0" 
                                 Visibility="{Binding Meal.Allergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10">

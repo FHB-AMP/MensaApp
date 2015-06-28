@@ -47,50 +47,7 @@ namespace MensaApp
         {
             get { return this._settingViewModel; }
         }
-
-
-        public void populateAdditives()
-        {
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(1)", "mit Farbstoff", "Optische Aufwertung der wertbestimmenden Zutaten (z.B. höherer Fruchtanteil in der Kaltschale).", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(2)", "mit Konservierungsstoff", "Erhaltung bzw. Verlängerung der Genusstauglichkeit des Lebensmittels.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(3)", "mit Antioxidationsmittel", "wie (1) und (2)", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(4)", "mit Geschmacksverstärker", "zur Verstärkung des Geschmacks der wertbestimmenden Zutaten", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(5)", "geschwefelt", "Schwefel dient der Abtötung von unerwünschten Mikroorganismen", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(6)", "geschwärzt", "Schwärzung erfolgt durch Eisenoxide. Zur Färbung grüner Oliven.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(7)", "gewachst", "Überzugsmittel der Fruchtschale von Zitrusfrüchten zur Beeinflussung der Haltbarkeit.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(8)", "mit Phosphat", "Bestandteil des Erbgutes aller Lebewesen und ist in Lebensmitteln tierischen Ursprungs enthalten. Phosphatverbindungen werden u.a. als Säuerungsmittel in Cola, Wurstwaren eingesetzt", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(9)", "mit Süßungsmittel", "Süßstoffe, liefern kaum Nahrungsenergie und werden deshalb u.a. in energiereduzierten Lebensmitteln eingesetzt", true));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(11)", "mit Aspartam-Acesulfamsalz (eingesetzt enthält eine Phenylalaninquelle)", "Wird als Süßungsmittel oder Geschmacksverstärker eingesetzt. Es geht im Stoffwechsel des Körpers ein. Der Eiweißbaustein Phenylalanin führt bei Personen, die an Phenylketourie leiden zu schweren Gesundheitsschäden.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(13)", "mit Milcheiweiß", "", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(14)", "mit Eiklar", "Einsatz von Fremdeiweiß, wird als Bindemittel verwendet.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(20)", "chininhaltig", "Bitteraroma in Erfrischungsgetränken wie Tonic-Wasser.", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(21)", "mit Koffein", "Aroma-gebende Komponente", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(22)", "mit Milchpulver", "", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(23)", "mit Molkenpulver", "", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(KF)", "mit kakaohaltiger Fettglasur", "", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(TL)", "enthält tierisches Lab", "", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(AL)", "mit Alkohol", "Aroma-gebende Komponente", false));
-            _settingViewModel.Additives.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
-        }
-
-        public void populateAllergens()
-        {
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(A)", "Gluten ist das Klebereiweiß in den Getreidesorten Weizen, Dinkel, Roggen, Gerste Hafer und Kamut", "Saucen, panierte Speisen, Puddings, Bulgur, Couscous, Grießspeisen, Backwaren, Saitan, verzehrfertige Joghurt-und Quarkspeisen, Feinkostsalate, Wurstwaren, Schimmel- und Schmelzkäse", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(E)", "Erdnüsse", "Frühstücksflocken, Backwaren, Süßspeisen- und Aufstriche, Würzsaucen, Gemüsebratlinge", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(F)", "Soja", "Milch- und Sahneersatz auf Sojabasis, Tofu, Sojasauce, Zusatzstoff in Süsswaren v.a. in Schokolade, Wurst- und Fleischwaren", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(H)", "Schalenfrüchte sind Mandeln, Hasel-, Wal-, Cashew-, Pecan-, Para- und Macadamianüsse, Pistazien", "Marzipan, Nougat, Aufstriche, Back-, Wurstwaren, Pesto, Feinkostsalate, vegetarische Bratlinge", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(I)", "Sellerie", "Gewürzmischungen, Salatsaucenbasis, Instant-Brühen, Fleischwaren, Ketchup, Bratlinge", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(J)", "Senf", "Gesäuerte Gemüse, Chutneys, Dressings, Wurstwaren, Bratlinge", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(K)", "Sesam", "Backwaren, Frühstückscerealien, Brotaufstriche", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(L)", "Schwefeldioxid, Sulfite", "Wein, weinhaltige Getränke, getrocknete Früchte Convenience-Produkte (z.B. Bratkartoffel, Instant-Kartoffelpüree), Konserven", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(M)", "Lupine", "Vegetarische Convenience-Produkte, regenerierfertige Backwaren", false));
-            _settingViewModel.Allergens.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-        }
-
+        
         private void populateNutritions()
         {
             // Add normal nutrition
@@ -171,8 +128,6 @@ namespace MensaApp
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // DC MockUp
-            //populateAdditives(); 
-            //populateAllergens();
             populateNutritions();
 
             // HK local-saved Settings, wenn nichts vorhanden vom Server
@@ -220,6 +175,7 @@ namespace MensaApp
 
         private void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            ProgressBar.Visibility = Visibility.Visible;
             // Neuen Serializer erzeugen
             SerializeSettings ss = new SerializeSettings();
 
@@ -234,6 +190,7 @@ namespace MensaApp
 
             // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Allergene)
             ss.serializeAllergenes(_settingViewModel.Allergens, dateiName);
+            ProgressBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
