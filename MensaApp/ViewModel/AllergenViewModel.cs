@@ -154,8 +154,6 @@ namespace MensaApp.ViewModel
                 return false;
             }
 
-            public event EventHandler CanExecuteChanged;
-
             public void Execute(object parameter)
             {
                 AllergenViewModel allergenVM = (AllergenViewModel)parameter;

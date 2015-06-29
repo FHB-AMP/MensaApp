@@ -219,7 +219,7 @@ namespace MensaApp.Service
 
             foreach (string symbolId in symbolIds)
             {
-                // TODO Diese Zeile löschen, wenn symbole gespeichert wurden.
+                // TODO: Diese Zeile löschen, wenn symbole gespeichert wurden.
                 resultInfoSymbols.Add(new InfoSymbolViewModel(symbolId, symbolId));
 
                 foreach (InfoSymbolViewModel deserializedSymbolInfo in deserializedInfoSymbols)
@@ -326,17 +326,20 @@ namespace MensaApp.Service
             return result;
         }
 
-        internal DayViewModel GetMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
+        internal ObservableCollection<DayViewModel> GetMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
         {
+            ObservableCollection<DayViewModel> today = new ObservableCollection<DayViewModel>();
+ 
             foreach (DayViewModel day in AllDaysWithMeals)
             {
                 // Vergleiche explizit das Datum ohne Uhrzeit.
                 if (day.Date.Date.CompareTo(currentDate.Date) == 0)
                 {
-                    return day;
+                    today.Add(day);
+                    break; // there should be only one current day;
                 }
             }
-            return null;
+            return today;
         }
 
         internal ObservableCollection<DayViewModel> GetMealOfForecast(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)

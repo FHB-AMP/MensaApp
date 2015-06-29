@@ -50,7 +50,7 @@
                     <TextBlock Grid.Row="1" Text="Eigenschaften" FontSize="24" Margin="0,0,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left" />
                     <!-- Properties -->
 
-                    <ListView Grid.Row="3" Background="{x:Null}" BorderThickness="0" SelectionMode="None">
+                    <ListView Grid.Row="3" SelectionMode="None">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

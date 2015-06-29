@@ -184,16 +184,17 @@ namespace MensaApp
             // Der Rest muss immer passieren
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            int amountOfDays = 6;
+            int amountOfDays = 4; // Current day + 3 days of forcast
             List<DayViewModel> AllDaysWithMeals = await servingMealOffer.FindMealOffersForCertainAmountOfDays(amountOfDays);
-
-            DayViewModel today = servingMealOffer.GetMealsOfToday(DateTime.Today, AllDaysWithMeals);
+            
+            //
+            ObservableCollection<DayViewModel> today = servingMealOffer.GetMealsOfToday(DateTime.Today, AllDaysWithMeals);
             ObservableCollection<DayViewModel> forecast = servingMealOffer.GetMealOfForecast(DateTime.Today, AllDaysWithMeals);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.Today.Clear();
             // DayViewModel der GUI uebergeben
-            _mealsPageViewModel.Today.Add(today);
+            _mealsPageViewModel.Today = today;
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.ForecastDays.Clear();
