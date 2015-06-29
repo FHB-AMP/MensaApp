@@ -145,6 +145,7 @@
     <Content Include="Assets\Icon\infoIcon-240.png" />
     <Content Include="Assets\Icon\nutrition-240.png" />
     <Content Include="Assets\Icon\RedCross-240.png" />
+    <Content Include="Assets\Ingredients\mensaClosed-240.png" />
     <Content Include="Assets\Ingredients\mensaVital-240.png" />
     <Content Include="Assets\Ingredients\mit Fisch-240.png" />
     <Content Include="Assets\Ingredients\mit Geflügelfleisch-240.png" />

@@ -81,7 +81,69 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            synchronizeWithServer();
+            // Restore page state
+            RestorePageState(e);
+            if (_mealsPageViewModel.Today.Count == 0 || _mealsPageViewModel.ForecastDays.Count == 0)
+            {
+                synchronizeWithServer();
+            }
+
+        }
+
+        /// <summary>
+        /// Calls relevant properties form the page state dictionary and restore the state of the page when possible.
+        /// </summary>
+        /// <param name="e"></param>
+        private void RestorePageState(LoadStateEventArgs e)
+        {
+            // restore MealsPageViewModel
+            if (e.PageState != null && e.PageState.ContainsKey("MealsPageViewModel"))
+            {
+                object mealsPageViewModel = new MealsPageViewModel();
+                e.PageState.TryGetValue("MealsPageViewModel", out mealsPageViewModel);
+                if (mealsPageViewModel != null)
+                {
+                    _mealsPageViewModel.Today = (mealsPageViewModel as MealsPageViewModel).Today;
+                    _mealsPageViewModel.ForecastDays = (mealsPageViewModel as MealsPageViewModel).ForecastDays;
+                }
+            }
+
+            // restore last visited pivot item.
+            if (e.PageState != null && e.PageState.ContainsKey("PivotIndex"))
+            {
+                object pivotIndex = 0;
+                e.PageState.TryGetValue("PivotIndex", out pivotIndex);
+                if (pivotIndex != null)
+                {
+                    mealsPivot.SelectedIndex = Convert.ToInt32(pivotIndex);
+                }
+            }
+
+            // restore selected item of today listview and set scroller position.
+            if (e.PageState != null && e.PageState.ContainsKey("TodayListIndex"))
+            {
+                object listIndex = -1;
+                e.PageState.TryGetValue("TodayListIndex", out listIndex);
+                if (listIndex != null)
+                {
+                    TodayList.SelectedIndex = Convert.ToInt32(listIndex);
+                    TodayList.ScrollIntoView(TodayList.SelectedItem, ScrollIntoViewAlignment.Leading);
+                    TodayList.UpdateLayout();
+                }
+            }
+
+            // restore selected item of forcast listview and set scroller position.
+            if (e.PageState != null && e.PageState.ContainsKey("ForecastListIndex"))
+            {
+                object listIndex = -1;
+                e.PageState.TryGetValue("ForecastListIndex", out listIndex);
+                if (listIndex != null)
+                {
+                    ForecastList.SelectedIndex = Convert.ToInt32(listIndex);
+                    ForecastList.ScrollIntoView(ForecastList.SelectedItem, ScrollIntoViewAlignment.Leading);
+                    ForecastList.UpdateLayout();
+                }
+            }
         }
 
         /// <summary>
@@ -94,6 +156,19 @@ namespace MensaApp
         /// serialisierbarer Zustand.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
+            StorePageState(e);
+        }
+
+        /// <summary>
+        /// Stores the relevant elements of the page.
+        /// </summary>
+        /// <param name="e"></param>
+        private void StorePageState(SaveStateEventArgs e)
+        {
+            e.PageState.Add("PivotIndex", mealsPivot.SelectedIndex);
+            e.PageState.Add("MealsPageViewModel", _mealsPageViewModel);
+            e.PageState.Add("TodayListIndex", TodayList.SelectedIndex);
+            e.PageState.Add("ForecastListIndex", ForecastList.SelectedIndex);
         }
 
         #region NavigationHelper-Registrierung
