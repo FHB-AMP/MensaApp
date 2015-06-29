@@ -7,8 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:valueConverter="using:MensaApp.Converter"
     mc:Ignorable="d"
-    DataContext="{Binding MealsPageViewModel, RelativeSource={RelativeSource Self}}"
-    Background="{StaticResource MensaPageBackgroundBrush}">
+    DataContext="{Binding MealsPageViewModel, RelativeSource={RelativeSource Self}}">
+    <Page.Background>
+        <ImageBrush Stretch="Fill" ImageSource="Assets/Splashscreen.png"/>
+    </Page.Background>
+    
     <Page.Resources>
         <CollectionViewSource x:Name="mealsToday" Source="{Binding Today}" IsSourceGrouped="True" ItemsPath="Meals"/>
         <CollectionViewSource x:Name="mealsForecast" Source="{Binding ForecastDays}"  IsSourceGrouped="True" ItemsPath="Meals"/>
@@ -16,9 +19,14 @@
 
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact">
-            <AppBarButton Icon="Refresh" Label="neu laden" Click="RefreshAppBarButton_Click"/>
-            <AppBarButton Icon="Setting" Label="Einstellung" Click="SettingAppBarButton_Click"/>
-            <AppBarButton Icon="Repair" Label="Fummeln" Click="FummelAppBarButton_Click"/>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Icon="Refresh" Label="neu laden" Click="RefreshAppBarButton_Click"/>
+                <AppBarButton Icon="Setting" Label="Einstellung" Click="SettingAppBarButton_Click"/>
+                <AppBarButton  Icon="Repair" Label="Fummeln" Click="FummelAppBarButton_Click"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Impressum" Click="ImpressumAppBarButton_Click"></AppBarButton>
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -33,7 +41,7 @@
         <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
         <!-- Pivot -->
         <Pivot HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="0" 
-               Margin="-8,0,0,0" Title="FH Brandenburg Mensa">
+               Margin="-8,0,0,0" Title="Mensa FH Brandenburg">
 
             <!-- First PivotItem -->
             <PivotItem Margin="18,0,10,0" Padding="4,0" Header="Heute">
@@ -50,376 +58,78 @@
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
                                         <Grid IsHitTestVisible="False">
-                                            <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" FontSize="24" Margin="0,0,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" Style="{StaticResource MensaListGroup}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
                             </GroupStyle>
                         </ListView.GroupStyle>
                         <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Height="120">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="32"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="20"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="76"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="34"/>
-                                        <ColumnDefinition Width="34"/>
-                                        <ColumnDefinition Width="34"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <!--Tile Background-->
-                                    <!-- lower left corner -->
-                                    <Path Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="3" Grid.ColumnSpan="1">
-                                        <Path.Data>
-                                            <GeometryGroup>
-                                                <RectangleGeometry Rect="0,0 76,20"/>
-                                                <PathGeometry>
-                                                    <PathGeometry.Figures>
-                                                        <PathFigureCollection>
-                                                            <PathFigure IsClosed="true" StartPoint="0,20">
-                                                                <PathFigure.Segments>
-                                                                    <PathSegmentCollection>
-                                                                        <LineSegment Point="0,15"/>
-                                                                        <BezierSegment Point1="0,15" Point2="0,20" Point3="5,20"/>
-                                                                    </PathSegmentCollection>
-                                                                </PathFigure.Segments>
-                                                            </PathFigure>
-                                                        </PathFigureCollection>
-                                                    </PathGeometry.Figures>
-                                                </PathGeometry>
-                                            </GeometryGroup>
-                                        </Path.Data>
-                                    </Path>
-                                    <!-- lower right corner -->
-                                    <Path Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="3" Grid.ColumnSpan="1" Grid.Column="4">
-                                        <Path.Data>
-                                            <GeometryGroup>
-                                                <RectangleGeometry Rect="0,0 34,20"/>
-                                                <PathGeometry>
-                                                    <PathGeometry.Figures>
-                                                        <PathFigureCollection>
-                                                            <PathFigure IsClosed="true" StartPoint="34,20">
-                                                                <PathFigure.Segments>
-                                                                    <PathSegmentCollection>
-                                                                        <LineSegment Point="29,20"/>
-                                                                        <BezierSegment Point1="29,20" Point2="34,20" Point3="34,15"/>
-                                                                    </PathSegmentCollection>
-                                                                </PathFigure.Segments>
-                                                            </PathFigure>
-                                                        </PathFigureCollection>
-                                                    </PathGeometry.Figures>
-                                                </PathGeometry>
-                                            </GeometryGroup>
-                                        </Path.Data>
-                                    </Path>
-
-                                    <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="1" Grid.ColumnSpan="1" Margin="0,7,-1,-1"/>
-                                    <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Margin="-1,-1,0,-1"/>
-                                    <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="-1,0"/>
-
-                                    <!--Tile Header-->
-                                    <!-- meal -->
-                                    <Path Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                                        <Path.Data>
-                                            <GeometryGroup>
-                                                <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
-                                            </GeometryGroup>
-                                        </Path.Data>
-                                    </Path>
-                                    <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
-                                    <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" Style="{StaticResource MensaTileTitle}" Grid.Column="1"/>
-                                    <Image Source="{Binding Path=InfoSymbols, Converter={StaticResource InfoSymbolToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
-
-                                    <!-- additives -->
-                                    <Rectangle Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableToColorCode}}" Margin="-1,0" Grid.ColumnSpan="1" Grid.Column="3"/>
-                                    <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Column="3" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-                                    <!-- allergens -->
-                                    <Path Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Grid.Row="0" Grid.ColumnSpan="1" Grid.Column="4">
-                                        <Path.Data>
-                                            <GeometryGroup>
-                                                <RectangleGeometry Rect="0,0 34,32"/>
-                                                <PathGeometry>
-                                                    <PathGeometry.Figures>
-                                                        <PathFigureCollection>
-                                                            <PathFigure IsClosed="true" StartPoint="34,0">
-                                                                <PathFigure.Segments>
-                                                                    <PathSegmentCollection>
-                                                                        <LineSegment Point="29,0"/>
-                                                                        <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
-                                                                    </PathSegmentCollection>
-                                                                </PathFigure.Segments>
-                                                            </PathFigure>
-                                                        </PathFigureCollection>
-                                                    </PathGeometry.Figures>
-                                                </PathGeometry>
-                                            </GeometryGroup>
-                                        </Path.Data>
-                                    </Path>
-                                    <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Column="4" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-                                    <!-- nutrition -->
-                                    <Rectangle Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Margin="-1,0,0,0" Grid.ColumnSpan="1" Grid.Column="2"/>
-                                    <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-                                    <!-- Tile Content -->
-                                    <TextBlock Text="{Binding Name}" Style="{StaticResource MensaTileContent}" Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="4"/>
-                                </Grid>
-                            </DataTemplate>
+                            <StaticResource ResourceKey="MensaMealOverviewGridTemplate"/>
                         </ListView.ItemTemplate>
                     </ListView>
 
                     <!-- alternativ -->
                     <Grid Margin="8,0" Height="120" Visibility="{Binding Today.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" VerticalAlignment="Top">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="32"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="76"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="34"/>
-                            <ColumnDefinition Width="34"/>
-                            <ColumnDefinition Width="34"/>
-                        </Grid.ColumnDefinitions>
-                        <!--Tile Background-->
-                        <!-- lower left corner -->
-                        <Path Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="3" Grid.ColumnSpan="1">
-                            <Path.Data>
-                                <GeometryGroup>
-                                    <RectangleGeometry Rect="0,0 76,20"/>
-                                    <PathGeometry>
-                                        <PathGeometry.Figures>
-                                            <PathFigureCollection>
-                                                <PathFigure IsClosed="true" StartPoint="0,20">
-                                                    <PathFigure.Segments>
-                                                        <PathSegmentCollection>
-                                                            <LineSegment Point="0,15"/>
-                                                            <BezierSegment Point1="0,15" Point2="0,20" Point3="5,20"/>
-                                                        </PathSegmentCollection>
-                                                    </PathFigure.Segments>
-                                                </PathFigure>
-                                            </PathFigureCollection>
-                                        </PathGeometry.Figures>
-                                    </PathGeometry>
-                                </GeometryGroup>
-                            </Path.Data>
-                        </Path>
-                        <!-- lower right corner -->
-                        <Path Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="3" Grid.ColumnSpan="1" Grid.Column="4">
-                            <Path.Data>
-                                <GeometryGroup>
-                                    <RectangleGeometry Rect="0,0 34,20"/>
-                                    <PathGeometry>
-                                        <PathGeometry.Figures>
-                                            <PathFigureCollection>
-                                                <PathFigure IsClosed="true" StartPoint="34,20">
-                                                    <PathFigure.Segments>
-                                                        <PathSegmentCollection>
-                                                            <LineSegment Point="29,20"/>
-                                                            <BezierSegment Point1="29,20" Point2="34,20" Point3="34,15"/>
-                                                        </PathSegmentCollection>
-                                                    </PathFigure.Segments>
-                                                </PathFigure>
-                                            </PathFigureCollection>
-                                        </PathGeometry.Figures>
-                                    </PathGeometry>
-                                </GeometryGroup>
-                            </Path.Data>
-                        </Path>
-                        <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="1" Grid.ColumnSpan="1" Margin="0,7,-1,-1"/>
-                        <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Margin="-1,-1,0,-1"/>
-                        <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="-1,0"/>
-                        <!--Tile Header-->
-                        <!-- meal -->
-                        <Path Fill="{StaticResource MensaGreenBrush}" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                            <Path.Data>
-                                <GeometryGroup>
-                                    <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
-                                </GeometryGroup>
-                            </Path.Data>
-                        </Path>
-                        <Rectangle Fill="{StaticResource MensaGreenBrush}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
-                        <TextBlock Text="kein Angebot" HorizontalAlignment="Left" Style="{StaticResource MensaTileTitle}" Grid.Column="1"/>
-                        <Image Source="/assets/ingredients/Unkown-240.png" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
-                        <!-- additives -->
-                        <Rectangle Fill="{StaticResource MensaGreenBrush}" Margin="-1,0" Grid.ColumnSpan="1" Grid.Column="3"/>
-                        <Image Source="/assets/icon/additives-240.png"  Grid.Column="3"/>
-                        <!-- allergens -->
-                        <Path Fill="{StaticResource MensaGreenBrush}" Grid.Row="0" Grid.ColumnSpan="1" Grid.Column="4">
-                            <Path.Data>
-                                <GeometryGroup>
-                                    <RectangleGeometry Rect="0,0 34,32"/>
-                                    <PathGeometry>
-                                        <PathGeometry.Figures>
-                                            <PathFigureCollection>
-                                                <PathFigure IsClosed="true" StartPoint="34,0">
-                                                    <PathFigure.Segments>
-                                                        <PathSegmentCollection>
-                                                            <LineSegment Point="29,0"/>
-                                                            <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
-                                                        </PathSegmentCollection>
-                                                    </PathFigure.Segments>
-                                                </PathFigure>
-                                            </PathFigureCollection>
-                                        </PathGeometry.Figures>
-                                    </PathGeometry>
-                                </GeometryGroup>
-                            </Path.Data>
-                        </Path>
-                        <Image Source="/assets/icon/allergens-240.png" Grid.Column="4"/>
-                        <!-- nutrition -->
-                        <Rectangle Fill="{StaticResource MensaGreenBrush}" Margin="-1,0,0,0" Grid.ColumnSpan="1" Grid.Column="2"/>
-                        <Image Source="/assets/icon/nutrition-240.png" Grid.Column="2"/>
-                        <!-- Tile Content -->
-                        <TextBlock TextWrapping="WrapWholeWords" Text="Heute ist die Mensa geschlossen." Style="{StaticResource MensaTileContent}" Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="4"/>
+                        <StaticResource ResourceKey="MensaNoMealTodayGrid"/>
                     </Grid>
                 </Grid>
             </PivotItem>
 
             <!-- Second PivotItem -->
             <PivotItem Margin="18,0,10,0" Padding="2,0" Header="Vorschau">
-                <ListView ItemsSource="{Binding Source={StaticResource mealsForecast}}" SelectionMode="Single" Tapped="MealsListView_Tapped">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="Margin" Value="8,0,8,8"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.GroupStyle>
-                        <GroupStyle HidesIfEmpty="True">
-                            <GroupStyle.HeaderTemplate>
-                                <DataTemplate>
-                                    <Grid IsHitTestVisible="False">
-                                        <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" FontSize="24" Margin="0,4,0,12" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </GroupStyle.HeaderTemplate>
-                        </GroupStyle>
-                    </ListView.GroupStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Height="120">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="32"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="20"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="76"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="34"/>
-                                </Grid.ColumnDefinitions>
+                <Grid>
+                    <SemanticZoom>
+                        <SemanticZoom.ZoomedInView>
+                            <ListView ItemsSource="{Binding Source={StaticResource mealsForecast}}" Tapped="MealsListView_Tapped" >
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Margin" Value="8,0,8,8"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.GroupStyle>
+                                    <GroupStyle HidesIfEmpty="True">
+                                        <GroupStyle.HeaderTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <TextBlock Text="{Binding Path=Date, Converter={StaticResource DateToStrigConverter}}" Style="{StaticResource MensaListGroup}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </GroupStyle.HeaderTemplate>
+                                    </GroupStyle>
+                                </ListView.GroupStyle>
+                                <ListView.ItemTemplate>
+                                    <StaticResource ResourceKey="MensaMealOverviewGridTemplate"/>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </SemanticZoom.ZoomedInView>
 
-                                <!--Tile Background-->
-                                <!-- lower left corner -->
-                                <Path Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="3" Grid.ColumnSpan="1">
-                                    <Path.Data>
-                                        <GeometryGroup>
-                                            <RectangleGeometry Rect="0,0 76,20"/>
-                                            <PathGeometry>
-                                                <PathGeometry.Figures>
-                                                    <PathFigureCollection>
-                                                        <PathFigure IsClosed="true" StartPoint="0,20">
-                                                            <PathFigure.Segments>
-                                                                <PathSegmentCollection>
-                                                                    <LineSegment Point="0,15"/>
-                                                                    <BezierSegment Point1="0,15" Point2="0,20" Point3="5,20"/>
-                                                                </PathSegmentCollection>
-                                                            </PathFigure.Segments>
-                                                        </PathFigure>
-                                                    </PathFigureCollection>
-                                                </PathGeometry.Figures>
-                                            </PathGeometry>
-                                        </GeometryGroup>
-                                    </Path.Data>
-                                </Path>
-                                <!-- lower right corner -->
-                                <Path Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="3" Grid.ColumnSpan="1" Grid.Column="4">
-                                    <Path.Data>
-                                        <GeometryGroup>
-                                            <RectangleGeometry Rect="0,0 34,20"/>
-                                            <PathGeometry>
-                                                <PathGeometry.Figures>
-                                                    <PathFigureCollection>
-                                                        <PathFigure IsClosed="true" StartPoint="34,20">
-                                                            <PathFigure.Segments>
-                                                                <PathSegmentCollection>
-                                                                    <LineSegment Point="29,20"/>
-                                                                    <BezierSegment Point1="29,20" Point2="34,20" Point3="34,15"/>
-                                                                </PathSegmentCollection>
-                                                            </PathFigure.Segments>
-                                                        </PathFigure>
-                                                    </PathFigureCollection>
-                                                </PathGeometry.Figures>
-                                            </PathGeometry>
-                                        </GeometryGroup>
-                                    </Path.Data>
-                                </Path>
+                        <SemanticZoom.ZoomedOutView>
+                            <ListView ItemsSource="{Binding Source={StaticResource mealsForecast}, Path=CollectionGroups}" Padding="10,50" Background="#BF000000" >
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Margin" Value="8"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Rectangle Fill="{StaticResource MensaPageBackgroundBrush}" Height="68" RadiusX="5" RadiusY="5"/>
+                                            <TextBlock Text="{Binding Path=Group.Date, Converter={StaticResource DateToStrigConverter}}" Style="{StaticResource MensaListGroup}" Margin="10,0"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </SemanticZoom.ZoomedOutView>
+                    </SemanticZoom>
 
-                                <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="1" Grid.ColumnSpan="1" Margin="0,7,-1,-1"/>
-                                <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Margin="-1,-1,0,-1"/>
-                                <Rectangle Fill="{StaticResource MensaTilesBackgroundBrush}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="-1,0"/>
-
-                                <!--Tile Header-->
-                                <!-- meal -->
-                                <Path Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                                    <Path.Data>
-                                        <GeometryGroup>
-                                            <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
-                                        </GeometryGroup>
-                                    </Path.Data>
-                                </Path>
-                                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="38,0,0,0" Grid.ColumnSpan="2"/>
-                                <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" Style="{StaticResource MensaTileTitle}" Grid.Column="1"/>
-                                <Image Source="{Binding Path=InfoSymbols, Converter={StaticResource InfoSymbolToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
-
-                                <!-- additives -->
-                                <Rectangle Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableToColorCode}}" Margin="-1,0" Grid.ColumnSpan="1" Grid.Column="3"/>
-                                <Image Source="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" Grid.Column="3" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-                                <!-- allergens -->
-                                <Path Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Grid.Row="0" Grid.ColumnSpan="1" Grid.Column="4">
-                                    <Path.Data>
-                                        <GeometryGroup>
-                                            <RectangleGeometry Rect="0,0 34,32"/>
-                                            <PathGeometry>
-                                                <PathGeometry.Figures>
-                                                    <PathFigureCollection>
-                                                        <PathFigure IsClosed="true" StartPoint="34,0">
-                                                            <PathFigure.Segments>
-                                                                <PathSegmentCollection>
-                                                                    <LineSegment Point="29,0"/>
-                                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
-                                                                </PathSegmentCollection>
-                                                            </PathFigure.Segments>
-                                                        </PathFigure>
-                                                    </PathFigureCollection>
-                                                </PathGeometry.Figures>
-                                            </PathGeometry>
-                                        </GeometryGroup>
-                                    </Path.Data>
-                                </Path>
-                                <Image Source="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableAllergensToImagePathConverter}}" Grid.Column="4" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-                                <!-- nutrition -->
-                                <Rectangle Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Margin="-1,0,0,0" Grid.ColumnSpan="1" Grid.Column="2"/>
-                                <Image Source="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableNutritionToImagePathConverter}}" Grid.Column="2" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-                                <!-- Tile Content -->
-                                <TextBlock Text="{Binding Name}" Style="{StaticResource MensaTileContent}" Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="4"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    <!-- alternativ -->
+                    <Grid Margin="8,0" Height="120" Visibility="{Binding Today.Count, Converter={StaticResource ListEmptyToAlternativeVisibilityConverter}}" VerticalAlignment="Top">
+                        <StaticResource ResourceKey="MensaNoMealTodayGrid"/>
+                    </Grid>
+                </Grid>
             </PivotItem>
         </Pivot>
     </Grid>

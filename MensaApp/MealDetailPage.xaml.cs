@@ -193,7 +193,7 @@ namespace MensaApp
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //TODO Holger Fehlerbehandlung einbauen
             }
@@ -258,7 +258,7 @@ namespace MensaApp
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                   //TODO Holger Fehlerbehandlung einbauen
             }

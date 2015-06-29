@@ -3,9 +3,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:valueConverter="using:MensaApp.Converter"
-    xmlns:local="using:MensaApp">
+    xmlns:local="using:MensaApp"
+    RequestedTheme="Dark">
 
-    <Application.Resources>
+    <Application.Resources>        
         <!-- Color -->
         <SolidColorBrush x:Key="MensaPageBackgroundBrush">#FF1D2F3E</SolidColorBrush>
         <!--<SolidColorBrush x:Key="MensaPageBackgroundBrush">#FF30444D</SolidColorBrush>-->
@@ -21,9 +22,6 @@
         <valueConverter:SuitableToColorCode x:Key="SuitableToColorCode"/>
         <valueConverter:ExcludeToColorCode x:Key="ExcludeToColorCode"/>
         <valueConverter:InfoSymbolToImagePathConverter x:Key="InfoSymbolToImagePathConverter"/>
-        <valueConverter:SuitableNutritionToImagePathConverter x:Key="SuitableNutritionToImagePathConverter"/>
-        <valueConverter:SuitableAdditiveToImagePathConverter x:Key="SuitableAdditiveToImagePathConverter"/>
-        <valueConverter:SuitableAllergensToImagePathConverter x:Key="SuitableAllergensToImagePathConverter"/>
         <valueConverter:ListEmptyToAlternativeVisibilityConverter x:Key="ListEmptyToAlternativeVisibilityConverter"/>
         <valueConverter:ListNotEmptyToVisibilityConverter x:Key="ListNotEmptyToVisibilityConverter"/>
         <valueConverter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -31,7 +29,7 @@
         <valueConverter:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
 
         <Style x:Key="MensaFontColor" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FF31384B"/>
+            <Setter Property="Foreground" Value="#FF171717"/>
         </Style>
         
         <Style x:Key="MensaTileTitle" TargetType="TextBlock" BasedOn="{ StaticResource MensaFontColor}">
@@ -63,7 +61,158 @@
             <Setter Property="Margin" Value="10,0"/>
         </Style>
 
+        <Style x:Key="MensaListGroup" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFFFF"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="MaxLines" Value="1"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+            <Setter Property="Padding" Value="0,8,0,12"/>
+        </Style>
 
+        <DataTemplate x:Key="MensaMealOverviewGridTemplate">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition MinHeight="86" Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="76"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="34"/>
+                    <ColumnDefinition Width="34"/>
+                    <ColumnDefinition Width="34"/>
+                </Grid.ColumnDefinitions>
+                <!--Tile Background-->
+                <Grid Grid.Row="1" Grid.ColumnSpan="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition MinHeight="20" Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.Row="0" Grid.Column="1" Fill="{StaticResource MensaTilesBackgroundBrush}" Margin="0,-2,0,-7" />
+                    <Rectangle Grid.Row="1" Grid.ColumnSpan="2"  Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5"/>
+                </Grid>
+                <!--Tile HeaderBackground-->
+                <Rectangle Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Margin="40,0,-2,0" Grid.ColumnSpan="2"/>
+                <Rectangle Fill="{Binding Path=IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Margin="0,0,-2,0" Grid.Column="2"/>
+                <Rectangle Fill="{Binding Path=IsSuitableAdditives, Converter={StaticResource SuitableToColorCode}}" Margin="0,0,-2,0" Grid.Column="3"/>
+                <Path Fill="{Binding Path=IsSuitableAllergens, Converter={StaticResource SuitableToColorCode}}" Grid.Column="4">
+                    <Path.Data>
+                        <GeometryGroup>
+                            <RectangleGeometry Rect="0,0 34,34"/>
+                            <PathGeometry>
+                                <PathGeometry.Figures>
+                                    <PathFigureCollection>
+                                        <PathFigure IsClosed="true" StartPoint="34,0">
+                                            <PathFigure.Segments>
+                                                <PathSegmentCollection>
+                                                    <LineSegment Point="29,0"/>
+                                                    <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                                </PathSegmentCollection>
+                                            </PathFigure.Segments>
+                                        </PathFigure>
+                                    </PathFigureCollection>
+                                </PathGeometry.Figures>
+                            </PathGeometry>
+                        </GeometryGroup>
+                    </Path.Data>
+                </Path>
+                <Path Fill="{Binding Path=IsSuitableMeal, Converter={StaticResource SuitableToColorCode}}" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                    <Path.Data>
+                        <GeometryGroup>
+                            <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
+                        </GeometryGroup>
+                    </Path.Data>
+                </Path>
+                <!-- Number of offer -->
+                <TextBlock Text="{Binding Path=MealNumber, Converter={StaticResource MealNumberToOfferString}}" Style="{StaticResource MensaTileTitle}" Grid.Column="1"/>
+                <!-- Nutrition Image -->
+                <Image Source="{Binding Path=InfoSymbols, Converter={StaticResource InfoSymbolToImagePathConverter}}" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+                <!-- Icons -->
+                <Image Source="/assets/icon/nutrition-240.png" Grid.Column="2"/>
+                <Image Source="/assets/icon/additives-240.png" Grid.Column="3"/>
+                <Image Source="/assets/icon/allergens-240.png" Grid.Column="4"/>
+                <!-- Meal Content -->
+                <TextBlock Text="{Binding Name}" Style="{StaticResource MensaTileContent}" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="4"/>
+            </Grid>
+        </DataTemplate>
+        
+        
+        <Grid x:Key="MensaNoMealTodayGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"/>
+                <RowDefinition MinHeight="86" Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="76"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="34"/>
+                <ColumnDefinition Width="34"/>
+                <ColumnDefinition Width="34"/>
+            </Grid.ColumnDefinitions>
+            <!--Tile Background-->
+            <Grid Grid.Row="1" Grid.ColumnSpan="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition MinHeight="20" Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Row="0" Grid.Column="1" Fill="{StaticResource MensaTilesBackgroundBrush}" Margin="0,-2,0,-7" />
+                <Rectangle Grid.Row="1" Grid.ColumnSpan="2"  Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5"/>
+            </Grid>
+            <!--Tile HeaderBackground-->
+            <Rectangle Fill="{StaticResource MensaGreenBrush}" Margin="40,0,-2,0" Grid.ColumnSpan="2"/>
+            <Rectangle Fill="{StaticResource MensaGreenBrush}" Margin="0,0,-2,0" Grid.Column="2"/>
+            <Rectangle Fill="{StaticResource MensaGreenBrush}" Margin="0,0,-2,0" Grid.Column="3"/>
+            <Path Fill="{StaticResource MensaGreenBrush}" Grid.Column="4">
+                <Path.Data>
+                    <GeometryGroup>
+                        <RectangleGeometry Rect="0,0 34,34"/>
+                        <PathGeometry>
+                            <PathGeometry.Figures>
+                                <PathFigureCollection>
+                                    <PathFigure IsClosed="true" StartPoint="34,0">
+                                        <PathFigure.Segments>
+                                            <PathSegmentCollection>
+                                                <LineSegment Point="29,0"/>
+                                                <BezierSegment Point1="29,0" Point2="34,0" Point3="34,5"/>
+                                            </PathSegmentCollection>
+                                        </PathFigure.Segments>
+                                    </PathFigure>
+                                </PathFigureCollection>
+                            </PathGeometry.Figures>
+                        </PathGeometry>
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+            <Path Fill="{StaticResource MensaGreenBrush}" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                <Path.Data>
+                    <GeometryGroup>
+                        <EllipseGeometry Center="38,38" RadiusX="38" RadiusY="38" />
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+            <!-- Number of offer -->
+            <TextBlock Text="Angebot ?" Style="{StaticResource MensaTileTitle}" Grid.Column="1"/>
+            <!-- Nutrition Image -->
+            <Image Source="/assets/ingredients/Unkown-240.png" Stretch="Uniform" VerticalAlignment="Top" Grid.RowSpan="2" Width="Auto" Margin="4,4,4,0" />
+            <!-- Icons -->
+            <Image Source="/assets/icon/nutrition-240.png" Grid.Column="2"/>
+            <Image Source="/assets/icon/additives-240.png" Grid.Column="3"/>
+            <Image Source="/assets/icon/allergens-240.png" Grid.Column="4"/>
+            <!-- Meal Content -->
+            <TextBlock Text="Es konnte kein Angebot gefunden werden." Style="{StaticResource MensaTileContent}" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="4"/>
+        </Grid>
+        
     </Application.Resources>
 
 </Application>

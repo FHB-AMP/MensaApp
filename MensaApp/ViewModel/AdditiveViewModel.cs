@@ -163,5 +163,7 @@ namespace MensaApp.ViewModel
             AdditiveViewModel additiveVM = (AdditiveViewModel) parameter;
             additiveVM.ToggleShowMeaning();
         }
+
+        public event EventHandler CanExecuteChanged;
     }
 }

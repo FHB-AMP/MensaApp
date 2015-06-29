@@ -159,6 +159,8 @@ namespace MensaApp.ViewModel
                 AllergenViewModel allergenVM = (AllergenViewModel)parameter;
                 allergenVM.ToggleShowContainedIn();
             }
+
+            public event EventHandler CanExecuteChanged;
         }
     }
 }

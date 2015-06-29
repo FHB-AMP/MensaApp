@@ -88,11 +88,11 @@ namespace MensaApp.Service
 
                             resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, suitableAdditives, suitableAllergens));
                         }
+                        resultDays.Add(resultDay);
                         // Der gewünschte Tag wurde gefunden. Darum muss an dieser Stelle nicht weiter danach gesucht werden. -> break; (Schmidt will hate me. xD)
                         break;
                     }
                 }
-                resultDays.Add(resultDay);
             }
             return resultDays;
         }
@@ -124,6 +124,7 @@ namespace MensaApp.Service
         private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, ObservableCollection<InfoSymbolViewModel> resultInfoSymbols, 
             ObservableCollection<AdditiveViewModel> resultAdditives, ObservableCollection<AllergenViewModel> resultAllergens)
         {
+            //TODO Implementation
             return true;
         }
 
@@ -267,7 +268,7 @@ namespace MensaApp.Service
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //TODO Holger Fehlerbehandlung einbauen
             }
@@ -326,7 +327,7 @@ namespace MensaApp.Service
             return result;
         }
 
-        internal ObservableCollection<DayViewModel> GetMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
+        internal ObservableCollection<DayViewModel> SearchMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
         {
             ObservableCollection<DayViewModel> today = new ObservableCollection<DayViewModel>();
  
@@ -342,7 +343,7 @@ namespace MensaApp.Service
             return today;
         }
 
-        internal ObservableCollection<DayViewModel> GetMealOfForecast(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
+        internal ObservableCollection<DayViewModel> SearchMealOfForecast(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
         {
             ObservableCollection<DayViewModel> resultDays = new ObservableCollection<DayViewModel>(); 
 

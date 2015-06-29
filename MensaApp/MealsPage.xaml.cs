@@ -169,7 +169,7 @@ namespace MensaApp
                 myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
 
             }
-            catch (FileNotFoundException ex) 
+            catch (FileNotFoundException) 
             { 
                 // Tue nichts :)
                 // debug message könnte man hier vll ablegen.
@@ -184,12 +184,11 @@ namespace MensaApp
             // Der Rest muss immer passieren
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            int amountOfDays = 4; // Current day + 3 days of forcast
+            int amountOfDays = 6; // Current day + 5 days of forcast
             List<DayViewModel> AllDaysWithMeals = await servingMealOffer.FindMealOffersForCertainAmountOfDays(amountOfDays);
             
-            //
-            ObservableCollection<DayViewModel> today = servingMealOffer.GetMealsOfToday(DateTime.Today, AllDaysWithMeals);
-            ObservableCollection<DayViewModel> forecast = servingMealOffer.GetMealOfForecast(DateTime.Today, AllDaysWithMeals);
+            ObservableCollection<DayViewModel> today = servingMealOffer.SearchMealsOfToday(DateTime.Today, AllDaysWithMeals);
+            ObservableCollection<DayViewModel> forecast = servingMealOffer.SearchMealOfForecast(DateTime.Today, AllDaysWithMeals);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.Today.Clear();
@@ -236,6 +235,11 @@ namespace MensaApp
         private void FummelAppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(MealDetailPage));
+        }
+
+        private void ImpressumAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ImpressumPage));
         }
     }
 }

@@ -8,8 +8,10 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     x:Class="MensaApp.SettingPage"
     mc:Ignorable="d"
-    DataContext="{Binding SettingsPageViewModel, RelativeSource={RelativeSource Self}}"
-    Background="{StaticResource MensaPageBackgroundBrush}">
+    DataContext="{Binding SettingsPageViewModel, RelativeSource={RelativeSource Self}}">
+    <Page.Background>
+        <ImageBrush Stretch="Fill" ImageSource="Assets/Splashscreen.png"/>
+    </Page.Background>
 
     <Page.BottomAppBar>
         <CommandBar>
@@ -27,7 +29,7 @@
 
         <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
         <!-- Pivot -->
-        <Pivot Margin="-8,0,0,0" Title="FH Brandenburg Mensa" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <Pivot Margin="-8,0,0,0" Title="Mensa FH Brandenburg" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <!-- First PivotItem -->
             <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Ernährungsweise">
                 <Grid>
@@ -353,7 +355,7 @@
                                 <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
                                 <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
 
-                                <Image Source="{Binding Path=IsExcluded, Converter={StaticResource SuitableAdditiveToImagePathConverter}}" HorizontalAlignment="Center"/>
+                                <Image Source="/assets/icon/additives-240.png" HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
                                 <!-- Content List -->
                                 <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
@@ -404,7 +406,7 @@
                                 <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
                                 <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
 
-                                <Image Source="{Binding Path=IsExcluded, Converter={StaticResource SuitableAllergensToImagePathConverter}}" HorizontalAlignment="Center"/>
+                                <Image Source="/assets/icon/allergens-240.png" HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
                                 <!-- Content List -->
                                 <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
