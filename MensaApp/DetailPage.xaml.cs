@@ -79,7 +79,7 @@ namespace MensaApp
         {
             if (e.NavigationParameter != null)
             {
-                DetailPageParamModel paramModel = e.NavigationParameter as DetailPageParamModel;
+                DetailPageParameter paramModel = e.NavigationParameter as DetailPageParameter;
                 _mealDetailPageViewModel.Date = paramModel.date;
                 _mealDetailPageViewModel.Meal = paramModel.meal;
             }

@@ -16,25 +16,25 @@ namespace MensaApp.ViewModel
     {
         public NutritionViewModel()
         {
-            this.ExcludedSymbols = new ObservableCollection<string>();
+            this.ExcludedSymbols = new ObservableCollection<InfoSymbolViewModel>();
             this.ExcludedAdditives = new ObservableCollection<AdditiveViewModel>();
             this.ExcludedAllergens = new ObservableCollection<AllergenViewModel>();
             this.IsSelectedNutrition = false;
         }
 
-        public NutritionViewModel(string id, string name, string definition, ObservableCollection<string> excludedSymbols,
+        public NutritionViewModel(string id, string name, string definition, ObservableCollection<InfoSymbolViewModel> excludedSymbols,
             ObservableCollection<AdditiveViewModel> excludedAdditives, ObservableCollection<AllergenViewModel> excludedAllergens)
         {
             this.Id = id;
             this.Name = name;
             this.Definition = definition;
-            this.ExcludedSymbols = excludedSymbols != null ? excludedSymbols : new ObservableCollection<string>();
+            this.ExcludedSymbols = excludedSymbols != null ? excludedSymbols : new ObservableCollection<InfoSymbolViewModel>();
             this.ExcludedAdditives = excludedAdditives != null ? excludedAdditives : new ObservableCollection<AdditiveViewModel>();
             this.ExcludedAllergens = excludedAllergens != null ? excludedAllergens : new ObservableCollection<AllergenViewModel>();
             this.IsSelectedNutrition = false;
         }
 
-        public NutritionViewModel(string id, string name, string definition, ObservableCollection<string> excludedSymbols, ObservableCollection<AdditiveViewModel> excludedAdditives,
+        public NutritionViewModel(string id, string name, string definition, ObservableCollection<InfoSymbolViewModel> excludedSymbols, ObservableCollection<AdditiveViewModel> excludedAdditives,
             ObservableCollection<AllergenViewModel> excludedAllergens, bool isSelectedNutrition)
             : this(id, name, definition, excludedSymbols, excludedAdditives, excludedAllergens)
         {
@@ -75,8 +75,8 @@ namespace MensaApp.ViewModel
         /// <summary>
         /// List of symbols which are excluded by the certain nutrition
         /// </summary>
-        private ObservableCollection<String> _excludedSymbols;
-        public ObservableCollection<String> ExcludedSymbols
+        private ObservableCollection<InfoSymbolViewModel> _excludedSymbols;
+        public ObservableCollection<InfoSymbolViewModel> ExcludedSymbols
         {
             get { return _excludedSymbols; }
             set { this.SetProperty(ref this._excludedSymbols, value); }

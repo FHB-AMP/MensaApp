@@ -1,5 +1,6 @@
 ﻿using MensaApp.Common;
 using MensaApp.DataModel;
+using MensaApp.DataModel.Rest;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -226,7 +227,7 @@ namespace MensaApp
                         //Result.Text = data.Result;
 
                         // JSON-File in Objekte verwandeln
-                        var rootObject = JsonConvert.DeserializeObject<RootObjectDays>(data.Result);
+                        var rootObject = JsonConvert.DeserializeObject<ListOfDays>(data.Result);
 
                         // Neue Listen fuer den heutigen Tag erstellen
                         var liste = new List<listenEintrag>();

@@ -17,8 +17,9 @@ namespace MensaApp.ViewModel
     {
         public AdditiveViewModel()
         {
-            this.ShowMeaning = false;
             this.IsExcluded = false;
+            this.IsDisabled = false;
+            this.ShowMeaning = false;
             this.ToggleShowMeaningCommand = new ToggleShowMeaningClick();
         }
 
@@ -28,14 +29,12 @@ namespace MensaApp.ViewModel
         /// <param name="id"></param>
         /// <param name="definition"></param>
         /// <param name="meaning"></param>
-        public AdditiveViewModel(string id, string definition, string meaning)
+        public AdditiveViewModel(string id, string definition, string meaning) 
+            : this ()
         {
             this.Id = id;
             this.Definition = definition;
             this.Meaning = meaning;
-            this.ShowMeaning = false;
-            this.IsExcluded = false;
-            this.ToggleShowMeaningCommand = new ToggleShowMeaningClick();
         }
 
         /// <summary>
@@ -45,14 +44,10 @@ namespace MensaApp.ViewModel
         /// <param name="definition"></param>
         /// <param name="meaning"></param>
         /// <param name="isExcluded"></param>
-        public AdditiveViewModel(string id, string definition, string meaning, bool isExcluded) 
+        public AdditiveViewModel(string id, string definition, string meaning, bool isExcluded)
+            : this (id, definition, meaning)
         {
-            this.Id = id;
-            this.Definition = definition;
-            this.Meaning = meaning;
-            this.ShowMeaning = false;
             this.IsExcluded = isExcluded;
-            this.ToggleShowMeaningCommand = new ToggleShowMeaningClick();
         }
 
         /// <summary>
@@ -103,6 +98,16 @@ namespace MensaApp.ViewModel
         {
             get { return _isExcluded; }
             set { this.SetProperty(ref this._isExcluded, value); }
+        }
+
+        /// <summary>
+        /// Is true, when the selected nutrition of the paticipant excluded this additive.
+        /// </summary>
+        private bool _isDisabled;
+        public bool IsDisabled
+        {
+            get { return _isDisabled; }
+            set { this.SetProperty(ref this._isDisabled, value); }
         }
 
         /// <summary>

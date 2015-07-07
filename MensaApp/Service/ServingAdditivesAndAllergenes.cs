@@ -1,4 +1,5 @@
 ﻿using MensaApp.DataModel;
+using MensaApp.DataModel.Rest;
 using MensaApp.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -25,10 +26,10 @@ namespace MensaApp.Service
             List<AdditiveViewModel> listeZusatzstoffe = new List<AdditiveViewModel>();
             
             // JSON-File in Objekte verwandeln
-            var rootObject = JsonConvert.DeserializeObject<RootObjectAdditives>(data);
+            var rootObject = JsonConvert.DeserializeObject<ListsOfDescriptions>(data);
 
             // aus Rootobject die Zusatzstoffe ins Entity packen und im Anschluss der Liste hinzufügen
-            foreach (Additive addi in rootObject.additives)
+            foreach (AdditiveDescription addi in rootObject.additives)
             {
                 AdditiveViewModel additiveVM = new AdditiveViewModel();
                 additiveVM.Id = addi.id;
@@ -49,10 +50,10 @@ namespace MensaApp.Service
             List<AllergenViewModel> listeAllergene = new List<AllergenViewModel>();
 
             // JSON-File in Objekte verwandeln
-            var rootObject = JsonConvert.DeserializeObject<RootObjectAdditives>(data);
+            var rootObject = JsonConvert.DeserializeObject<ListsOfDescriptions>(data);
 
             // aus Rootobject die Zusatzstoffe ins Entity packen und im Anschluss der Liste hinzufügen
-            foreach (Allergen allerg in rootObject.allergens)
+            foreach (AllergenDescription allerg in rootObject.allergens)
             {
                 AllergenViewModel allergenVM = new AllergenViewModel();
                 allergenVM.Id = allerg.id;

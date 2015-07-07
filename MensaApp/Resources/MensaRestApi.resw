@@ -118,27 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AdditivesBaseURL" xml:space="preserve">
-    <value>https://demo5044625.mockable.io/</value>
+    <value>https://demo9590924.mockable.io</value>
     <comment>Zusatzstoffe und Allergene Grundaufruf</comment>
   </data>
   <data name="AdditivesJSONFile" xml:space="preserve">
-    <value>AdditivesJSONFile.txt</value>
+    <value>AdditivesJSONFile.json</value>
     <comment>Dateiname der JSON-Datei aller Zusatzstoffe und Allergene</comment>
   </data>
   <data name="AdditivesURL" xml:space="preserve">
-    <value />
+    <value>/services/descriptions</value>
     <comment>Zusatzstoffe und Allergene vertiefenen Struktur</comment>
   </data>
   <data name="MealBaseURL" xml:space="preserve">
-    <value>http://demo0299672.mockable.io/</value>
+    <value>https://demo9590924.mockable.io</value>
     <comment>Mahlzeiten Grundaufruf</comment>
   </data>
   <data name="MealJSONFile" xml:space="preserve">
-    <value>MealJSONFile.txt</value>
+    <value>MealJSONFile.json</value>
     <comment>Dateiname der JSON-Datei fuer die Mahlzeitangebote</comment>
   </data>
   <data name="MealURL" xml:space="preserve">
-    <value />
+    <value>/services/meals</value>
     <comment>Mahlzeiten vertiefenen Struktur</comment>
   </data>
   <data name="SettingsAdditivesJSONFile" xml:space="preserve">
@@ -152,5 +152,11 @@
   <data name="SettingsSymbolInfoJSONFile" xml:space="preserve">
     <value>SettingsSymbolInfoJSONFile.json</value>
     <comment>Settings der Symbole als JSON gespeichert</comment>
+  </data>
+  <data name="DescriptionFilename" xml:space="preserve">
+    <value>MensaDescription.json</value>
+  </data>
+  <data name="SettingsFilename" xml:space="preserve">
+    <value>MensaSettings.json</value>
   </data>
 </root>

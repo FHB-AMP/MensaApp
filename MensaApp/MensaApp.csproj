@@ -97,9 +97,19 @@
     <Compile Include="Converter\InfoSymbolToImagePathConverter.cs" />
     <Compile Include="Converter\SuitableToColorCodeConverter.cs" />
     <Compile Include="Converter\ShowInformationToImagePathConverter.cs" />
-    <Compile Include="DataModel\AdditivesAllergens.cs" />
-    <Compile Include="DataModel\Days.cs" />
-    <Compile Include="DataModel\DetailPageParamModel.cs" />
+    <Compile Include="DataModel\Rest\AdditiveDescription.cs" />
+    <Compile Include="DataModel\Rest\AllergenDescription.cs" />
+    <Compile Include="DataModel\Rest\InfoSymbolDescription.cs" />
+    <Compile Include="DataModel\Rest\ListsOfDescriptions.cs" />
+    <Compile Include="DataModel\Rest\Day.cs" />
+    <Compile Include="DataModel\Rest\ListOfDays.cs" />
+    <Compile Include="DataModel\DetailPageParameter.cs" />
+    <Compile Include="DataModel\Rest\Meal.cs" />
+    <Compile Include="DataModel\Rest\NutritionDescription.cs" />
+    <Compile Include="DataModel\Setting\AdditiveSetting.cs" />
+    <Compile Include="DataModel\Setting\AllergenSetting.cs" />
+    <Compile Include="DataModel\Setting\ListsOfSettings.cs" />
+    <Compile Include="DataModel\Setting\NutritionSetting.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
@@ -116,15 +126,19 @@
       <DependentUpon>MealsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\FileService.cs" />
+    <Compile Include="Service\SettingsMapping.cs" />
     <Compile Include="Service\SerializeSettings.cs" />
     <Compile Include="Service\ServingMealOffer.cs" />
     <Compile Include="Service\ServingAdditivesAndAllergenes.cs" />
+    <Compile Include="Service\ServingSettings.cs" />
     <Compile Include="SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\InfoSymbolViewModel.cs" />
     <Compile Include="ViewModel\AdditiveViewModel.cs" />
     <Compile Include="ViewModel\AllergenViewModel.cs" />
+    <Compile Include="ViewModel\ListOfSettingViewModel.cs" />
     <Compile Include="ViewModel\MealsPageViewModel.cs" />
     <Compile Include="ViewModel\MealDetailPageViewModel.cs" />
     <Compile Include="ViewModel\MealViewModel.cs" />

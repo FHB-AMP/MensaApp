@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MensaApp.DataModel
+namespace MensaApp.DataModel.Rest
 {
+    /// <summary>
+    /// defines a specific meal offer of the mensa.
+    /// </summary>
     public class Meal
     {
         public int mealNumber { get; set; }
@@ -13,16 +16,5 @@ namespace MensaApp.DataModel
         public List<string> symbols { get; set; }
         public List<string> additives { get; set; }
         public List<string> allergens { get; set; }
-    }
-
-    public class Day
-    {
-        public string date { get; set; }
-        public List<Meal> meals { get; set; }
-    }
-
-    public class RootObjectDays
-    {
-        public List<Day> days { get; set; }
     }
 }

@@ -10,11 +10,11 @@ namespace MensaApp.DataModel
     /// <summary>
     /// Model to exchange data between MealsPage to DetailPage
     /// </summary>
-    public class DetailPageParamModel
+    public class DetailPageParameter
     {
-        public DetailPageParamModel() { }
+        public DetailPageParameter() { }
 
-        public DetailPageParamModel(DateTime date, MealViewModel meal) 
+        public DetailPageParameter(DateTime date, MealViewModel meal) 
         {
             this.date = date;
             this.meal = meal;

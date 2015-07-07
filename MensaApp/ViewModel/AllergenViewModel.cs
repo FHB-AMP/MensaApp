@@ -17,8 +17,8 @@ namespace MensaApp.ViewModel
         public AllergenViewModel()
         {
             this.IsExcluded = false;
+            this.IsDisabled = false;
             this.ShowContainedIn = false;
-            this.ToggleShowContainedInCommand = new ToggleShowContainedInClick();
         }
 
         /// <summary>
@@ -28,13 +28,11 @@ namespace MensaApp.ViewModel
         /// <param name="definition"></param>
         /// <param name="containedIn"></param>
         public AllergenViewModel(string id, string definition, string containedIn)
+            : this ()
         {
             this.Id = id;
             this.Definition = definition;
             this.ContainedIn = containedIn;
-            this.IsExcluded = false;
-            this.ShowContainedIn = false;
-            this.ToggleShowContainedInCommand = new ToggleShowContainedInClick();
         }
 
         /// <summary>
@@ -45,13 +43,9 @@ namespace MensaApp.ViewModel
         /// <param name="containedIn"></param>
         /// <param name="isExcluded"></param>
         public AllergenViewModel(string id, string definition, string containedIn, bool isExcluded)
+            : this (id, definition, containedIn)
         {
-            this.Id = id;
-            this.Definition = definition;
-            this.ContainedIn = containedIn;
             this.IsExcluded = isExcluded;
-            this.ShowContainedIn = false;
-            this.ToggleShowContainedInCommand = new ToggleShowContainedInClick();
         }
 
         /// <summary>
@@ -102,6 +96,16 @@ namespace MensaApp.ViewModel
         {
             get { return _isExcluded; }
             set { this.SetProperty(ref this._isExcluded, value); }
+        }
+
+        /// <summary>
+        /// Is true, when the selected nutrition of the paticipant excluded this allergen.
+        /// </summary>
+        private bool _isDisabled;
+        public bool IsDisabled
+        {
+            get { return _isDisabled; }
+            set { this.SetProperty(ref this._isDisabled, value); }
         }
 
         /// <summary>

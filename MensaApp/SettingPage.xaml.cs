@@ -52,7 +52,7 @@ namespace MensaApp
         {
             // Add normal nutrition
             string normalDefinition = "Keine Einschränkungen.";
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(NORMAL)", "Normal", normalDefinition, new ObservableCollection<string>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
+            //_settingViewModel.Nutritions.Add(new NutritionViewModel("(NORMAL)", "Normal", normalDefinition, new ObservableCollection<string>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
 
             // Add Vegetarian nutrition
             ObservableCollection<string> symbolsVegi = new ObservableCollection<string>();
@@ -68,7 +68,7 @@ namespace MensaApp
             excludedAllergensVegi.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
             excludedAllergensVegi.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
             string veggieDefinition = "Ovo-Lacto-Vegetarier essen nichts vom toten Tier.";
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGGIE)", "Ovo-Lacto-Vegetarisch", veggieDefinition, symbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
+            //_settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGGIE)", "Ovo-Lacto-Vegetarisch", veggieDefinition, symbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
 
             // Add Vegan nutrion
             ObservableCollection<string> symbolsVega = new ObservableCollection<string>();
@@ -92,9 +92,9 @@ namespace MensaApp
             excludedAllergensVega.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
             excludedAllergensVega.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
             string veganDefinition = "Veganer essen gar keine tierischen Produkte.";
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGAN)", "Vegan", veganDefinition, symbolsVega, excludedAdditivesVega, excludedAllergensVega));
+            //_settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGAN)", "Vegan", veganDefinition, symbolsVega, excludedAdditivesVega, excludedAllergensVega));
 
-            _settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
+            //_settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace MensaApp
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // DC MockUp
-            populateNutritions();
+            //populateNutritions();
 
             // HK local-saved Settings, wenn nichts vorhanden vom Server
             holeSettings();
@@ -264,14 +264,14 @@ namespace MensaApp
         {
             // Hole die MensaRestSchnittstellen Parameter
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String AdditivesURI = MensaRestApiResource.GetString("AdditivesBaseURL");
-            String AdditivesURL = MensaRestApiResource.GetString("AdditivesURL");
+            String AdditivesBaseURL = MensaRestApiResource.GetString("AdditivesBaseURL");
+            String AdditivesPathURL = MensaRestApiResource.GetString("AdditivesURL");
 
             // erzeuge neues Objekt
             ServingMealOffer servingMO = new ServingMealOffer();
 
             // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(AdditivesURI, AdditivesURL, "AdditivesJSONFile");
+            await servingMO.GetServerData(AdditivesBaseURL, AdditivesPathURL, "AdditivesJSONFile");
 
             // erzeuge neues Objekt
             ServingAdditivesAndAllergenes servingAAA1 = new ServingAdditivesAndAllergenes();
@@ -280,7 +280,7 @@ namespace MensaApp
             List<AdditiveViewModel> listeZusatzstoffe = await servingAAA1.GetAdditives();
 
             // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(AdditivesURI, AdditivesURL, "AdditivesJSONFile");
+            await servingMO.GetServerData(AdditivesBaseURL, AdditivesPathURL, "AdditivesJSONFile");
 
             // erzeuge neues Objekt
             ServingAdditivesAndAllergenes servingAAA2 = new ServingAdditivesAndAllergenes();

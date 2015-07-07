@@ -1,4 +1,5 @@
 ﻿using MensaApp.DataModel;
+using MensaApp.DataModel.Rest;
 using MensaApp.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -20,6 +21,7 @@ namespace MensaApp.Service
         // Abspeichern und Lesen des JSON-Files
         private StorageFolder _localFolder = ApplicationData.Current.LocalFolder;
         private SerializeSettings _serializeSettings;
+        private ServingSettings _servingSettings;
 
         private string _symbolInfosFilename;
         private string _additivesFilename;
@@ -28,6 +30,7 @@ namespace MensaApp.Service
         public ServingMealOffer()
         {
             _serializeSettings = new SerializeSettings();
+            _servingSettings = new ServingSettings();
 
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
             _symbolInfosFilename = MensaRestApiResource.GetString("SettingsSymbolInfoJSONFile");
@@ -40,26 +43,39 @@ namespace MensaApp.Service
         /// </summary>
         /// <param name="forecast">Anzahl der Tage einschließlich des aktuellen</param>
         /// <returns>Liste aus DayViewModellen, fuer jeden Tag ein DayViewModel, es sei denn es ist Samstag oder Sonntag</returns>
-        public async Task<List<DayViewModel>> FindMealOffersForCertainAmountOfDays(int amountOfDays)
+        public async Task<List<DayViewModel>> FindMealOffersForCertainAmountOfDaysAsync(int requiredAmountOfDays)
         {
             List<DayViewModel> resultDays = new List<DayViewModel>();
 
-            string data = await ReadSavedJSON();
+            string data = await ReadSavedMealsFromJSONFile();
             // JSON-File in Objekte verwandeln
-            var rootObject = JsonConvert.DeserializeObject<RootObjectDays>(data);
+            ListOfDays rootObject = JsonConvert.DeserializeObject<ListOfDays>(data);
 
+            // TODO uses new
+            //ListOfSettingViewModel listOfSettingViewModels = await _servingSettings.getListOfSettingViewModelsAsync();
+            //ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModels.InfoSymbolViewModels;
+            //ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModels.AdditiveViewModels;
+            //ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
+
+            // TODO dismiss old
             NutritionViewModel nutrition = new NutritionViewModel();
-            // Alle InfoSymbole aus den Settings 
-            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbols = new ObservableCollection<InfoSymbolViewModel>();
-            // Alle Zusatzstoffe aus den Settings
-            ObservableCollection<AdditiveViewModel> deserializedAdditives = await _serializeSettings.deserializeAdditives(_additivesFilename);
-            // Alle Allergene aus den Settings
-            ObservableCollection<AllergenViewModel> deserializedAllergens = await _serializeSettings.deserializeAllergenes(_allergensFilename);
+            // Alle InfoSymbole aus den Settings laden
+            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = new ObservableCollection<InfoSymbolViewModel>();
+            // Alle Zusatzstoffe aus den Settings laden
+            ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = await _serializeSettings.deserializeAdditives(_additivesFilename);
+            // Alle Allergene aus den Settings laden
+            ObservableCollection<AllergenViewModel> deserializedAllergenSettings = await _serializeSettings.deserializeAllergenes(_allergensFilename);
 
-            for (int i = 0; i < amountOfDays; i++)
+            int dayIterator = 0;
+            int foundDaysCounter = 0;
+            // DayIterator darf nicht doppelt so groß werden wie die erforderliche Anzahl der gesuchten Tage. 
+            // Soll Deadlock verhindern.
+            while (foundDaysCounter < requiredAmountOfDays && 
+                dayIterator < requiredAmountOfDays * 2)
             {
-                // setze das datum für den gesuchten Tag.
-                DateTime requiredDate = DateTime.Today.AddDays(i);
+                // setze das Datum für den gesuchten Tag.
+                // i Iterator startet mit 0, um den heutigen Tag in die Suche einzuschließen.
+                DateTime requiredDate = DateTime.Today.AddDays(dayIterator++);
 
                 DayViewModel resultDay = new DayViewModel();
                 resultDay.Date = requiredDate;
@@ -77,9 +93,9 @@ namespace MensaApp.Service
                             List<string> additivesIds = meal.additives;
                             List<string> allergenIds = meal.allergens;
 
-                            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(symbolIds, deserializedInfoSymbols);
-                            ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(additivesIds, deserializedAdditives);
-                            ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(allergenIds, deserializedAllergens);
+                            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(symbolIds, deserializedInfoSymbolSettings);
+                            ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(additivesIds, deserializedAdditiveSettings);
+                            ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(allergenIds, deserializedAllergenSettings);
 
                             bool suitableNutrition = EvaluateIsSuitableNutrition(nutrition, resultInfoSymbols, resultAdditives, resultAllergens);
                             bool suitableAdditives = EvaluateIsSuitableAdditives(resultAdditives);
@@ -89,6 +105,8 @@ namespace MensaApp.Service
                             resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, suitableAdditives, suitableAllergens));
                         }
                         resultDays.Add(resultDay);
+                        // für jeden gefundenen Tag wird i erhöht.
+                        foundDaysCounter++;
                         // Der gewünschte Tag wurde gefunden. Darum muss an dieser Stelle nicht weiter danach gesucht werden. -> break; (Schmidt will hate me. xD)
                         break;
                     }
@@ -272,16 +290,14 @@ namespace MensaApp.Service
             {
                 //TODO Holger Fehlerbehandlung einbauen
             }
-
             return data;
-
         }
 
         /// <summary>
         /// Lese das abgespeicherte JSON
         /// </summary>
         /// <returns>JSON als Zeichenkette</returns>
-        private async Task<string> ReadSavedJSON()
+        private async Task<string> ReadSavedMealsFromJSONFile()
         {
             // Helfer
             string data = "";

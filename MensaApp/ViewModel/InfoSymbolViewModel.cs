@@ -19,7 +19,7 @@ namespace MensaApp.ViewModel
         {
             this.IsExcluded = false;
         }
-
+        
         /// <summary>
         /// Constructor to create a completly new symbolInfo.
         /// </summary>
@@ -27,23 +27,10 @@ namespace MensaApp.ViewModel
         /// <param name="definition"></param>
         /// <param name="meaning"></param>
         public InfoSymbolViewModel(string id, string definition)
+            : this ()
         {
             this.Id = id;
             this.Definition = definition;
-            this.IsExcluded = false;
-        }
-
-        /// <summary>
-        /// Constructor to create a completly new symbolInfo.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="definition"></param>
-        /// <param name="meaning"></param>
-        public InfoSymbolViewModel(string id)
-        {
-            this.Id = id;
-            this.Definition = id;
-            this.IsExcluded = false;
         }
 
         /// <summary>
@@ -54,9 +41,8 @@ namespace MensaApp.ViewModel
         /// <param name="meaning"></param>
         /// <param name="isExcluded"></param>
         public InfoSymbolViewModel(string id, string definition, bool isExcluded) 
+            : this(id, definition)
         {
-            this.Id = id;
-            this.Definition = definition;
             this.IsExcluded = isExcluded;
         }
 
