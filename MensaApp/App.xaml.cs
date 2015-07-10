@@ -63,7 +63,7 @@ namespace MensaApp
                 rootFrame = new Frame();
 
                 // TODO: diesen Wert auf eine Cachegröße ändern, die für Ihre Anwendung geeignet ist
-                rootFrame.CacheSize = 2;
+                rootFrame.CacheSize = 1;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -94,7 +94,7 @@ namespace MensaApp
                 // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
                 // und die neue Seite konfigurieren, indem die erforderlichen Informationen als Navigationsparameter
                 // übergeben werden
-                if (!rootFrame.Navigate(typeof(MealsPage), e.Arguments))
+                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }

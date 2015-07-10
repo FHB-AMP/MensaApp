@@ -8,10 +8,7 @@
     xmlns:valueConverter="using:MensaApp.Converter"
     mc:Ignorable="d"
     DataContext="{Binding MealsPageViewModel, RelativeSource={RelativeSource Self}}">
-    <Page.Background>
-        <ImageBrush Stretch="Fill" ImageSource="Assets/AppBackground.png"/>
-    </Page.Background>
-
+    
     <Page.Resources>
         <CollectionViewSource x:Name="mealsToday" Source="{Binding Today}" IsSourceGrouped="True" ItemsPath="Meals"/>
         <CollectionViewSource x:Name="mealsForecast" Source="{Binding ForecastDays}"  IsSourceGrouped="True" ItemsPath="Meals"/>
@@ -31,17 +28,16 @@
     </Page.BottomAppBar>
 
     <Grid x:Name="LayoutRoot" Margin="0,0">
-
-        <Grid.ChildrenTransitions>
-            <TransitionCollection>
-                <EntranceThemeTransition/>
-            </TransitionCollection>
-        </Grid.ChildrenTransitions>
-
+        
         <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
         <!-- Pivot -->
         <Pivot x:Name="mealsPivot" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="0" 
                Margin="-8,0,0,0" Title="Mensa FH Brandenburg">
+            <Pivot.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </Pivot.ItemContainerTransitions>
 
             <!-- First PivotItem -->
             <PivotItem Margin="18,0,10,0" Padding="4,0" Header="Heute">
@@ -49,6 +45,11 @@
                     <SemanticZoom>
                         <SemanticZoom.ZoomedInView>
                             <ListView x:Name="TodayList" ItemsSource="{Binding Source={StaticResource mealsToday}}" Visibility="{Binding Today.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" SelectionMode="Single" Tapped="MealsListView_Tapped" >
+                                <ListView.ItemContainerTransitions>
+                                    <TransitionCollection>
+                                        <EntranceThemeTransition/>
+                                    </TransitionCollection>
+                                </ListView.ItemContainerTransitions>
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -170,6 +171,11 @@
                     <SemanticZoom>
                         <SemanticZoom.ZoomedInView>
                             <ListView x:Name="ForecastList" ItemsSource="{Binding Source={StaticResource mealsForecast}}"  Visibility="{Binding ForecastDays.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Tapped="MealsListView_Tapped" >
+                                <ListView.ItemContainerTransitions>
+                                    <TransitionCollection>
+                                        <EntranceThemeTransition/>
+                                    </TransitionCollection>
+                                </ListView.ItemContainerTransitions>
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

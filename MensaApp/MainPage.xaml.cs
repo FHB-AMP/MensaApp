@@ -41,7 +41,6 @@ namespace MensaApp
         /// Dieser Parameter wird normalerweise zum Konfigurieren der Seite verwendet.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
             SuspensionManager.RegisterFrame(MensaFrame, "MensaFrame");
             if (MensaFrame.Content == null)
             {

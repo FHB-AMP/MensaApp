@@ -12,6 +12,6 @@
     </Page.Background>
     
     <Grid>
-        <Frame x:Name="MensaFrame"/>
+        <Frame x:Name="MensaFrame" Background="{x:Null}"/>
     </Grid>
 </Page>

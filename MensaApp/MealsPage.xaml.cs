@@ -277,13 +277,43 @@ namespace MensaApp
             _mealsPageViewModel.Today.Clear();
             // DayViewModel der GUI uebergeben
             _mealsPageViewModel.Today = today;
+            TodayList.ClearValue(ListView.ItemsPanelProperty);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.ForecastDays.Clear();
             // DayViewModels der GUI uebergeben
             _mealsPageViewModel.ForecastDays = forecast;
 
+            PrepareListTransitionAninmation();
             ProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Scroll at first position of lists and clear both lists of meals to trigger transition animation.
+        /// </summary>
+        private void PrepareListTransitionAninmation()
+        {
+            // today list of meals
+            if (_mealsPageViewModel != null &&
+                _mealsPageViewModel.Today != null &&
+                _mealsPageViewModel.Today.Count > 0)
+            {
+                TodayList.ClearValue(ListView.ItemsPanelProperty);
+                DayViewModel firstTodayItem = _mealsPageViewModel.ForecastDays.ElementAt(0);
+                TodayList.ScrollIntoView(firstTodayItem, ScrollIntoViewAlignment.Leading);
+                TodayList.UpdateLayout();
+            }
+
+            // forecast list of meals
+            if (_mealsPageViewModel != null &&
+                _mealsPageViewModel.ForecastDays != null &&
+                _mealsPageViewModel.ForecastDays.Count > 0)
+            {
+                ForecastList.ClearValue(ListView.ItemsPanelProperty);
+                DayViewModel firstForecastItem = _mealsPageViewModel.ForecastDays.ElementAt(0);
+                ForecastList.ScrollIntoView(firstForecastItem, ScrollIntoViewAlignment.Leading);
+                ForecastList.UpdateLayout();
+            }
         }
 
         /// <summary>
@@ -310,7 +340,10 @@ namespace MensaApp
             {
                 DateTime dateOfMeal = getDateTimeOfSelectedMeal(selectedMeal, _mealsPageViewModel);
                 DetailPageParameter paramModel = new DetailPageParameter(dateOfMeal, selectedMeal);
-                Frame.Navigate(typeof(DetailPage), paramModel);
+                Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
+                if (mensaFrame != null)
+                    mensaFrame.Navigate(typeof(DetailPage), paramModel);
+
             }
         }
 
@@ -357,12 +390,16 @@ namespace MensaApp
 
         private void FummelAppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(MealDetailPage));
+            Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
+            if (mensaFrame != null)
+                mensaFrame.Navigate(typeof(MealDetailPage));
         }
 
         private void ImpressumAppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(ImpressumPage));
+            Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
+            if (mensaFrame != null)
+                mensaFrame.Navigate(typeof(ImpressumPage));
         }
     }
 }

@@ -6,17 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Page.Background>
-        <ImageBrush Stretch="Fill" ImageSource="Assets/AppBackground.png"/>
-    </Page.Background>
 
     <Grid x:Name="LayoutRoot">
 
-        <Grid.ChildrenTransitions>
-            <TransitionCollection>
-                <EntranceThemeTransition/>
-            </TransitionCollection>
-        </Grid.ChildrenTransitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -29,8 +21,44 @@
             <TextBlock Text="Impressum" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled">
+            <Grid x:Name="ContentRoot" Margin="19,0">
 
-        </Grid>
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Applikationsversion 1.0.0" Style="{StaticResource MensaImpressumGroup}"/>
+
+                <TextBlock Grid.Row="1" Text="Konzept, Design und Entwicklung:" Style="{StaticResource MensaImpressumGroup}"/>
+                <TextBlock Grid.Row="2" Text="Jano Espenhahn" Style="{StaticResource MensaImpressumContent}"/>
+                <TextBlock Grid.Row="3" Text="Holger Kassin" Style="{StaticResource MensaImpressumContent}"/>
+                <TextBlock Grid.Row="4" Text="Daniel Claus" Style="{StaticResource MensaImpressumContent}"/>
+
+                <TextBlock Grid.Row="5" Text="Enstanden im Rahmen der Lehrveranstaltung:" Style="{StaticResource MensaImpressumGroup}"/>
+                <TextBlock Grid.Row="6" Text="Mobile Informationsysteme " Style="{StaticResource MensaImpressumContent}"/>
+                <TextBlock Grid.Row="7" Text="Sommersemester 2015 " Style="{StaticResource MensaImpressumContent}"/>
+
+                <TextBlock Grid.Row="8" Text="Mensadaten:" Style="{StaticResource MensaImpressumGroup}"/>
+                <TextBlock Grid.Row="9" Text="Studentenwerk Potsdam" Style="{StaticResource MensaImpressumContent}"/>
+                <TextBlock Grid.Row="10" Text="http://www.studentenwerk-potsdam.de/de/mensa-brandenburg.html" Style="{StaticResource MensaImpressumContent}"/>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>
