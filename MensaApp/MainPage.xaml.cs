@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MensaApp.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,13 @@ namespace MensaApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public static MainPage Current;
+
         public MainPage()
         {
             this.InitializeComponent();
+            Current = this;
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
@@ -36,33 +41,27 @@ namespace MensaApp
         /// Dieser Parameter wird normalerweise zum Konfigurieren der Seite verwendet.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: Seite vorbereiten, um sie hier anzuzeigen.
 
-            // TODO: Wenn Ihre Anwendung mehrere Seiten enthält, stellen Sie sicher, dass
-            // die Hardware-Zurück-Taste behandelt wird, indem Sie das
-            // Windows.Phone.UI.Input.HardwareButtons.BackPressed-Ereignis registrieren.
-            // Wenn Sie den NavigationHelper verwenden, der bei einigen Vorlagen zur Verfügung steht,
-            // wird dieses Ereignis für Sie behandelt.
+            SuspensionManager.RegisterFrame(MensaFrame, "MensaFrame");
+            if (MensaFrame.Content == null)
+            {
+                // When the navigation stack isn't restored navigate to the MealsPage
+                if (!MensaFrame.Navigate(typeof(MealsPage)))
+                {
+                    throw new Exception("Failed to create meal page");
+                }
+            }
         }
 
-        private void Button1_Tapped(object sender, TappedRoutedEventArgs e)
+        void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
-            Frame.Navigate(typeof(MealDetailPage));
-        }
+            if (MensaFrame.CanGoBack)
+            {
+                MensaFrame.GoBack();
 
-        private void Button2_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(MealsPage));
-        }
-
-        private void Button3_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(SettingPage));
-        }
-
-        private void Button4_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(DetailPage));
+                //Indicate the back button press is handled so the app does not exit
+                e.Handled = true;
+            }
         }
     }
 }

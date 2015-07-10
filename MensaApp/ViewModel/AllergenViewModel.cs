@@ -19,6 +19,7 @@ namespace MensaApp.ViewModel
             this.IsExcluded = false;
             this.IsDisabled = false;
             this.ShowContainedIn = false;
+            this.ToggleShowContainedInCommand = new ToggleShowContainedInClick();
         }
 
         /// <summary>

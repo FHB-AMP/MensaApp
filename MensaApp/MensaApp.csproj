@@ -152,6 +152,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\AppBackground.scale-240.png" />
     <Content Include="Assets\Icon\additives-240.png" />
     <Content Include="Assets\Icon\allergens-240.png" />
     <Content Include="Assets\Icon\arrow-down-b.png" />

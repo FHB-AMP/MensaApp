@@ -5,6 +5,7 @@ using MensaApp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -99,7 +100,7 @@ namespace MensaApp
             // restore MealsPageViewModel
             if (e.PageState != null && e.PageState.ContainsKey("MealsPageViewModel"))
             {
-                object mealsPageViewModel = new MealsPageViewModel();
+                object mealsPageViewModel;
                 e.PageState.TryGetValue("MealsPageViewModel", out mealsPageViewModel);
                 if (mealsPageViewModel != null)
                 {
@@ -188,6 +189,10 @@ namespace MensaApp
         /// Handler, bei denen die Navigationsanforderung nicht abgebrochen werden kann.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (e.SourcePageType.Equals(typeof(SettingPage)))
+            {
+                Debug.WriteLine("from settings page");
+            }
             this.navigationHelper.OnNavigatedTo(e);
         }
 
@@ -303,11 +308,51 @@ namespace MensaApp
 
             if (selectedMeal != null)
             {
-                // TODO insert correct datetime.
-                DetailPageParameter paramModel = new DetailPageParameter(DateTime.Now, selectedMeal);
+                DateTime dateOfMeal = getDateTimeOfSelectedMeal(selectedMeal, _mealsPageViewModel);
+                DetailPageParameter paramModel = new DetailPageParameter(dateOfMeal, selectedMeal);
                 Frame.Navigate(typeof(DetailPage), paramModel);
             }
+        }
 
+        /// <summary>
+        /// Search the given mealsPageViewModel for the given mealViewModel and 
+        /// delivers the datetime of dayViewModel the given mealViewModel belongs to.
+        /// </summary>
+        /// <param name="selectedMeal"></param>
+        /// <param name="mealsPageViewModel"></param>
+        /// <returns></returns>
+        private DateTime getDateTimeOfSelectedMeal(MealViewModel selectedMeal, MealsPageViewModel mealsPageViewModel)
+        {
+            DateTime resultDateTime = DateTime.Now;
+            ObservableCollection<DayViewModel> allDayViewModels = new ObservableCollection<DayViewModel>();
+
+            // collect all dayViewModels
+            foreach (DayViewModel todayDayViewModel in mealsPageViewModel.Today)
+            {
+                allDayViewModels.Add(todayDayViewModel);
+            }
+            foreach (DayViewModel forcastDayViewModel in mealsPageViewModel.ForecastDays)
+            {
+                allDayViewModels.Add(forcastDayViewModel);
+            }
+
+            // search all collected dayViewModels for the selected mealViewModel
+            bool isMealDateFound = false;
+            var allDaysIterator = allDayViewModels.GetEnumerator();
+            while (allDaysIterator.MoveNext() && !isMealDateFound)
+            {
+                ObservableCollection<MealViewModel> allMealsOfDay = allDaysIterator.Current.Meals;
+                var allMealsIterator = allMealsOfDay.GetEnumerator();
+                while (allMealsIterator.MoveNext() && !isMealDateFound)
+                {
+                    if (selectedMeal.Equals(allMealsIterator.Current))
+                    {
+                        resultDateTime = allDaysIterator.Current.Date;
+                        isMealDateFound = true;
+                    }
+                }
+            }
+            return resultDateTime;
         }
 
         private void FummelAppBarButton_Click(object sender, RoutedEventArgs e)

@@ -5,15 +5,13 @@
     xmlns:local="using:MensaApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
+    <Page.Background>
+        <ImageBrush Stretch="Fill" ImageSource="Assets/AppBackground.png"/>
+    </Page.Background>
+    
     <Grid>
-        <StackPanel>
-            <Button Content="HolgersFummelSeite" HorizontalAlignment="Stretch" Height="94" Tapped="Button1_Tapped"/>
-            <Button Content="MealsTodayPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button2_Tapped"/>
-            <Button Content="SettingsPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button3_Tapped"/>
-            <Button Content="DetailPage" HorizontalAlignment="Stretch" Height="94" Tapped="Button4_Tapped"/>
-        </StackPanel>
+        <Frame x:Name="MensaFrame"/>
     </Grid>
 </Page>

@@ -53,6 +53,7 @@ namespace MensaApp.Service
 
             // TODO uses new
             //ListOfSettingViewModel listOfSettingViewModels = await _servingSettings.getListOfSettingViewModelsAsync();
+            //ObservableCollection<NutritionViewModel> deserializedNutritions = listOfSettingViewModels.NutritionViewModels;
             //ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModels.InfoSymbolViewModels;
             //ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModels.AdditiveViewModels;
             //ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
@@ -70,7 +71,7 @@ namespace MensaApp.Service
             int foundDaysCounter = 0;
             // DayIterator darf nicht doppelt so groß werden wie die erforderliche Anzahl der gesuchten Tage. 
             // Soll Deadlock verhindern.
-            while (foundDaysCounter < requiredAmountOfDays && 
+            while (foundDaysCounter < requiredAmountOfDays &&
                 dayIterator < requiredAmountOfDays * 2)
             {
                 // setze das Datum für den gesuchten Tag.
@@ -139,7 +140,7 @@ namespace MensaApp.Service
         /// <param name="resultAdditives"></param>
         /// <param name="resultAllergens"></param>
         /// <returns></returns>
-        private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, ObservableCollection<InfoSymbolViewModel> resultInfoSymbols, 
+        private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, ObservableCollection<InfoSymbolViewModel> resultInfoSymbols,
             ObservableCollection<AdditiveViewModel> resultAdditives, ObservableCollection<AllergenViewModel> resultAllergens)
         {
             //TODO Implementation
@@ -346,7 +347,7 @@ namespace MensaApp.Service
         internal ObservableCollection<DayViewModel> SearchMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
         {
             ObservableCollection<DayViewModel> today = new ObservableCollection<DayViewModel>();
- 
+
             foreach (DayViewModel day in AllDaysWithMeals)
             {
                 // Vergleiche explizit das Datum ohne Uhrzeit.
@@ -361,7 +362,7 @@ namespace MensaApp.Service
 
         internal ObservableCollection<DayViewModel> SearchMealOfForecast(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
         {
-            ObservableCollection<DayViewModel> resultDays = new ObservableCollection<DayViewModel>(); 
+            ObservableCollection<DayViewModel> resultDays = new ObservableCollection<DayViewModel>();
 
             foreach (DayViewModel day in AllDaysWithMeals)
             {

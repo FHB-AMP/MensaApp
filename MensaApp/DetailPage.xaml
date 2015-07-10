@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     DataContext="{Binding MealDetailPageViewModel, RelativeSource={RelativeSource Self}}">
     <Page.Background>
-        <ImageBrush Stretch="Fill" ImageSource="Assets/Splashscreen.png"/>
+        <ImageBrush Stretch="Fill" ImageSource="Assets/AppBackground.png"/>
     </Page.Background>
     
     <Grid x:Name="LayoutRoot">

@@ -63,7 +63,7 @@ namespace MensaApp
                 rootFrame = new Frame();
 
                 // TODO: diesen Wert auf eine Cachegröße ändern, die für Ihre Anwendung geeignet ist
-                rootFrame.CacheSize = 1;
+                rootFrame.CacheSize = 2;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -88,7 +88,7 @@ namespace MensaApp
 
                 rootFrame.ContentTransitions = null;
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
-                // Display Slashscreen for 800ms
+                // Display Splashscreen for 800ms
                 await Task.Delay(800);
 
                 // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
