@@ -321,7 +321,6 @@ namespace MensaApp.Service
                     if (selectedNutrition.ExcludedAdditives.Contains(additive))
                     {
                         additive.IsDisabled = true;
-                        //additive.IsExcluded = true;
                     }
                 }
             }
@@ -469,7 +468,6 @@ namespace MensaApp.Service
                     if (selectedNutrition.ExcludedAllergens.Contains(allergen))
                     {
                         allergen.IsDisabled = true;
-                        //allergen.IsExcluded = true;
                     }
                 }
             }

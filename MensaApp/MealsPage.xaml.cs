@@ -84,11 +84,11 @@ namespace MensaApp
         {
             // Restore page state
             RestorePageState(e);
-            if (_mealsPageViewModel.Today.Count == 0 || _mealsPageViewModel.ForecastDays.Count == 0)
+
+            if (_mealsPageViewModel.Today.Count == 0 && _mealsPageViewModel.ForecastDays.Count == 0)
             {
                 synchronizeWithServer(false);
             }
-
         }
 
         /// <summary>
@@ -123,26 +123,36 @@ namespace MensaApp
             // restore selected item of today listview and set scroller position.
             if (e.PageState != null && e.PageState.ContainsKey("TodayListIndex"))
             {
-                object listIndex = -1;
+                object listIndex = 0;
                 e.PageState.TryGetValue("TodayListIndex", out listIndex);
                 if (listIndex != null)
                 {
-                    TodayList.SelectedIndex = Convert.ToInt32(listIndex);
-                    TodayList.ScrollIntoView(TodayList.SelectedItem, ScrollIntoViewAlignment.Leading);
-                    TodayList.UpdateLayout();
+                    int listIndexInt = Convert.ToInt32(listIndex);
+                    // take care about to select only exsiting items
+                    if (listIndexInt >= 0 && TodayList.Items.Count > listIndexInt)
+                    {
+                        TodayList.SelectedIndex = listIndexInt;
+                        TodayList.ScrollIntoView(TodayList.SelectedItem, ScrollIntoViewAlignment.Leading);
+                        TodayList.UpdateLayout();
+                    }
                 }
             }
 
             // restore selected item of forcast listview and set scroller position.
             if (e.PageState != null && e.PageState.ContainsKey("ForecastListIndex"))
             {
-                object listIndex = -1;
+                object listIndex = 0;
                 e.PageState.TryGetValue("ForecastListIndex", out listIndex);
                 if (listIndex != null)
                 {
-                    ForecastList.SelectedIndex = Convert.ToInt32(listIndex);
-                    ForecastList.ScrollIntoView(ForecastList.SelectedItem, ScrollIntoViewAlignment.Leading);
-                    ForecastList.UpdateLayout();
+                    int listIndexInt = Convert.ToInt32(listIndex);
+                    // take care about to select only exsiting items
+                    if (listIndexInt >= 0 && ForecastList.Items.Count > listIndexInt)
+                    {
+                        ForecastList.SelectedIndex = listIndexInt;
+                        ForecastList.ScrollIntoView(ForecastList.SelectedItem, ScrollIntoViewAlignment.Leading);
+                        ForecastList.UpdateLayout();
+                    }
                 }
             }
         }

@@ -1,0 +1,174 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:templateSelector="using:MensaApp.Selector"
+    xmlns:local="using:MensaApp.Resources">
+
+
+    <templateSelector:SettingsTemplateSelector x:Key="SettingsTemplateSelector">
+        
+        <!-- #############################################################################################################################################################
+        ############################################################################ Additives Enabled ###################################################################
+        ##################################################################################################################################################################-->
+        <templateSelector:SettingsTemplateSelector.SettingAdditiveEnabledTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="34" Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition MinHeight="0" Height="auto"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="34"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Tile Background-->
+                    <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
+                    <!--Tile HeaderBackground-->
+                    <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
+                    <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
+
+                    <Image Source="/assets/icon/additives-240.png" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
+                    <!-- Content List -->
+                    <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" 
+                                              VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" 
+                                               Foreground="{StaticResource MensaFontForeground}" />
+
+                    <TextBlock Text="{Binding Path=Meaning}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowMeaning, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
+
+                    <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
+                        <Button.Background>
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowMeaning, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </templateSelector:SettingsTemplateSelector.SettingAdditiveEnabledTemplate>
+        
+        <!-- #############################################################################################################################################################
+        ############################################################################ Additives Disabled ##################################################################
+        ##################################################################################################################################################################-->
+        <templateSelector:SettingsTemplateSelector.SettingAdditiveDisabledTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="34" Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition MinHeight="0" Height="auto"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="34"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Tile Background-->
+                    <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
+                    <!--Tile HeaderBackground-->
+                    <Rectangle Fill="{Binding Path=IsDisabled, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
+                    <Rectangle Fill="{Binding Path=IsDisabled, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
+
+                    <Image Source="/assets/icon/additives-240.png" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
+                    <!-- Content List -->
+                    <TextBlock Text="Dieser Zusatzstoff ist durch die gewählte Ernährungsweise ausgeschlossen." Style="{StaticResource MensaTileListContent}" Margin="10,12" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" MaxLines="3" TextWrapping="WrapWholeWords" />
+
+                    <TextBlock Text="{Binding Path=Meaning}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowMeaning, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
+
+                    <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
+                        <Button.Background>
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowMeaning, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </templateSelector:SettingsTemplateSelector.SettingAdditiveDisabledTemplate>
+
+        <!-- #############################################################################################################################################################
+        ############################################################################ Allergens Enabled ###################################################################
+        ##################################################################################################################################################################-->
+        <templateSelector:SettingsTemplateSelector.SettingAllergenEnabledTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="34" Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition MinHeight="0" Height="auto"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="34"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Tile Background-->
+                    <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
+                    <!--Tile HeaderBackground-->
+                    <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
+                    <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
+
+                    <Image Source="/assets/icon/allergens-240.png" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
+                    <!-- Content List -->
+                    <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
+
+                    <TextBlock Text="{Binding Path=ContainedIn}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowContainedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
+
+                    <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
+                        <Button.Background>
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowContainedIn, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </templateSelector:SettingsTemplateSelector.SettingAllergenEnabledTemplate>
+
+        <!-- #############################################################################################################################################################
+        ############################################################################ Allergens Disabled ##################################################################
+        ##################################################################################################################################################################-->
+        <templateSelector:SettingsTemplateSelector.SettingAllergenDisabledTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="34" Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition MinHeight="0" Height="auto"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="34"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Tile Background-->
+                    <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
+                    <!--Tile HeaderBackground-->
+                    <Rectangle Fill="{Binding Path=IsDisabled, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
+                    <Rectangle Fill="{Binding Path=IsDisabled, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
+
+                    <Image Source="/assets/icon/allergens-240.png" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
+                    <!-- Content List -->
+                    <TextBlock Text="Dieses Allergen ist durch die gewählte Ernährungsweise ausgeschlossen." Style="{StaticResource MensaTileListContent}" Margin="10,12" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" MaxLines="3" TextWrapping="WrapWholeWords" />
+
+                    <TextBlock Text="{Binding Path=ContainedIn}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowContainedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
+
+                    <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
+                        <Button.Background>
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowContainedIn, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+            </DataTemplate>            
+        </templateSelector:SettingsTemplateSelector.SettingAllergenDisabledTemplate>
+
+
+    </templateSelector:SettingsTemplateSelector>
+
+
+
+
+</ResourceDictionary>

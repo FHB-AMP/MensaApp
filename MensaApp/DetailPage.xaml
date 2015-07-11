@@ -277,6 +277,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsExcluded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <TextBlock Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}" Grid.Column="1" VerticalAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>
@@ -364,6 +365,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsExcluded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <Image Source="assets/icon/redcross-240.png" Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}" VerticalAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>

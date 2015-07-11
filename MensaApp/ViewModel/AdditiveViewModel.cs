@@ -50,6 +50,12 @@ namespace MensaApp.ViewModel
             this.IsExcluded = isExcluded;
         }
 
+        public AdditiveViewModel(string id, string definition, string meaning, bool isExcluded, bool isDisabled)
+            : this(id, definition, meaning, isExcluded)
+        {
+            this.IsDisabled = isDisabled;
+        }
+        
         /// <summary>
         /// Command to toggle between show and hide further information of an additive.
         /// </summary>

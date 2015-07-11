@@ -5,10 +5,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:valueConverter="using:MensaApp.Converter"
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" 
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     x:Class="MensaApp.SettingPage"
     mc:Ignorable="d"
     DataContext="{Binding SettingsPageViewModel, RelativeSource={RelativeSource Self}}">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/SettingsListTemplatesDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Icon="Save" Label="Speichern" Click="SaveSettingsAppBarButton_Click" />
@@ -131,7 +139,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Image Source="assets/icon/redcross-240.png"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource MensaTileListContent}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Definition}" Style="{StaticResource MensaTileListContent}" VerticalAlignment="Center"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
@@ -202,13 +210,6 @@
                                 <TextBlock Text="ausgeschlossene Zusatzstoffe" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
                                 <!-- Content List -->
                                 <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAdditives}" Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10">
-
-                                    <ListView.ItemContainerTransitions>
-                                        <TransitionCollection>
-                                            <EntranceThemeTransition/>
-                                        </TransitionCollection>
-                                    </ListView.ItemContainerTransitions>
-
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -294,13 +295,6 @@
                                 <Image Source="/Assets/Icon/allergens-240.png" HorizontalAlignment="Center"/>
                                 <!-- Content List -->
                                 <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAllergens}" Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10">
-
-                                    <ListView.ItemContainerTransitions>
-                                        <TransitionCollection>
-                                            <EntranceThemeTransition/>
-                                        </TransitionCollection>
-                                    </ListView.ItemContainerTransitions>
-
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -330,7 +324,8 @@
 
             <!-- Secound PivotItem -->
             <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Zusatzstoffe">
-                <ListView ItemsSource="{Binding Path=Additives}" SelectionMode="None">
+                <ListView ItemsSource="{Binding Path=Additives}" SelectionMode="None" 
+                          ItemTemplateSelector="{StaticResource SettingsTemplateSelector}">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition/>
@@ -342,41 +337,6 @@
                             <Setter Property="Margin" Value="8,0,8,8"/>
                         </Style>
                     </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition MinHeight="34" Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition MinHeight="0" Height="auto"/>
-                                    <RowDefinition Height="30"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                </Grid.ColumnDefinitions>
-                                <!--Tile Background-->
-                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
-                                <!--Tile HeaderBackground-->
-                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
-                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
-
-                                <Image Source="/assets/icon/additives-240.png" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
-                                <!-- Content List -->
-                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
-
-                                <TextBlock Text="{Binding Path=Meaning}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowMeaning, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
-
-                                <Button Command="{Binding ToggleShowMeaningCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
-                                    <Button.Background>
-                                        <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowMeaning, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
-                                    </Button.Background>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                 </ListView>
             </PivotItem>
 
@@ -386,7 +346,8 @@
 
             <!-- Third PivotItem -->
             <PivotItem  Margin="18,10,10,0" Padding="2,0"  Header="Allergene">
-                <ListView ItemsSource="{Binding Path=Allergens}" SelectionMode="None" Margin="10,0">
+                <ListView ItemsSource="{Binding Path=Allergens}" SelectionMode="None" 
+                          ItemTemplateSelector="{StaticResource SettingsTemplateSelector}">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition/>
@@ -398,41 +359,6 @@
                             <Setter Property="Margin" Value="8,0,8,8"/>
                         </Style>
                     </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition MinHeight="34" Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition MinHeight="0" Height="auto"/>
-                                    <RowDefinition Height="30"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                </Grid.ColumnDefinitions>
-                                <!--Tile Background-->
-                                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0" Grid.RowSpan="3"  />
-                                <!--Tile HeaderBackground-->
-                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.Column="0" Grid.ColumnSpan="3" RadiusX="5" RadiusY="5" />
-                                <Rectangle Fill="{Binding Path=IsExcluded, Converter={StaticResource ExcludeToColorCode}}" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Height="7" />
-
-                                <Image Source="/assets/icon/allergens-240.png" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding Path=Definition}" Style="{StaticResource MensaTileTitle}" Grid.Column="1" Grid.ColumnSpan="2" MaxLines="3" TextWrapping="WrapWholeWords" />
-                                <!-- Content List -->
-                                <ToggleSwitch IsOn="{Binding Path=IsExcluded, Converter={StaticResource NegateBooleanConverter}, Mode=TwoWay}" VerticalAlignment="Center" OffContent="ausschließen" OnContent="einbeziehen" Margin="10,0" Padding="0,-8,25.5,0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Foreground="{StaticResource MensaFontForeground}"/>
-
-                                <TextBlock Text="{Binding Path=ContainedIn}" Grid.Row="2" Style="{StaticResource MensaTileListContent}" Visibility="{Binding Path=ShowContainedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3" MaxLines="0" Grid.Column="1"/>
-
-                                <Button Command="{Binding ToggleShowContainedInCommand}" CommandParameter="{Binding}" BorderThickness="0" HorizontalAlignment="Stretch" Padding="0" MinWidth="0" MinHeight="40" FontWeight="Bold" Grid.Row="3" VerticalAlignment="Stretch" Margin="2,-8" Grid.ColumnSpan="3">
-                                    <Button.Background>
-                                        <ImageBrush Stretch="Uniform" ImageSource="{Binding Path=ShowContainedIn, Converter={StaticResource ShowInformationToImagePathConverter}}"/>
-                                    </Button.Background>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                 </ListView>
             </PivotItem>
         </Pivot>

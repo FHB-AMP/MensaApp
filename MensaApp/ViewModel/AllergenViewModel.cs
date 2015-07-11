@@ -49,6 +49,12 @@ namespace MensaApp.ViewModel
             this.IsExcluded = isExcluded;
         }
 
+        public AllergenViewModel(string id, string definition, string containedIn, bool isExcluded, bool isDisabled)
+            : this(id, definition, containedIn, isExcluded)
+        {
+            this.IsDisabled = isDisabled;
+        }
+
         /// <summary>
         /// Command to toggle between show and hide further information of an allergen.
         /// </summary>

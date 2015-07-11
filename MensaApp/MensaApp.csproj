@@ -126,6 +126,7 @@
       <DependentUpon>MealsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Selector\SettingsTemplateSelector.cs" />
     <Compile Include="Service\FileService.cs" />
     <Compile Include="Service\SettingsMapping.cs" />
     <Compile Include="Service\SerializeSettings.cs" />
@@ -202,6 +203,11 @@
     <Page Include="MealsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\SettingsListTemplatesDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="SettingPage.xaml">
       <SubType>Designer</SubType>

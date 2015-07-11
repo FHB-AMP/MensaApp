@@ -59,7 +59,7 @@ namespace MensaApp.Service
             //ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
 
             // TODO dismiss old
-            NutritionViewModel nutrition = new NutritionViewModel();
+            NutritionViewModel nutrition = getTestNutritionFromStub("(OVO)");
             // Alle InfoSymbole aus den Settings laden
             ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = new ObservableCollection<InfoSymbolViewModel>();
             // Alle Zusatzstoffe aus den Settings laden
@@ -90,15 +90,15 @@ namespace MensaApp.Service
                     {
                         foreach (Meal meal in day.meals)
                         {
-                            List<string> symbolIds = meal.symbols;
-                            List<string> additivesIds = meal.additives;
-                            List<string> allergenIds = meal.allergens;
+                            List<string> mealInfoSymbolIds = meal.symbols;
+                            List<string> mealAdditiveIds = meal.additives;
+                            List<string> mealAllergenIds = meal.allergens;
 
-                            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(symbolIds, deserializedInfoSymbolSettings);
-                            ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(additivesIds, deserializedAdditiveSettings);
-                            ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(allergenIds, deserializedAllergenSettings);
+                            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(mealInfoSymbolIds, deserializedInfoSymbolSettings);
+                            ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(mealAdditiveIds, deserializedAdditiveSettings);
+                            ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(mealAllergenIds, deserializedAllergenSettings);
 
-                            bool suitableNutrition = EvaluateIsSuitableNutrition(nutrition, resultInfoSymbols, resultAdditives, resultAllergens);
+                            bool suitableNutrition = EvaluateIsSuitableNutrition(nutrition, mealInfoSymbolIds, mealAdditiveIds, mealAllergenIds);
                             bool suitableAdditives = EvaluateIsSuitableAdditives(resultAdditives);
                             bool suitableAllergens = EvaluateIsSuitableAllergens(resultAllergens);
                             bool suitableMeal = EvaluateSuitableMeal(suitableNutrition, suitableAdditives, suitableAllergens);
@@ -114,6 +114,74 @@ namespace MensaApp.Service
                 }
             }
             return resultDays;
+        }
+
+
+        /// <summary>
+        /// stub which should be deleted in the final version.
+        /// </summary>
+        /// <param name="nutritionId"></param>
+        /// <returns></returns>
+        private NutritionViewModel getTestNutritionFromStub(string nutritionId)
+        {
+            // TODO delete this method when its not necassery any more.
+            NutritionViewModel resultNutrition = new NutritionViewModel();
+            if (nutritionId != null)
+            {
+                switch (nutritionId)
+                {
+                    case "(NOR)":
+                        // Add normal nutrition
+                        string normalDefinition = "Keine Einschränkungen.";
+                        resultNutrition = new NutritionViewModel("(NOR)", "Normal", normalDefinition, new ObservableCollection<InfoSymbolViewModel>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true);
+                        break;
+                    case "(OVO)" :
+                        // Add Vegetarian nutrition
+                        ObservableCollection<InfoSymbolViewModel> infoSymbolsVegi = new ObservableCollection<InfoSymbolViewModel>();
+                        ObservableCollection<AllergenViewModel> excludedAllergensVegi = new ObservableCollection<AllergenViewModel>();
+                        ObservableCollection<AdditiveViewModel> excludedAdditivesVegi = new ObservableCollection<AdditiveViewModel>();
+                        infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Schweinefleisch", "Schweinefleisch"));
+                        infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Rindfleisch", "Rindfleisch"));
+                        infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Lamm", "Lamm"));
+                        infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Fisch", "Fisch"));
+                        infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Geflügelfleisch", "Geflügelfleisch"));
+                        excludedAdditivesVegi.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
+                        excludedAllergensVegi.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+                        excludedAllergensVegi.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
+                        excludedAllergensVegi.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+                        string veggieDefinition = "Ovo-Lacto-Vegetarier essen nichts vom toten Tier.";
+                        resultNutrition = new NutritionViewModel("(OVO)", "Ovo-Lacto-Vegetarisch", veggieDefinition, infoSymbolsVegi, excludedAdditivesVegi, excludedAllergensVegi);
+                        break;
+                    case "(VEG)" :
+                        // Add Vegan nutrion
+                        ObservableCollection<InfoSymbolViewModel> infoSymbolsVega = new ObservableCollection<InfoSymbolViewModel>();
+                        ObservableCollection<AllergenViewModel> excludedAllergensVega = new ObservableCollection<AllergenViewModel>();
+                        ObservableCollection<AdditiveViewModel> excludedAdditivesVega = new ObservableCollection<AdditiveViewModel>();
+                        infoSymbolsVega.Add(new InfoSymbolViewModel("mit Schweinefleisch", "Schweinefleisch"));
+                        infoSymbolsVega.Add(new InfoSymbolViewModel("mit Rindfleisch", "Rindfleisch"));
+                        infoSymbolsVega.Add(new InfoSymbolViewModel("mit Lamm", "Lamm"));
+                        infoSymbolsVega.Add(new InfoSymbolViewModel("mit Fisch", "Fisch"));
+                        infoSymbolsVega.Add(new InfoSymbolViewModel("mit Geflügelfleisch", "Geflügelfleisch"));
+
+                        excludedAdditivesVega.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
+                        excludedAdditivesVega.Add(new AdditiveViewModel("(13)", "mit Milcheiweiß", "", false));
+                        excludedAdditivesVega.Add(new AdditiveViewModel("(14)", "mit Eiklar", "Einsatz von Fremdeiweiß, wird als Bindemittel verwendet.", false));
+                        excludedAdditivesVega.Add(new AdditiveViewModel("(22)", "mit Milchpulver", "", false));
+                        excludedAdditivesVega.Add(new AdditiveViewModel("(23)", "mit Molkenpulver", "", false));
+                        excludedAdditivesVega.Add(new AdditiveViewModel("(TL)", "enthält tierisches Lab", "", false));
+                        excludedAllergensVega.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+                        excludedAllergensVega.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
+                        excludedAllergensVega.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
+                        excludedAllergensVega.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
+                        excludedAllergensVega.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
+                        string veganDefinition = "Veganer essen gar keine tierischen Produkte.";
+                        resultNutrition = new NutritionViewModel("(VEG)", "Vegan", veganDefinition, infoSymbolsVega, excludedAdditivesVega, excludedAllergensVega);
+                        break;
+                    default:
+                        goto case "(NOR)";
+                }
+            }
+            return resultNutrition;
         }
 
         /// <summary>
@@ -140,10 +208,26 @@ namespace MensaApp.Service
         /// <param name="resultAdditives"></param>
         /// <param name="resultAllergens"></param>
         /// <returns></returns>
-        private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, ObservableCollection<InfoSymbolViewModel> resultInfoSymbols,
-            ObservableCollection<AdditiveViewModel> resultAdditives, ObservableCollection<AllergenViewModel> resultAllergens)
+        private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, List<string> mealInfoSymbolIds,
+            List<string> mealAdditiveIds, List<string> mealAllergenIds)
         {
-            //TODO Implementation
+            foreach (InfoSymbolViewModel infoSymbolViewModel in nutrition.ExcludedSymbols) 
+            {
+                if (mealInfoSymbolIds.Contains(infoSymbolViewModel.Id))
+                    return false;
+            }
+
+            foreach (AdditiveViewModel additiveViewModel in nutrition.ExcludedAdditives)
+            {
+                if (mealAdditiveIds.Contains(additiveViewModel.Id))
+                    return false;
+            }
+
+            foreach (AllergenViewModel allergenViewModel in nutrition.ExcludedAllergens)
+            {
+                if (mealAllergenIds.Contains(allergenViewModel.Id))
+                    return false;
+            }
             return true;
         }
 
@@ -156,7 +240,7 @@ namespace MensaApp.Service
         {
             foreach (AllergenViewModel allergen in resultAllergens)
             {
-                if (allergen.IsExcluded)
+                if (allergen.IsExcluded || allergen.IsDisabled)
                 {
                     return false;
                 }
@@ -173,7 +257,7 @@ namespace MensaApp.Service
         {
             foreach (AdditiveViewModel additives in resultAdditives)
             {
-                if (additives.IsExcluded)
+                if (additives.IsExcluded || additives.IsDisabled)
                 {
                     return false;
                 }

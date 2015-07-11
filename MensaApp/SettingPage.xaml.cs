@@ -53,33 +53,33 @@ namespace MensaApp
         {
             // Add normal nutrition
             string normalDefinition = "Keine Einschränkungen.";
-            //_settingViewModel.Nutritions.Add(new NutritionViewModel("(NORMAL)", "Normal", normalDefinition, new ObservableCollection<string>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(NORMAL)", "Normal", normalDefinition, new ObservableCollection<InfoSymbolViewModel>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
 
             // Add Vegetarian nutrition
-            ObservableCollection<string> symbolsVegi = new ObservableCollection<string>();
+            ObservableCollection<InfoSymbolViewModel> infoSymbolsVegi = new ObservableCollection<InfoSymbolViewModel>();
             ObservableCollection<AllergenViewModel> excludedAllergensVegi = new ObservableCollection<AllergenViewModel>();
             ObservableCollection<AdditiveViewModel> excludedAdditivesVegi = new ObservableCollection<AdditiveViewModel>();
-            symbolsVegi.Add("mit Schweinefleisch");
-            symbolsVegi.Add("mit Rindfleisch");
-            symbolsVegi.Add("mit Lamm");
-            symbolsVegi.Add("mit Fisch");
-            symbolsVegi.Add("mit Geflügelfleisch");
+            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Schweinefleisch", "Schweinefleisch"));
+            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Rindfleisch", "Rindfleisch"));
+            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Lamm", "Lamm"));
+            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Fisch", "Fisch"));
+            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Geflügelfleisch", "Geflügelfleisch"));
             excludedAdditivesVegi.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
             excludedAllergensVegi.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
             excludedAllergensVegi.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
             excludedAllergensVegi.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
             string veggieDefinition = "Ovo-Lacto-Vegetarier essen nichts vom toten Tier.";
-            //_settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGGIE)", "Ovo-Lacto-Vegetarisch", veggieDefinition, symbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGGIE)", "Ovo-Lacto-Vegetarisch", veggieDefinition, infoSymbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
 
             // Add Vegan nutrion
-            ObservableCollection<string> symbolsVega = new ObservableCollection<string>();
+            ObservableCollection<InfoSymbolViewModel> infoSymbolsVega = new ObservableCollection<InfoSymbolViewModel>();
             ObservableCollection<AllergenViewModel> excludedAllergensVega = new ObservableCollection<AllergenViewModel>();
             ObservableCollection<AdditiveViewModel> excludedAdditivesVega = new ObservableCollection<AdditiveViewModel>();
-            symbolsVega.Add("mit Schweinefleisch");
-            symbolsVega.Add("mit Rindfleisch");
-            symbolsVega.Add("mit Lamm");
-            symbolsVega.Add("mit Fisch");
-            symbolsVega.Add("mit Geflügelfleisch");
+            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Schweinefleisch", "Schweinefleisch"));
+            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Rindfleisch", "Rindfleisch"));
+            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Lamm", "Lamm"));
+            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Fisch", "Fisch"));
+            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Geflügelfleisch", "Geflügelfleisch"));
 
             excludedAdditivesVega.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
             excludedAdditivesVega.Add(new AdditiveViewModel("(13)", "mit Milcheiweiß", "", false));
@@ -93,9 +93,9 @@ namespace MensaApp
             excludedAllergensVega.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
             excludedAllergensVega.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
             string veganDefinition = "Veganer essen gar keine tierischen Produkte.";
-            //_settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGAN)", "Vegan", veganDefinition, symbolsVega, excludedAdditivesVega, excludedAllergensVega));
+            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGAN)", "Vegan", veganDefinition, infoSymbolsVega, excludedAdditivesVega, excludedAllergensVega));
 
-            //_settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
+            _settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace MensaApp
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // DC MockUp
-            //populateNutritions();
+            populateNutritions();
 
             // HK local-saved Settings, wenn nichts vorhanden vom Server
             holeSettings();
