@@ -192,6 +192,8 @@ namespace MensaApp
             // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Allergene)
             ss.serializeAllergenes(_settingViewModel.Allergens, dateiName);
             ProgressBar.Visibility = Visibility.Collapsed;
+
+            Frame.Navigate(typeof(MealsPage));
         }
 
         /// <summary>
