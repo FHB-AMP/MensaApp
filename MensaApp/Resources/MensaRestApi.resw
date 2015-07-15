@@ -127,10 +127,10 @@
   </data>
   <data name="AdditivesURL" xml:space="preserve">
     <value>/services/descriptions</value>
-    <comment>Zusatzstoffe und Allergene vertiefenen Struktur</comment>
+    <comment>Zusatzstoffe und Allergene vertiefende Struktur</comment>
   </data>
   <data name="MealBaseURL" xml:space="preserve">
-    <value>https://demo9590924.mockable.io</value>
+    <value>https://demo6732973.mockable.io</value>
     <comment>Mahlzeiten Grundaufruf</comment>
   </data>
   <data name="MealJSONFile" xml:space="preserve">
@@ -139,7 +139,7 @@
   </data>
   <data name="MealURL" xml:space="preserve">
     <value>/services/meals</value>
-    <comment>Mahlzeiten vertiefenen Struktur</comment>
+    <comment>Mahlzeiten vertiefende Struktur</comment>
   </data>
   <data name="SettingsAdditivesJSONFile" xml:space="preserve">
     <value>SettingsAdditivesJSONFile.json</value>
