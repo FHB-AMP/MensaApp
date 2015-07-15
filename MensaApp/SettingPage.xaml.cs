@@ -8,10 +8,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -126,13 +128,30 @@ namespace MensaApp
         /// <see cref="Frame.Navigate(Type, Object)"/> als diese Seite ursprünglich angefordert wurde und
         /// ein Wörterbuch des Zustands, der von dieser Seite während einer früheren
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            // DC MockUp
-            populateNutritions();
+            //// DC MockUp
+            //populateNutritions();
 
-            // HK local-saved Settings, wenn nichts vorhanden vom Server
-            holeSettings();
+            // neues Objekt zum Laden der Settings
+            ServingSettings servingSettings = new ServingSettings();
+
+            // Laden der Settings lokal
+            Task<ListOfSettingViewModel> listOfTaskWithSettingViewModels = servingSettings.getListOfSettingViewModelsAsync();
+
+            // Task abwarten
+            ListOfSettingViewModel listOfSettingViewModel = await listOfTaskWithSettingViewModels;
+
+            // Aktualisieren der Oberflaeche
+            _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
+            _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
+            _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
+
+            if (listOfSettingViewModel.AdditiveViewModels.Count == 0)
+            {
+                // ????? Kann das wieder verwendet werden?
+                synchronizeWithServer();
+            }
         }
 
         /// <summary>
@@ -176,23 +195,17 @@ namespace MensaApp
 
         private void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            // Fortschrittsbalken einblenden
             ProgressBar.Visibility = Visibility.Visible;
-            // Neuen Serializer erzeugen
-            SerializeSettings ss = new SerializeSettings();
 
-            // Hole den Standort der JSON Datei
-            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
+            ServingSettings servingSettings = new ServingSettings();
 
-            // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Zusatzstoffe)
-            ss.serializeAdditives(_settingViewModel.Additives, dateiName);
+            servingSettings.SaveSettings(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
 
-            dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
-
-            // Uebergebe die aktuellen vorgenommenen Einstellungen zum Serialisieren (Allergene)
-            ss.serializeAllergenes(_settingViewModel.Allergens, dateiName);
+            // Fortschrittsbalken ausblenden
             ProgressBar.Visibility = Visibility.Collapsed;
 
+            // Zu dem heutigen Essensangebot navigieren
             Frame.Navigate(typeof(MealsPage));
         }
 
@@ -217,57 +230,18 @@ namespace MensaApp
             }
         }
 
-        private async void holeSettings()
-        {
-            SerializeSettings ss = new SerializeSettings();
-            ObservableCollection<ViewModel.AdditiveViewModel> oo = new ObservableCollection<ViewModel.AdditiveViewModel>();
-            ObservableCollection<ViewModel.AllergenViewModel> oo2 = new ObservableCollection<ViewModel.AllergenViewModel>();
-
-            // Hole den Standort der JSON Datei
-            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String dateiName = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
-
-            oo = await ss.deserializeAdditives(dateiName);
-
-            if (oo.Count == 0)
-            {
-                synchronizeWithServer();
-            } else
-            {
-                _settingViewModel.Additives.Clear();
-                foreach (AdditiveViewModel addiVM in oo)
-                {
-                    _settingViewModel.Additives.Add(new AdditiveViewModel(addiVM.Id, addiVM.Definition, addiVM.Meaning, addiVM.IsExcluded));
-                }
-                
-            }
-
-            dateiName = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
-            oo2 = await ss.deserializeAllergenes(dateiName);
-
-            if (oo2.Count == 0)
-            {
-                synchronizeWithServer();
-            }
-            else
-            {
-                _settingViewModel.Allergens.Clear();
-                foreach (AllergenViewModel allergVM in oo2)
-                {
-                    _settingViewModel.Allergens.Add(new AllergenViewModel(allergVM.Id, allergVM.Definition, allergVM.ContainedIn, allergVM.IsExcluded));
-                }
-
-            }
-        }
-
         /// <summary>
         /// Neu-Laden aller Zusatzstoffe und Allergene
         /// </summary>
         private async void synchronizeWithServer()
         {
-            // Hole die MensaRestSchnittstellen Parameter
+            // Ressourcen ladden
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
+
+            // Holen des Grundaufrufs
             String AdditivesBaseURL = MensaRestApiResource.GetString("AdditivesBaseURL");
+
+            // Holen der vertiefenden Struktur
             String AdditivesPathURL = MensaRestApiResource.GetString("AdditivesURL");
 
             // erzeuge neues Objekt

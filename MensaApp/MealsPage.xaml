@@ -18,8 +18,7 @@
         <CommandBar ClosedDisplayMode="Compact">
             <CommandBar.PrimaryCommands>
                 <AppBarButton Icon="Refresh" Label="neu laden" Click="RefreshAppBarButton_Click"/>
-                <AppBarButton Icon="Setting" Label="Einstellung" Click="SettingAppBarButton_Click"/>
-                <AppBarButton  Icon="Repair" Label="Fummeln" Click="FummelAppBarButton_Click"/>
+                <AppBarButton Icon="Setting" Label="Einstellungen" Click="SettingAppBarButton_Click"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Impressum" Click="ImpressumAppBarButton_Click"></AppBarButton>

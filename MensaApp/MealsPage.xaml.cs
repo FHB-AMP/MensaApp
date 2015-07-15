@@ -398,13 +398,6 @@ namespace MensaApp
             return resultDateTime;
         }
 
-        private void FummelAppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
-            if (mensaFrame != null)
-                mensaFrame.Navigate(typeof(MealDetailPage));
-        }
-
         private void ImpressumAppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;

@@ -119,17 +119,14 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MealDetailPage.xaml.cs">
-      <DependentUpon>MealDetailPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MealsPage.xaml.cs">
       <DependentUpon>MealsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selector\SettingsTemplateSelector.cs" />
     <Compile Include="Service\FileService.cs" />
-    <Compile Include="Service\SettingsMapping.cs" />
     <Compile Include="Service\SerializeSettings.cs" />
+    <Compile Include="Service\SettingsMapping.cs" />
     <Compile Include="Service\ServingMealOffer.cs" />
     <Compile Include="Service\ServingAdditivesAndAllergenes.cs" />
     <Compile Include="Service\ServingSettings.cs" />
@@ -195,10 +192,6 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MealDetailPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MealsPage.xaml">
       <SubType>Designer</SubType>
