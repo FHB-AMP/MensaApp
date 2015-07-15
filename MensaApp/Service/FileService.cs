@@ -12,6 +12,8 @@ using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using System.IO;
+using System.Diagnostics;
 
 namespace MensaApp.Service
 {
@@ -71,8 +73,14 @@ namespace MensaApp.Service
         {
             if (listOfSettings != null)
             {
-                string jsonString = JsonConvert.SerializeObject(listOfSettings);
-                await SaveJsonStringToFile(_settingsFilename, jsonString);
+                try { 
+                    string jsonString = JsonConvert.SerializeObject(listOfSettings);
+                    await SaveJsonStringToFile(_settingsFilename, jsonString);
+                }
+                catch (FileNotFoundException)
+                {
+                    Debug.WriteLine("Konnte Datei " + _settingsFilename + " nicht abspeichern!");
+                }
             }
         }
 
