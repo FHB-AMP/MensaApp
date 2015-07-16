@@ -133,7 +133,7 @@ namespace MensaApp
             //// DC MockUp
             //populateNutritions();
 
-            // neues Objekt zum Laden der Settings
+            // neues Objekt zum Laden der Settings lokal
             ServingSettings servingSettings = new ServingSettings();
 
             // Laden der Settings lokal

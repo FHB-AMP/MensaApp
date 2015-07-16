@@ -32,7 +32,7 @@ namespace MensaApp.Service
             _localFolder = ApplicationData.Current.LocalFolder;
 
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            _settingsFilename = MensaRestApiResource.GetString("SettingFilename");
+            _settingsFilename = MensaRestApiResource.GetString("SettingsFilename");
             _descriptionFilename = MensaRestApiResource.GetString("DescriptionFilename");
         }
 
