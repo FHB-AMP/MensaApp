@@ -37,9 +37,13 @@ namespace MensaApp
 
         private SettingsPageViewModel _settingViewModel = new SettingsPageViewModel();
 
+        private ServingSettings _servingSettings;
+
         public SettingPage()
         {
             this.InitializeComponent();
+
+            _servingSettings = new ServingSettings();
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -49,55 +53,6 @@ namespace MensaApp
         public SettingsPageViewModel SettingsPageViewModel
         {
             get { return this._settingViewModel; }
-        }
-        
-        private void populateNutritions()
-        {
-            // Add normal nutrition
-            string normalDefinition = "Keine Einschränkungen.";
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(NORMAL)", "Normal", normalDefinition, new ObservableCollection<InfoSymbolViewModel>(), new ObservableCollection<AdditiveViewModel>(), new ObservableCollection<AllergenViewModel>(), true));
-
-            // Add Vegetarian nutrition
-            ObservableCollection<InfoSymbolViewModel> infoSymbolsVegi = new ObservableCollection<InfoSymbolViewModel>();
-            ObservableCollection<AllergenViewModel> excludedAllergensVegi = new ObservableCollection<AllergenViewModel>();
-            ObservableCollection<AdditiveViewModel> excludedAdditivesVegi = new ObservableCollection<AdditiveViewModel>();
-            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Schweinefleisch", "Schweinefleisch"));
-            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Rindfleisch", "Rindfleisch"));
-            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Lamm", "Lamm"));
-            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Fisch", "Fisch"));
-            infoSymbolsVegi.Add(new InfoSymbolViewModel("mit Geflügelfleisch", "Geflügelfleisch"));
-            excludedAdditivesVegi.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
-            excludedAllergensVegi.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-            excludedAllergensVegi.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
-            excludedAllergensVegi.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-            string veggieDefinition = "Ovo-Lacto-Vegetarier essen nichts vom toten Tier.";
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGGIE)", "Ovo-Lacto-Vegetarisch", veggieDefinition, infoSymbolsVegi, excludedAdditivesVegi, excludedAllergensVegi));
-
-            // Add Vegan nutrion
-            ObservableCollection<InfoSymbolViewModel> infoSymbolsVega = new ObservableCollection<InfoSymbolViewModel>();
-            ObservableCollection<AllergenViewModel> excludedAllergensVega = new ObservableCollection<AllergenViewModel>();
-            ObservableCollection<AdditiveViewModel> excludedAdditivesVega = new ObservableCollection<AdditiveViewModel>();
-            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Schweinefleisch", "Schweinefleisch"));
-            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Rindfleisch", "Rindfleisch"));
-            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Lamm", "Lamm"));
-            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Fisch", "Fisch"));
-            infoSymbolsVega.Add(new InfoSymbolViewModel("mit Geflügelfleisch", "Geflügelfleisch"));
-
-            excludedAdditivesVega.Add(new AdditiveViewModel("(GE)", "mit Gelatine", "", false));
-            excludedAdditivesVega.Add(new AdditiveViewModel("(13)", "mit Milcheiweiß", "", false));
-            excludedAdditivesVega.Add(new AdditiveViewModel("(14)", "mit Eiklar", "Einsatz von Fremdeiweiß, wird als Bindemittel verwendet.", false));
-            excludedAdditivesVega.Add(new AdditiveViewModel("(22)", "mit Milchpulver", "", false));
-            excludedAdditivesVega.Add(new AdditiveViewModel("(23)", "mit Molkenpulver", "", false));
-            excludedAdditivesVega.Add(new AdditiveViewModel("(TL)", "enthält tierisches Lab", "", false));
-            excludedAllergensVega.Add(new AllergenViewModel("(N)", "Weichtiere sind Schnecken, Muscheln, Austern und Tintenfische", "Fisch- und Feinkostsalate, Paella und Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-            excludedAllergensVega.Add(new AllergenViewModel("(D)", "Fisch", "Paella, Bouillabaise, Worchester Sauce, asiatische Würzpasten", false));
-            excludedAllergensVega.Add(new AllergenViewModel("(B)", "Krebstiere sind Garnelen, Hummer, Fluss-und Taschenkrebse, Krabben", "Feinkostsalate, Paella, Bouillabaise, asiatische Suppen, Saucen und Würzmischungen", false));
-            excludedAllergensVega.Add(new AllergenViewModel("(C)", "Eier", "Mayonnaisen, Remouladen, Teigwaren (Tortellini, Spätzle, Schupfnudeln), Gnocchi, Backwaren, Panaden, geklärte und gebundene Suppen", false));
-            excludedAllergensVega.Add(new AllergenViewModel("(G)", "Milch", "Backwaren, vegetarische Bratlinge, Wurstwaren, Dressings und Würzsaucen", false));
-            string veganDefinition = "Veganer essen gar keine tierischen Produkte.";
-            _settingViewModel.Nutritions.Add(new NutritionViewModel("(VEGAN)", "Vegan", veganDefinition, infoSymbolsVega, excludedAdditivesVega, excludedAllergensVega));
-
-            _settingViewModel.SelectedNutrition = _settingViewModel.Nutritions.First();
         }
 
         /// <summary>
@@ -130,27 +85,42 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            //// DC MockUp
-            //populateNutritions();
 
-            // neues Objekt zum Laden der Settings lokal
-            ServingSettings servingSettings = new ServingSettings();
-
-            // Laden der Settings lokal
-            Task<ListOfSettingViewModel> listOfTaskWithSettingViewModels = servingSettings.getListOfSettingViewModelsAsync();
-
-            // Task abwarten
-            ListOfSettingViewModel listOfSettingViewModel = await listOfTaskWithSettingViewModels;
-
-            // Aktualisieren der Oberflaeche
-            _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
-            _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
-            _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
-
-            if (listOfSettingViewModel.AdditiveViewModels.Count == 0 || listOfSettingViewModel.AllergenViewModels.Count == 0 || listOfSettingViewModel.NutritionViewModels.Count == 0)
+            // For-Schleife zur Beahndlung von Verbindungsproblemen
+            for (int i = 0; i < 2; i++)
             {
-                getDescriptionsFromServer();
+                // Laden der Settings lokal
+                Task<ListOfSettingViewModel> listOfTaskWithSettingViewModels = _servingSettings.GetListOfSettingViewModelsAsync();
+
+                // Task abwarten
+                ListOfSettingViewModel listOfSettingViewModel = await listOfTaskWithSettingViewModels;
+
+                // Aktualisieren der Oberflaeche
+                _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
+
+                // Setzen der ausgewaehlten Ernaehrungsweise im Dropdown-Menue
+                foreach (NutritionViewModel nutritionVM in _settingViewModel.Nutritions)
+                {
+                    if (nutritionVM.IsSelectedNutrition)
+                    {
+                        _settingViewModel.SelectedNutrition = nutritionVM;
+                    }
+                } 
+
+                _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
+                _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
+
+                if (listOfSettingViewModel.AdditiveViewModels.Count == 0 || listOfSettingViewModel.AllergenViewModels.Count == 0 || listOfSettingViewModel.NutritionViewModels.Count == 0)
+                {
+                    getDescriptionsFromServer();
+                }
+                else
+                {
+                    // Wenn Daten gefunden, dann kein weiterer Schleifendurchlauf
+                    i = 2;
+                }
             }
+
         }
 
         /// <summary>
@@ -197,15 +167,13 @@ namespace MensaApp
             // Fortschrittsbalken einblenden
             ProgressBar.Visibility = Visibility.Visible;
 
-            ServingSettings servingSettings = new ServingSettings();
-
-            servingSettings.SaveSettings(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
+            _servingSettings.SaveSettings(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
 
             // Fortschrittsbalken ausblenden
             ProgressBar.Visibility = Visibility.Collapsed;
 
-            // Zu dem heutigen Essensangebot navigieren
-            Frame.Navigate(typeof(MealsPage));
+            // Zu dem heutigen Essensangebot navigieren // TODO Holger Daniel
+            //Frame.Navigate(typeof(MealsPage));
         }
 
         /// <summary>
@@ -234,7 +202,7 @@ namespace MensaApp
         /// </summary>
         private async void getDescriptionsFromServer()
         {
-            // Ressourcen ladden
+            // Ressourcen laden
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
 
             // Holen des Grundaufrufs
@@ -247,38 +215,11 @@ namespace MensaApp
             ServingMealOffer servingMO = new ServingMealOffer();
 
             // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(DescriptionsBaseURL, DescriptionsPathURL, "DescriptionsServerJSONFile");
+            string descriptionJSONStringFromServer = await servingMO.GetServerData(DescriptionsBaseURL, DescriptionsPathURL);
 
-            // erzeuge neues Objekt
-            ServingAdditivesAndAllergenes servingAdditicesAndAllergenes = new ServingAdditivesAndAllergenes();
-
-            // ##################### ADDITIVES #####################
-
-            List<AdditiveViewModel> listeZusatzstoffe = await servingAdditicesAndAllergenes.GetAdditives();
-
-            foreach (AdditiveViewModel additiveVM in listeZusatzstoffe)
-            {
-                _settingViewModel.Additives.Add(additiveVM);
-            }
-
-            // ##################### ALLERGENES #####################
+            // Beschriebungen lokal vom Server abspeichern
+            _servingSettings.SaveDescriptions(descriptionJSONStringFromServer);
             
-            List<AllergenViewModel> listeAllergene = await servingAdditicesAndAllergenes.GetAllergenes();
-
-            foreach (AllergenViewModel allergenVM in listeAllergene)
-            {
-                _settingViewModel.Allergens.Add(allergenVM);
-            }
-
-            // ##################### NUTRITION #####################
-            // Nutrition zuletzt, da zuerst die Zusatzstoffe und Allergen ViewModels vorliegen muessen
-
-            List<NutritionViewModel> listeNutritionViewModels = await servingAdditicesAndAllergenes.GetNutritions(_settingViewModel.Additives, _settingViewModel.Allergens);
-
-            foreach (NutritionViewModel nutritionVM in listeNutritionViewModels)
-            {
-                _settingViewModel.Nutritions.Add(nutritionVM);
-            }
         }
 
     }

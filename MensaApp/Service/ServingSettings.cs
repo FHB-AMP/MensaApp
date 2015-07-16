@@ -2,6 +2,7 @@
 using MensaApp.DataModel.Rest;
 using MensaApp.DataModel.Setting;
 using MensaApp.ViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,7 +26,7 @@ namespace MensaApp.Service
         /// <summary>
         /// Combines all discriptions and all settings to a list of settingViewModels
         /// </summary>
-        public async Task<ListOfSettingViewModel> getListOfSettingViewModelsAsync()
+        public async Task<ListOfSettingViewModel> GetListOfSettingViewModelsAsync()
         {
             ListOfSettingViewModel resultListOfSettingViewModel = new ListOfSettingViewModel();
 
@@ -126,6 +127,30 @@ namespace MensaApp.Service
         private void SaveDescriptions(ListsOfDescriptions listsOfDescriptions)
         {
             _fileService.SaveListOfDescriptionsAsync(listsOfDescriptions);
+        }
+
+        internal void SaveDescriptions(string descriptionJSONStringFromServer)
+        {
+            ListsOfDescriptions listsOfDescriptions = new ListsOfDescriptions();
+            listsOfDescriptions = JsonConvert.DeserializeObject<ListsOfDescriptions>(descriptionJSONStringFromServer);
+            SaveDescriptions(listsOfDescriptions);
+        }
+
+        internal void SaveMeals(string mealsJSONStringFromServer)
+        {
+            ListOfDays listsOfDays = new ListOfDays();
+            listsOfDays = JsonConvert.DeserializeObject<ListOfDays>(mealsJSONStringFromServer);
+            SaveMeals(listsOfDays);
+        }
+
+        private void SaveMeals(ListOfDays listsOfDays)
+        {
+            _fileService.SaveListOfDaysAsync(listsOfDays);
+        }
+
+        internal async Task<ListOfDays> GetListOfDays()
+        {
+            return await _fileService.LoadListOfDaysAsync();
         }
     }
 }

@@ -37,10 +37,14 @@ namespace MensaApp
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
         private MealsPageViewModel _mealsPageViewModel = new MealsPageViewModel();
+
+        private ServingSettings _servingSettings;
         
         public MealsPage()
         {
             this.InitializeComponent();
+
+            _servingSettings = new ServingSettings();
             
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -230,16 +234,13 @@ namespace MensaApp
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
             String MealBaseUrl = MensaRestApiResource.GetString("MealBaseURL");
             String MealPathUrl = MensaRestApiResource.GetString("MealURL");
+            String dateiName = MensaRestApiResource.GetString("MealsFilename");
 
             // erzeuge neues Objekt
             ServingMealOffer servingMealOffer = new ServingMealOffer();
 
             // Start taeglich einmalige Synchro
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            // Hole den Speicherort der JSON Datei
-            MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String dateiName = MensaRestApiResource.GetString("MealJSONFile");
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 
             // Helfer
             DateTime myDate = DateTime.MinValue;
@@ -260,15 +261,15 @@ namespace MensaApp
 
             }
             catch (FileNotFoundException) 
-            { 
-                // Tue nichts :)
-                // debug message könnte man hier vll ablegen.
+            {
+                Debug.WriteLine("[MeansaApp.MealsPage] Datei: " + dateiName + "konnte nicht gelesen werden.");
             }
 
             if (DateTime.Today != myDate || forceUpdateFromServer)
             {
                 // Hole das JSON und speichere in Datei
-                await servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl, "MealJSONFile");
+                String mealsJSONStringFromServer = await servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl);
+                _servingSettings.SaveMeals(mealsJSONStringFromServer);
             }
 
             // Der Rest muss immer passieren

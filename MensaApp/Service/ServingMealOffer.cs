@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -46,26 +47,17 @@ namespace MensaApp.Service
         public async Task<List<DayViewModel>> FindMealOffersForCertainAmountOfDaysAsync(int requiredAmountOfDays)
         {
             List<DayViewModel> resultDays = new List<DayViewModel>();
-
-            string data = await ReadSavedMealsFromJSONFile();
-            // JSON-File in Objekte verwandeln
-            ListOfDays rootObject = JsonConvert.DeserializeObject<ListOfDays>(data);
+            ListOfDays rootObject = await _servingSettings.GetListOfDays();
 
             // TODO uses new
-            //ListOfSettingViewModel listOfSettingViewModels = await _servingSettings.getListOfSettingViewModelsAsync();
-            //ObservableCollection<NutritionViewModel> deserializedNutritions = listOfSettingViewModels.NutritionViewModels;
-            //ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModels.InfoSymbolViewModels;
-            //ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModels.AdditiveViewModels;
-            //ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
+            ListOfSettingViewModel listOfSettingViewModels = await _servingSettings.GetListOfSettingViewModelsAsync();
+            ObservableCollection<NutritionViewModel> deserializedNutritions = listOfSettingViewModels.NutritionViewModels;
+            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModels.InfoSymbolViewModels;
+            ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModels.AdditiveViewModels;
+            ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
 
             // TODO dismiss old
             NutritionViewModel nutrition = getTestNutritionFromStub("(OVO)");
-            // Alle InfoSymbole aus den Settings laden
-            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = new ObservableCollection<InfoSymbolViewModel>();
-            // Alle Zusatzstoffe aus den Settings laden
-            ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = await _serializeSettings.deserializeAdditives(_additivesFilename);
-            // Alle Allergene aus den Settings laden
-            ObservableCollection<AllergenViewModel> deserializedAllergenSettings = await _serializeSettings.deserializeAllergenes(_allergensFilename);
 
             int dayIterator = 0;
             int foundDaysCounter = 0;
@@ -342,7 +334,7 @@ namespace MensaApp.Service
         /// Hole die JSON-Daten vom Server ab.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetServerData(string serviceURI, string serviceURL, string propertyName)
+        public async Task<string> GetServerData(string serviceURI, string serviceURL)
         {
             string data = "";
 
@@ -359,21 +351,12 @@ namespace MensaApp.Service
                     {
                         // Hole JSON-File
                         data = await response.Content.ReadAsStringAsync();
-
-                        // Hole den Speicherort der JSON Datei
-                        ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-                        String dateiName = MensaRestApiResource.GetString(propertyName);
-
-                        // Write data to a file
-                        StorageFile sampleFile = await _localFolder.CreateFileAsync(dateiName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
-                        await FileIO.WriteTextAsync(sampleFile, data);
-
                     }
                 }
             }
-            catch (Exception)
+            catch (ArgumentNullException)
             {
-                //TODO Holger Fehlerbehandlung einbauen
+                Debug.WriteLine("[MensaApp.ServingMealOffer] HTML Get Request Failure");
             }
             return data;
         }

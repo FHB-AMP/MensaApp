@@ -133,7 +133,7 @@
     <value>https://demo6732973.mockable.io</value>
     <comment>Mahlzeiten Grundaufruf</comment>
   </data>
-  <data name="MealJSONFile" xml:space="preserve">
+  <data name="MealsFilename" xml:space="preserve">
     <value>MealJSONFile.json</value>
     <comment>Dateiname der JSON-Datei fuer die Mahlzeitangebote</comment>
   </data>

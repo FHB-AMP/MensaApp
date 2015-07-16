@@ -23,6 +23,7 @@ namespace MensaApp.Service
 
         private StorageFolder _localFolder;
         private string _settingsFilename;
+        private string _mealsFilename;
         private string _descriptionFilename;
 
         public FileService()
@@ -34,6 +35,7 @@ namespace MensaApp.Service
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
             _settingsFilename = MensaRestApiResource.GetString("SettingsFilename");
             _descriptionFilename = MensaRestApiResource.GetString("DescriptionFilename");
+            _mealsFilename = MensaRestApiResource.GetString("MealsFilename");
         }
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace MensaApp.Service
         internal async Task<ListsOfDescriptions> LoadListOfDescriptionsAsync()
         {
             ListsOfDescriptions description = new ListsOfDescriptions();
-            string jsonString = await LoadJsonStringFromFile(_settingsFilename);
+            string jsonString = await LoadJsonStringFromFile(_descriptionFilename);
 
             if (jsonString != null)
             {
@@ -73,14 +75,8 @@ namespace MensaApp.Service
         {
             if (listOfSettings != null)
             {
-                try { 
-                    string jsonString = JsonConvert.SerializeObject(listOfSettings);
-                    await SaveJsonStringToFile(_settingsFilename, jsonString);
-                }
-                catch (FileNotFoundException)
-                {
-                    Debug.WriteLine("Konnte Datei " + _settingsFilename + " nicht abspeichern!");
-                }
+                string jsonString = JsonConvert.SerializeObject(listOfSettings);
+                await SaveJsonStringToFile(_settingsFilename, jsonString);
             }
         }
 
@@ -102,15 +98,24 @@ namespace MensaApp.Service
         
         private async Task SaveJsonStringToFile(string filename, string jsonString)
         {
-            StorageFile file = await _localFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
-
-            using (IRandomAccessStream textStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+            try
             {
-                using (DataWriter textWriter = new DataWriter(textStream))
+                StorageFile file = await _localFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+
+                using (IRandomAccessStream textStream = await file.OpenAsync(FileAccessMode.ReadWrite))
                 {
-                    textWriter.WriteString(jsonString);
-                    await textWriter.StoreAsync();
+                    using (DataWriter textWriter = new DataWriter(textStream))
+                    {
+                        textWriter.WriteString(jsonString);
+                        await textWriter.StoreAsync();
+                        textWriter.Dispose();
+                    }
+                    textStream.Dispose();
                 }
+            }
+            catch(FileNotFoundException ex)
+            {
+                Debug.WriteLine("Konnte Datei " + filename + " nicht abspeichern!");
             }
         }
 
@@ -127,11 +132,38 @@ namespace MensaApp.Service
                     jsonString = await FileIO.ReadTextAsync(file);
                 }
             }
-            catch (Exception)
+            catch (FileNotFoundException)
             {
-                // TODO unhandeled exception
+                Debug.WriteLine("[MensaApp.FileService] Datei: {0} konnte nicht gefunden werden", filename);
             }
+            catch (UnauthorizedAccessException)
+            {
+                Debug.WriteLine("[MensaApp.FileService] Datei: {0} konnte nicht zugegriffen werden", filename);
+            }
+
             return jsonString;
+        }
+
+
+        internal async void SaveListOfDaysAsync(ListOfDays listsOfDays)
+        {
+            if (listsOfDays != null)
+            {
+                string jsonString = JsonConvert.SerializeObject(listsOfDays);
+                await SaveJsonStringToFile(_mealsFilename, jsonString);
+            }
+        }
+
+        internal async Task<ListOfDays> LoadListOfDaysAsync()
+        {
+            ListOfDays listOfDays = new ListOfDays();
+            string jsonString = await LoadJsonStringFromFile(_mealsFilename);
+
+            if (jsonString != null)
+            {
+                listOfDays = JsonConvert.DeserializeObject<ListOfDays>(jsonString);
+            }
+            return listOfDays;
         }
     }
 }
