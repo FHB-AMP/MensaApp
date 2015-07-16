@@ -4,6 +4,7 @@ using MensaApp.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,70 @@ namespace MensaApp.Service
     {
         // Abspeichern und Lesen des JSON-Files
         StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+
+        public async Task<List<ViewModel.NutritionViewModel>> GetNutritions(ObservableCollection<AdditiveViewModel> additiveVMCollection, ObservableCollection<AllergenViewModel> allergenVMCollection)
+        {
+            // Lese das gespeicherte JSON
+            string data = await ReadSavedJSON();
+
+            // Helfer
+            List<NutritionViewModel> listeNutritionVM = new List<NutritionViewModel>();
+
+            // JSON-File in Objekte verwandeln
+            var rootObject = JsonConvert.DeserializeObject<ListsOfDescriptions>(data);
+
+            // aus Rootobject die Ernaehrungsweisen ins Entity packen und im Anschluss der Liste hinzufügen
+            foreach (NutritionDescription nutritionDescription in rootObject.nutritions)
+            {
+                NutritionViewModel nutritionVM = new NutritionViewModel();
+
+                nutritionVM.Id = nutritionDescription.id;
+                nutritionVM.Name = nutritionDescription.name;
+                nutritionVM.Definition = nutritionDescription.definition;
+
+                // ########### Zusatzstoffe-ViewModels ###########
+
+                // Durchlaufe alle exkludierten Zusatzstoffe der Ernaehrungsweise vom Rest-Service
+                foreach (String restAdditive in nutritionDescription.excludedAdditives)
+                {
+                    // Durchlaufe alle uebergebenen Zusatzstoffe-ViewModels
+                    foreach (AdditiveViewModel additivVM in additiveVMCollection)
+                    {
+                        // Finde das passende ViewModel zur Id aus dem Rest-Service
+                        if (restAdditive.Equals(additivVM.Id))
+                        {
+                            // Fuege das gefundene Zusatzstoff-ViewModel hinzu
+                            nutritionVM.ExcludedAdditives.Add(additivVM);
+                            // Verlasse die innere Schleife
+                            break;
+                        }
+                    }
+                }
+
+                // ########### Allergene-ViewModels ###########
+
+                // Durchlaufe alle exkludierten Allergene der Ernaehrungsweise vom Rest-Service
+                foreach (String restAllergen in nutritionDescription.excludedAllergens)
+                {
+                    // Durchlaufe alle uebergebenen Zusatzstoffe-ViewModels
+                    foreach (AllergenViewModel allergenVM in allergenVMCollection)
+                    {
+                        // Finde das passende ViewModel zur Id aus dem Rest-Service
+                        if (restAllergen.Equals(allergenVM.Id))
+                        {
+                            // Fuege das gefundene Zusatzstoff-ViewModel hinzu
+                            nutritionVM.ExcludedAllergens.Add(allergenVM);
+                            // Verlasse die innere Schleife
+                            break;
+                        }
+                    }
+                }
+
+                listeNutritionVM.Add(nutritionVM);
+            }
+
+            return listeNutritionVM;
+        }
 
         public async Task<List<ViewModel.AdditiveViewModel>> GetAdditives()
         {
@@ -79,7 +144,7 @@ namespace MensaApp.Service
             {
                 // Hole den Standort der JSON Datei
                 ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-                String dateiName = MensaRestApiResource.GetString("AdditivesJSONFile");
+                String dateiName = MensaRestApiResource.GetString("DescriptionsServerJSONFile");
 
                 StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
 
@@ -95,5 +160,6 @@ namespace MensaApp.Service
 
             return data;
         }
+
     }
 }

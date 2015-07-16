@@ -147,10 +147,9 @@ namespace MensaApp
             _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
             _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
 
-            if (listOfSettingViewModel.AdditiveViewModels.Count == 0)
+            if (listOfSettingViewModel.AdditiveViewModels.Count == 0 || listOfSettingViewModel.AllergenViewModels.Count == 0 || listOfSettingViewModel.NutritionViewModels.Count == 0)
             {
-                // ????? Kann das wieder verwendet werden?
-                synchronizeWithServer();
+                getDescriptionsFromServer();
             }
         }
 
@@ -231,54 +230,54 @@ namespace MensaApp
         }
 
         /// <summary>
-        /// Neu-Laden aller Zusatzstoffe und Allergene
+        /// Laden aller Zusatzstoffe und Allergene und Ernaehrungsweisen vom REST-Service
         /// </summary>
-        private async void synchronizeWithServer()
+        private async void getDescriptionsFromServer()
         {
             // Ressourcen ladden
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
 
             // Holen des Grundaufrufs
-            String AdditivesBaseURL = MensaRestApiResource.GetString("AdditivesBaseURL");
+            String DescriptionsBaseURL = MensaRestApiResource.GetString("DescriptionsBaseURL");
 
             // Holen der vertiefenden Struktur
-            String AdditivesPathURL = MensaRestApiResource.GetString("AdditivesURL");
+            String DescriptionsPathURL = MensaRestApiResource.GetString("DescriptionsURL");
 
             // erzeuge neues Objekt
             ServingMealOffer servingMO = new ServingMealOffer();
 
             // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(AdditivesBaseURL, AdditivesPathURL, "AdditivesJSONFile");
+            await servingMO.GetServerData(DescriptionsBaseURL, DescriptionsPathURL, "DescriptionsServerJSONFile");
 
             // erzeuge neues Objekt
-            ServingAdditivesAndAllergenes servingAAA1 = new ServingAdditivesAndAllergenes();
+            ServingAdditivesAndAllergenes servingAdditicesAndAllergenes = new ServingAdditivesAndAllergenes();
 
-            // Erstelle Zusatzstoffe
-            List<AdditiveViewModel> listeZusatzstoffe = await servingAAA1.GetAdditives();
+            // ##################### ADDITIVES #####################
 
-            // Hole das JSON und speichere in Datei
-            await servingMO.GetServerData(AdditivesBaseURL, AdditivesPathURL, "AdditivesJSONFile");
-
-            // erzeuge neues Objekt
-            ServingAdditivesAndAllergenes servingAAA2 = new ServingAdditivesAndAllergenes();
-            List<AllergenViewModel> listeAllergene = await servingAAA2.GetAllergenes();
-
-            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
-            _settingViewModel.Additives.Clear();
+            List<AdditiveViewModel> listeZusatzstoffe = await servingAdditicesAndAllergenes.GetAdditives();
 
             foreach (AdditiveViewModel additiveVM in listeZusatzstoffe)
             {
-                // Alle SettingViewModel der GUI uebergeben
                 _settingViewModel.Additives.Add(additiveVM);
             }
 
-            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
-            _settingViewModel.Allergens.Clear();
+            // ##################### ALLERGENES #####################
+            
+            List<AllergenViewModel> listeAllergene = await servingAdditicesAndAllergenes.GetAllergenes();
 
             foreach (AllergenViewModel allergenVM in listeAllergene)
             {
-                // Alle SettingViewModel der GUI uebergeben
                 _settingViewModel.Allergens.Add(allergenVM);
+            }
+
+            // ##################### NUTRITION #####################
+            // Nutrition zuletzt, da zuerst die Zusatzstoffe und Allergen ViewModels vorliegen muessen
+
+            List<NutritionViewModel> listeNutritionViewModels = await servingAdditicesAndAllergenes.GetNutritions(_settingViewModel.Additives, _settingViewModel.Allergens);
+
+            foreach (NutritionViewModel nutritionVM in listeNutritionViewModels)
+            {
+                _settingViewModel.Nutritions.Add(nutritionVM);
             }
         }
 
