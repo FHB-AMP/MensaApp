@@ -378,10 +378,6 @@ namespace MensaApp.Service
 
                 StorageFile sampleFile = await _localFolder.GetFileAsync(dateiName);
 
-                // Abgleich mit dem heutigen Datum TODO Holger
-                //DateTimeOffset fileCreationDateOff = sampleFile.DateCreated;
-                //DateTime fileCreationDate = fileCreationDateOff.Date;
-
                 data = await FileIO.ReadTextAsync(sampleFile);
             }
             catch (Exception)

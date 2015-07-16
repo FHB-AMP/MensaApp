@@ -128,7 +128,6 @@
     <Compile Include="Service\SerializeSettings.cs" />
     <Compile Include="Service\SettingsMapping.cs" />
     <Compile Include="Service\ServingMealOffer.cs" />
-    <Compile Include="Service\ServingAdditivesAndAllergenes.cs" />
     <Compile Include="Service\ServingSettings.cs" />
     <Compile Include="SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
