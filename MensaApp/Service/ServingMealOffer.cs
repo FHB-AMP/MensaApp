@@ -21,7 +21,6 @@ namespace MensaApp.Service
     {
         // Abspeichern und Lesen des JSON-Files
         private StorageFolder _localFolder = ApplicationData.Current.LocalFolder;
-        private SerializeSettings _serializeSettings;
         private ServingSettings _servingSettings;
 
         private string _symbolInfosFilename;
@@ -30,7 +29,6 @@ namespace MensaApp.Service
 
         public ServingMealOffer()
         {
-            _serializeSettings = new SerializeSettings();
             _servingSettings = new ServingSettings();
 
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
@@ -315,9 +313,6 @@ namespace MensaApp.Service
 
             foreach (string symbolId in symbolIds)
             {
-                // TODO: Diese Zeile löschen, wenn symbole gespeichert wurden.
-                resultInfoSymbols.Add(new InfoSymbolViewModel(symbolId, symbolId));
-
                 foreach (InfoSymbolViewModel deserializedSymbolInfo in deserializedInfoSymbols)
                 {
                     if (symbolId.Equals(deserializedSymbolInfo.Id))
@@ -358,33 +353,6 @@ namespace MensaApp.Service
             {
                 Debug.WriteLine("[MensaApp.ServingMealOffer] HTML Get Request Failure");
             }
-            return data;
-        }
-
-        /// <summary>
-        /// Lese das abgespeicherte JSON
-        /// </summary>
-        /// <returns>JSON als Zeichenkette</returns>
-        private async Task<string> ReadSavedMealsFromJSONFile()
-        {
-            // Helfer
-            string data = "";
-
-            try
-            {
-                // Hole den Standort der JSON Datei
-                ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-                String dateiName = MensaRestApiResource.GetString("MealJSONFile");
-
-                StorageFile sampleFile = await _localFolder.GetFileAsync(dateiName);
-
-                data = await FileIO.ReadTextAsync(sampleFile);
-            }
-            catch (Exception)
-            {
-                // TODO Holger Fang etwas
-            }
-
             return data;
         }
 
