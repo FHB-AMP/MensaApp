@@ -407,6 +407,7 @@ namespace MensaApp
                     }
                 }
             }
+            allDaysIterator.Dispose();
             return resultDateTime;
         }
 

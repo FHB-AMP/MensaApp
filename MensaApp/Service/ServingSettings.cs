@@ -23,6 +23,11 @@ namespace MensaApp.Service
             _fileService = new FileService();
         }
 
+        internal async Task<ListOfDays> GetListOfDays()
+        {
+            return await _fileService.LoadListOfDaysAsync();
+        }
+
         /// <summary>
         /// Combines all discriptions and all settings to a list of settingViewModels
         /// </summary>
@@ -136,6 +141,10 @@ namespace MensaApp.Service
             SaveDescriptions(listsOfDescriptions);
         }
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////// SaveMeals //////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         internal void SaveMeals(string mealsJSONStringFromServer)
         {
             ListOfDays listsOfDays = new ListOfDays();
@@ -146,11 +155,6 @@ namespace MensaApp.Service
         private void SaveMeals(ListOfDays listsOfDays)
         {
             _fileService.SaveListOfDaysAsync(listsOfDays);
-        }
-
-        internal async Task<ListOfDays> GetListOfDays()
-        {
-            return await _fileService.LoadListOfDaysAsync();
         }
     }
 }

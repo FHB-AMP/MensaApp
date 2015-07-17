@@ -35,15 +35,15 @@ namespace MensaApp
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        private SettingsPageViewModel _settingViewModel = new SettingsPageViewModel();
-
+        private SettingsPageViewModel _settingViewModel;
         private ServingSettings _servingSettings;
 
         public SettingPage()
         {
-            this.InitializeComponent();
-
             _servingSettings = new ServingSettings();
+            _settingViewModel = new SettingsPageViewModel();
+
+            this.InitializeComponent();
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -85,7 +85,6 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
             // For-Schleife zur Beahndlung von Verbindungsproblemen
             for (int i = 0; i < 2; i++)
             {
@@ -98,12 +97,12 @@ namespace MensaApp
                 // Aktualisieren der Oberflaeche
                 _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
 
-                // Setzen der ausgewaehlten Ernaehrungsweise im Dropdown-Menue
-                foreach (NutritionViewModel nutritionVM in _settingViewModel.Nutritions)
+                // Setzen der ausgewaehlten Ernaehrungsweise im ComboBox-Menue
+                foreach (NutritionViewModel nutritionViewModel in _settingViewModel.Nutritions)
                 {
-                    if (nutritionVM.IsSelectedNutrition)
+                    if (nutritionViewModel.IsSelectedNutrition)
                     {
-                        _settingViewModel.SelectedNutrition = nutritionVM;
+                        _settingViewModel.SelectedNutrition = nutritionViewModel;
                     }
                 } 
 
@@ -120,7 +119,6 @@ namespace MensaApp
                     i = 2;
                 }
             }
-
         }
 
         /// <summary>

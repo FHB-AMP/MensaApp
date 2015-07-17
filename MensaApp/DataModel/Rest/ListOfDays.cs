@@ -12,9 +12,5 @@ namespace MensaApp.DataModel.Rest
     public class ListOfDays
     {
         public List<Day> days { get; set; }
-
-        public ListOfDays(){
-            this.days = new List<Day>();
-        }
     }
 }

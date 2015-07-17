@@ -50,12 +50,10 @@ namespace MensaApp.Service
             // TODO uses new
             ListOfSettingViewModel listOfSettingViewModels = await _servingSettings.GetListOfSettingViewModelsAsync();
             ObservableCollection<NutritionViewModel> deserializedNutritions = listOfSettingViewModels.NutritionViewModels;
+            NutritionViewModel deserializedSelectedNutrition = FindSelectedNutritionOrReturnFirst(deserializedNutritions);
             ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModels.InfoSymbolViewModels;
             ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModels.AdditiveViewModels;
             ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
-
-            // TODO dismiss old
-            NutritionViewModel nutrition = getTestNutritionFromStub("(OVO)");
 
             int dayIterator = 0;
             int foundDaysCounter = 0;
@@ -71,39 +69,72 @@ namespace MensaApp.Service
                 DayViewModel resultDay = new DayViewModel();
                 resultDay.Date = requiredDate;
                 // Mahlzeit (Objekt) des gewuenschten Tages finden
-                foreach (Day day in rootObject.days)
+                if (rootObject != null && rootObject.days != null)
                 {
-                    // Parse von String zu DateTime
-                    DateTime DateOfMealDay = parseDateTimeFromJsonString(day.date);
-                    // finde den gewuenschten Tag
-                    if (DateOfMealDay.CompareTo(requiredDate) == 0)
+                    foreach (Day day in rootObject.days)
                     {
-                        foreach (Meal meal in day.meals)
+                        // Parse von String zu DateTime
+                        DateTime DateOfMealDay = parseDateTimeFromJsonString(day.date);
+                        // finde den gewuenschten Tag
+                        if (DateOfMealDay.CompareTo(requiredDate) == 0)
                         {
-                            List<string> mealInfoSymbolIds = meal.symbols;
-                            List<string> mealAdditiveIds = meal.additives;
-                            List<string> mealAllergenIds = meal.allergens;
+                            if (day.meals != null)
+                            {
+                                foreach (Meal meal in day.meals)
+                                {
+                                    List<string> mealInfoSymbolIds = meal.symbols;
+                                    List<string> mealAdditiveIds = meal.additives;
+                                    List<string> mealAllergenIds = meal.allergens;
 
-                            ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(mealInfoSymbolIds, deserializedInfoSymbolSettings);
-                            ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(mealAdditiveIds, deserializedAdditiveSettings);
-                            ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(mealAllergenIds, deserializedAllergenSettings);
+                                    ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = MatchInfoSymbolIdsWithInfoSymbolsFromSettings(mealInfoSymbolIds, deserializedInfoSymbolSettings);
+                                    ObservableCollection<AdditiveViewModel> resultAdditives = MatchAdditiveIdsWithAdditivesFromSettings(mealAdditiveIds, deserializedAdditiveSettings);
+                                    ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(mealAllergenIds, deserializedAllergenSettings);
 
-                            bool suitableNutrition = EvaluateIsSuitableNutrition(nutrition, mealInfoSymbolIds, mealAdditiveIds, mealAllergenIds);
-                            bool suitableAdditives = EvaluateIsSuitableAdditives(resultAdditives);
-                            bool suitableAllergens = EvaluateIsSuitableAllergens(resultAllergens);
-                            bool suitableMeal = EvaluateSuitableMeal(suitableNutrition, suitableAdditives, suitableAllergens);
+                                    bool suitableNutrition = EvaluateIsSuitableNutrition(deserializedSelectedNutrition, mealInfoSymbolIds, mealAdditiveIds, mealAllergenIds);
+                                    bool suitableAdditives = EvaluateIsSuitableAdditives(resultAdditives);
+                                    bool suitableAllergens = EvaluateIsSuitableAllergens(resultAllergens);
+                                    bool suitableMeal = EvaluateSuitableMeal(suitableNutrition, suitableAdditives, suitableAllergens);
 
-                            resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, suitableAdditives, suitableAllergens));
+                                    resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, suitableAdditives, suitableAllergens));
+                                }
+                            }
+                            resultDays.Add(resultDay);
+                            // für jeden gefundenen Tag wird i erhöht.
+                            foundDaysCounter++;
+                            // Der gewünschte Tag wurde gefunden. Darum muss an dieser Stelle nicht weiter danach gesucht werden. -> break; (Schmidt will hate me. xD)
+                            break;
                         }
-                        resultDays.Add(resultDay);
-                        // für jeden gefundenen Tag wird i erhöht.
-                        foundDaysCounter++;
-                        // Der gewünschte Tag wurde gefunden. Darum muss an dieser Stelle nicht weiter danach gesucht werden. -> break; (Schmidt will hate me. xD)
-                        break;
                     }
                 }
             }
             return resultDays;
+        }
+
+        private NutritionViewModel FindSelectedNutritionOrReturnFirst(ObservableCollection<NutritionViewModel> deserializedNutritions)
+        {
+            NutritionViewModel resultNutritionViewModel = new NutritionViewModel();
+
+            if (deserializedNutritions != null)
+            {
+                bool isSelectedNutritionFound = false;
+                foreach (NutritionViewModel nutritionViewModel in deserializedNutritions)
+                {
+                    if (nutritionViewModel.IsSelectedNutrition)
+                    {
+                        resultNutritionViewModel = nutritionViewModel;
+                        isSelectedNutritionFound = true;
+                    }
+                }
+                if (!isSelectedNutritionFound && deserializedNutritions.Count > 0)
+                {
+                    // If no Nutrition is selected and deserializedNutritions has items get the first of them. (normally should by 'Normal')
+                    var nutritionViewModelIterator = deserializedNutritions.GetEnumerator();
+                    nutritionViewModelIterator.MoveNext();
+                    resultNutritionViewModel = nutritionViewModelIterator.Current;
+                    nutritionViewModelIterator.Dispose();
+                }
+            }
+            return resultNutritionViewModel;
         }
 
 
@@ -193,30 +224,44 @@ namespace MensaApp.Service
         /// <summary>
         /// evaluates whether the meal is suitable to the nutrition from the settings.
         /// </summary>
-        /// <param name="nutrition"></param>
+        /// <param name="selectedNutrition"></param>
         /// <param name="resultInfoSymbols"></param>
         /// <param name="resultAdditives"></param>
         /// <param name="resultAllergens"></param>
         /// <returns></returns>
-        private bool EvaluateIsSuitableNutrition(NutritionViewModel nutrition, List<string> mealInfoSymbolIds,
+        private bool EvaluateIsSuitableNutrition(NutritionViewModel selectedNutrition, List<string> mealInfoSymbolIds,
             List<string> mealAdditiveIds, List<string> mealAllergenIds)
         {
-            foreach (InfoSymbolViewModel infoSymbolViewModel in nutrition.ExcludedSymbols) 
+            if (selectedNutrition != null)
             {
-                if (mealInfoSymbolIds.Contains(infoSymbolViewModel.Id))
-                    return false;
-            }
+                if (selectedNutrition.ExcludedSymbols != null)
+                {
+                    foreach (InfoSymbolViewModel infoSymbolViewModel in selectedNutrition.ExcludedSymbols)
+                    {
+                        if (mealInfoSymbolIds.Contains(infoSymbolViewModel.Id))
+                            return false;
+                    }
+                }
 
-            foreach (AdditiveViewModel additiveViewModel in nutrition.ExcludedAdditives)
-            {
-                if (mealAdditiveIds.Contains(additiveViewModel.Id))
-                    return false;
-            }
 
-            foreach (AllergenViewModel allergenViewModel in nutrition.ExcludedAllergens)
-            {
-                if (mealAllergenIds.Contains(allergenViewModel.Id))
-                    return false;
+                if (selectedNutrition.ExcludedAdditives != null)
+                {
+                    foreach (AdditiveViewModel additiveViewModel in selectedNutrition.ExcludedAdditives)
+                    {
+                        if (mealAdditiveIds.Contains(additiveViewModel.Id))
+                            return false;
+                    }
+                }
+
+
+                if (selectedNutrition.ExcludedAllergens != null)
+                {
+                    foreach (AllergenViewModel allergenViewModel in selectedNutrition.ExcludedAllergens)
+                    {
+                        if (mealAllergenIds.Contains(allergenViewModel.Id))
+                            return false;
+                    }
+                }
             }
             return true;
         }
@@ -264,13 +309,17 @@ namespace MensaApp.Service
         private static ObservableCollection<AllergenViewModel> MatchAllergenIdsWithAllergensFromSettings(List<string> allergenIds, ObservableCollection<AllergenViewModel> deserializedAllergens)
         {
             ObservableCollection<AllergenViewModel> allergensResult = new ObservableCollection<AllergenViewModel>();
-            foreach (string allergenId in allergenIds)
+
+            if (allergenIds != null && deserializedAllergens != null)
             {
-                foreach (AllergenViewModel deserializedAllergen in deserializedAllergens)
+                foreach (string allergenId in allergenIds)
                 {
-                    if (allergenId.Equals(deserializedAllergen.Id))
+                    foreach (AllergenViewModel deserializedAllergen in deserializedAllergens)
                     {
-                        allergensResult.Add(deserializedAllergen);
+                        if (allergenId.Equals(deserializedAllergen.Id))
+                        {
+                            allergensResult.Add(deserializedAllergen);
+                        }
                     }
                 }
             }
@@ -287,14 +336,17 @@ namespace MensaApp.Service
         {
             ObservableCollection<AdditiveViewModel> additivesResult = new ObservableCollection<AdditiveViewModel>();
 
-            foreach (string additiveId in additiveIds)
+            if (additiveIds != null && deserializedAdditives != null)
             {
-                foreach (AdditiveViewModel deserializedAdditive in deserializedAdditives)
+                foreach (string additiveId in additiveIds)
                 {
-                    if (additiveId.Equals(deserializedAdditive.Id))
+                    foreach (AdditiveViewModel deserializedAdditive in deserializedAdditives)
                     {
-                        additivesResult.Add(deserializedAdditive);
-                        break;
+                        if (additiveId.Equals(deserializedAdditive.Id))
+                        {
+                            additivesResult.Add(deserializedAdditive);
+                            break;
+                        }
                     }
                 }
             }
@@ -311,14 +363,17 @@ namespace MensaApp.Service
         {
             ObservableCollection<InfoSymbolViewModel> resultInfoSymbols = new ObservableCollection<InfoSymbolViewModel>();
 
-            foreach (string symbolId in symbolIds)
+            if (symbolIds != null && deserializedInfoSymbols != null)
             {
-                foreach (InfoSymbolViewModel deserializedSymbolInfo in deserializedInfoSymbols)
+                foreach (string symbolId in symbolIds)
                 {
-                    if (symbolId.Equals(deserializedSymbolInfo.Id))
+                    foreach (InfoSymbolViewModel deserializedSymbolInfo in deserializedInfoSymbols)
                     {
-                        resultInfoSymbols.Add(deserializedSymbolInfo);
-                        break;
+                        if (symbolId.Equals(deserializedSymbolInfo.Id))
+                        {
+                            resultInfoSymbols.Add(deserializedSymbolInfo);
+                            break;
+                        }
                     }
                 }
             }
