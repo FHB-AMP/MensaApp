@@ -32,7 +32,6 @@ namespace MensaApp
     /// </summary>
     public sealed partial class MealsPage : Page
     {
-        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -247,6 +246,7 @@ namespace MensaApp
 
             try
             {
+                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
                 // Wenn nicht vorhanden FileNotFoundException
                 StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
 
