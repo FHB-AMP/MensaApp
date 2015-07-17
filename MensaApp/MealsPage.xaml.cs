@@ -234,7 +234,7 @@ namespace MensaApp
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
             String MealBaseUrl = MensaRestApiResource.GetString("MealBaseURL");
             String MealPathUrl = MensaRestApiResource.GetString("MealURL");
-            String dateiName = MensaRestApiResource.GetString("MealsFilename");
+            //String dateiName = MensaRestApiResource.GetString("MealsFilename");
 
             // erzeuge neues Objekt
             ServingMealOffer servingMealOffer = new ServingMealOffer();
@@ -242,35 +242,35 @@ namespace MensaApp
             // Start taeglich einmalige Synchro
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 
-            // Helfer
-            DateTime myDate = DateTime.MinValue;
+            //// Helfer
+            //DateTime myDate = DateTime.MinValue;
 
-            try
-            {
-                // Wenn nicht vorhanden FileNotFoundException
-                StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
+            //try
+            //{
+            //    // Wenn nicht vorhanden FileNotFoundException
+            //    StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
 
-                // modified Zeitpunkt aus Properties holen
-                var check = new List<string>();
-                check.Add("System.DateModified");
-                var props = await sampleFile.Properties.RetrievePropertiesAsync(check);
-                var dateModified = props.SingleOrDefault().Value;
+            //    // modified Zeitpunkt aus Properties holen
+            //    var check = new List<string>();
+            //    check.Add("System.DateModified");
+            //    var props = await sampleFile.Properties.RetrievePropertiesAsync(check);
+            //    var dateModified = props.SingleOrDefault().Value;
 
-                // Property als DateTime parsen
-                myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
+            //    // Property als DateTime parsen
+            //    myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
 
-            }
-            catch (FileNotFoundException) 
-            {
-                Debug.WriteLine("[MeansaApp.MealsPage] Datei: " + dateiName + "konnte nicht gelesen werden.");
-            }
+            //}
+            //catch (FileNotFoundException) 
+            //{
+            //    Debug.WriteLine("[MeansaApp.MealsPage] Datei: " + dateiName + "konnte nicht gelesen werden.");
+            //}
 
-            if (DateTime.Today != myDate || forceUpdateFromServer)
-            {
-                // Hole das JSON und speichere in Datei
-                String mealsJSONStringFromServer = await servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl);
-                _servingSettings.SaveMeals(mealsJSONStringFromServer);
-            }
+            //if (DateTime.Today != myDate || forceUpdateFromServer)
+            //{
+            // Hole das JSON und speichere in Datei
+            String mealsJSONStringFromServer = await servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl);
+            _servingSettings.SaveMeals(mealsJSONStringFromServer);
+            //}
 
             // Der Rest muss immer passieren
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -20,8 +20,7 @@ namespace MensaApp.Service
     public class FileService
     {
         private SettingsMapping _mapping;
-
-        private StorageFolder _localFolder;
+        
         private string _settingsFilename;
         private string _mealsFilename;
         private string _descriptionFilename;
@@ -29,8 +28,6 @@ namespace MensaApp.Service
         public FileService()
         {
             _mapping = new SettingsMapping();
-
-            _localFolder = ApplicationData.Current.LocalFolder;
 
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
             _settingsFilename = MensaRestApiResource.GetString("SettingsFilename");
@@ -100,7 +97,8 @@ namespace MensaApp.Service
         {
             try
             {
-                StorageFile file = await _localFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                StorageFile file = await localFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
 
                 using (IRandomAccessStream textStream = await file.OpenAsync(FileAccessMode.ReadWrite))
                 {
@@ -113,7 +111,7 @@ namespace MensaApp.Service
                     textStream.Dispose();
                 }
             }
-            catch(FileNotFoundException ex)
+            catch(FileNotFoundException)
             {
                 Debug.WriteLine("Konnte Datei " + filename + " nicht abspeichern!");
             }
@@ -126,7 +124,8 @@ namespace MensaApp.Service
 
             try
             {
-                StorageFile file = await _localFolder.GetFileAsync(filename);
+                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                StorageFile file = await localFolder.GetFileAsync(filename);
                 if (file != null)
                 {
                     jsonString = await FileIO.ReadTextAsync(file);
