@@ -38,11 +38,15 @@ namespace MensaApp
         private MealsPageViewModel _mealsPageViewModel = new MealsPageViewModel();
 
         private ServingSettings _servingSettings;
+
+        private ServingMealOffer _servingMealOffer;
         
         public MealsPage()
         {
             this.InitializeComponent();
 
+
+            _servingMealOffer = new ServingMealOffer();
             _servingSettings = new ServingSettings();
             
             this.navigationHelper = new NavigationHelper(this);
@@ -229,14 +233,15 @@ namespace MensaApp
             // Zeige den Progressbar fuer den Zeitraum der asynchronen Datenverarbeitung
             ProgressBar.Visibility = Visibility.Visible;
 
+            RefreshAppBarButton.IsEnabled = false;
+
             // Hole die MensaRestSchnittstellen Parameter
             ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
             String MealBaseUrl = MensaRestApiResource.GetString("MealBaseURL");
             String MealPathUrl = MensaRestApiResource.GetString("MealURL");
             String dateiName = MensaRestApiResource.GetString("MealsFilename");
 
-            // erzeuge neues Objekt
-            ServingMealOffer servingMealOffer = new ServingMealOffer();
+            
 
             // Start taeglich einmalige Synchro
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
@@ -244,6 +249,45 @@ namespace MensaApp
             // Helfer
             DateTime myDate = DateTime.MinValue;
 
+            myDate = await FileModifiedCheck(dateiName, myDate);
+
+            if (DateTime.Today != myDate || forceUpdateFromServer)
+            {
+                // Hole das JSON und speichere in Datei
+                String mealsJSONStringFromServer = await _servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl);
+                _servingSettings.SaveMeals(mealsJSONStringFromServer);
+            }
+
+            // Der Rest muss immer passieren
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            int amountOfDays = 6; // Current day + 5 days of forcast
+            // load all meals from file
+            List<DayViewModel> AllDaysWithMeals = await _servingMealOffer.FindMealOffersForCertainAmountOfDaysAsync(amountOfDays);
+
+            // search for meals of the current day
+            ObservableCollection<DayViewModel> today = _servingMealOffer.SearchMealsOfToday(DateTime.Today, AllDaysWithMeals);
+            // search for forcast meals
+            ObservableCollection<DayViewModel> forecast = _servingMealOffer.SearchMealOfForecast(DateTime.Today, AllDaysWithMeals);
+
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _mealsPageViewModel.Today.Clear();
+            // DayViewModel der GUI uebergeben
+            _mealsPageViewModel.Today = today;
+            TodayList.ClearValue(ListView.ItemsPanelProperty);
+
+            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
+            _mealsPageViewModel.ForecastDays.Clear();
+            // DayViewModels der GUI uebergeben
+            _mealsPageViewModel.ForecastDays = forecast;
+
+            PrepareListTransitionAninmation();
+            RefreshAppBarButton.IsEnabled = true;
+            ProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        private static async System.Threading.Tasks.Task<DateTime> FileModifiedCheck(String dateiName, DateTime myDate)
+        {
             try
             {
                 StorageFolder localFolder = ApplicationData.Current.LocalFolder;
@@ -258,45 +302,12 @@ namespace MensaApp
 
                 // Property als DateTime parsen
                 myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
-
             }
-            catch (FileNotFoundException) 
+            catch (FileNotFoundException)
             {
                 Debug.WriteLine("[MeansaApp.MealsPage] Datei: " + dateiName + "konnte nicht gelesen werden.");
             }
-
-            if (DateTime.Today != myDate || forceUpdateFromServer)
-            {
-            // Hole das JSON und speichere in Datei
-            String mealsJSONStringFromServer = await servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl);
-            _servingSettings.SaveMeals(mealsJSONStringFromServer);
-            }
-
-            // Der Rest muss immer passieren
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            int amountOfDays = 6; // Current day + 5 days of forcast
-            // load all meals from file
-            List<DayViewModel> AllDaysWithMeals = await servingMealOffer.FindMealOffersForCertainAmountOfDaysAsync(amountOfDays);
-            
-            // search for meals of the current day
-            ObservableCollection<DayViewModel> today = servingMealOffer.SearchMealsOfToday(DateTime.Today, AllDaysWithMeals);
-            // search for forcast meals
-            ObservableCollection<DayViewModel> forecast = servingMealOffer.SearchMealOfForecast(DateTime.Today, AllDaysWithMeals);
-
-            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
-            _mealsPageViewModel.Today.Clear();
-            // DayViewModel der GUI uebergeben
-            _mealsPageViewModel.Today = today;
-            TodayList.ClearValue(ListView.ItemsPanelProperty);
-
-            // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
-            _mealsPageViewModel.ForecastDays.Clear();
-            // DayViewModels der GUI uebergeben
-            _mealsPageViewModel.ForecastDays = forecast;
-
-            PrepareListTransitionAninmation();
-            ProgressBar.Visibility = Visibility.Collapsed;
+            return myDate;
         }
 
         /// <summary>

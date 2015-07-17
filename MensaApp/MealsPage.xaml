@@ -17,7 +17,7 @@
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Icon="Refresh" Label="neu laden" Click="RefreshAppBarButton_Click"/>
+                <AppBarButton x:Name="RefreshAppBarButton" Icon="Refresh" Label="neu laden" Click="RefreshAppBarButton_Click"/>
                 <AppBarButton Icon="Setting" Label="Einstellungen" Click="SettingAppBarButton_Click"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>

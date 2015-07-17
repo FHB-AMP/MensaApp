@@ -125,10 +125,14 @@ namespace MensaApp.Service
             try
             {
                 StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                StorageFile file = await localFolder.GetFileAsync(filename);
-                if (file != null)
-                {
-                    jsonString = await FileIO.ReadTextAsync(file);
+                
+                if (localFolder != null)
+                { 
+                    StorageFile file = await localFolder.GetFileAsync(filename);
+                    if (file != null)
+                    {
+                        jsonString = await FileIO.ReadTextAsync(file);
+                    }
                 }
             }
             catch (FileNotFoundException)
