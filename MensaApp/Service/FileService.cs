@@ -121,9 +121,11 @@ namespace MensaApp.Service
             }
             return listOfDays;
         }
-        
 
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////// SaveToFile /////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private async Task SaveJsonStringToFile(string filename, string jsonString)
         {
@@ -153,6 +155,11 @@ namespace MensaApp.Service
             }
         }
 
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////// LoadFromFile ///////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         private async Task<string> LoadJsonStringFromFile(string filename)
         {
             string jsonString = null;
@@ -163,11 +170,26 @@ namespace MensaApp.Service
                 
                 if (localFolder != null)
                 {
-                    StorageFile file = await localFolder.GetFileAsync(filename);
-                    if (file != null)
+                    IReadOnlyList<StorageFile> files = await localFolder.GetFilesAsync();
+                    if (files != null)
                     {
-                        jsonString = await FileIO.ReadTextAsync(file);
+                        IEnumerator<StorageFile> filesIterator = files.GetEnumerator();
+                        while (filesIterator.MoveNext())
+                        {
+                            StorageFile file = filesIterator.Current;
+                            if (file.Name.Equals(filename))
+                            {
+                                jsonString = await FileIO.ReadTextAsync(file);
+                            }
+                        }
                     }
+
+                    //StorageFile file = await localFolder.GetFileAsync(filename);
+
+                    //if (file != null)
+                    //{
+                    //    jsonString = await FileIO.ReadTextAsync(file);
+                    //}
                 }
             }
             catch (FileNotFoundException)

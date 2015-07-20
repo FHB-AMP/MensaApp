@@ -263,7 +263,7 @@ namespace MensaApp
 
             int amountOfDays = 6; // Current day + 5 days of forcast
             // load all meals from file
-            List<DayViewModel> AllDaysWithMeals = await _servingMealOffer.FindMealOffersForCertainAmountOfDaysAsync(amountOfDays);
+            List<DayViewModel> AllDaysWithMeals = await _servingMealOffer.SearchMealOffersForCertainAmountOfDays(amountOfDays);
 
             // search for meals of the current day
             ObservableCollection<DayViewModel> today = _servingMealOffer.SearchMealsOfToday(DateTime.Today, AllDaysWithMeals);

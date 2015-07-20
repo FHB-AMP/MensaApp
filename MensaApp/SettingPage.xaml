@@ -28,7 +28,7 @@
         <!-- Pivot -->
         <Pivot Margin="-8,0,0,0" Title="Mensa FH Brandenburg" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <!-- First PivotItem -->
-            <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Ernährungsweise">
+            <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Ernährungsart">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
