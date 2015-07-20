@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DescriptionsBaseURL" xml:space="preserve">
-    <value>https://demo9590924.mockable.io</value>
+    <value>https://schno.de</value>
     <comment>Zusatzstoffe und Allergene Grundaufruf</comment>
   </data>
   <data name="DescriptionsServerJSONFile" xml:space="preserve">
@@ -126,11 +126,11 @@
     <comment>Dateiname der JSON-Datei in denen alle Zusatzstoffe, Allergene und Beschriebungen vom Server</comment>
   </data>
   <data name="DescriptionsURL" xml:space="preserve">
-    <value>/services/descriptions</value>
+    <value>/mobis/index2.php</value>
     <comment>Zusatzstoffe und Allergene vertiefende Struktur</comment>
   </data>
   <data name="MealBaseURL" xml:space="preserve">
-    <value>https://demo6732973.mockable.io</value>
+    <value>https://schno.de</value>
     <comment>Mahlzeiten Grundaufruf</comment>
   </data>
   <data name="MealsFilename" xml:space="preserve">
@@ -138,7 +138,7 @@
     <comment>Dateiname der JSON-Datei fuer die Mahlzeitangebote</comment>
   </data>
   <data name="MealURL" xml:space="preserve">
-    <value>/services/meals</value>
+    <value>/mobis/</value>
     <comment>Mahlzeiten vertiefende Struktur</comment>
   </data>
   <data name="SettingsSymbolInfoJSONFile" xml:space="preserve">
