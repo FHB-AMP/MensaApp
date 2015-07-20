@@ -33,21 +33,19 @@ namespace MensaApp
     public sealed partial class SettingPage : Page
     {
         private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        private SettingsPageViewModel _settingViewModel;
-        private ServingSettings _servingSettings;
+        private DataAndUpdateService _dataAndUpdateService;
+        private SettingsPageViewModel _settingViewModel = new SettingsPageViewModel();
 
         public SettingPage()
         {
-            _servingSettings = new ServingSettings();
-            _settingViewModel = new SettingsPageViewModel();
-
             this.InitializeComponent();
+            _dataAndUpdateService = new DataAndUpdateService();
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+
         }
 
         public SettingsPageViewModel SettingsPageViewModel
@@ -62,16 +60,7 @@ namespace MensaApp
         {
             get { return this.navigationHelper; }
         }
-
-        /// <summary>
-        /// Ruft das Anzeigemodell für diese <see cref="Page"/> ab.
-        /// Dies kann in ein stark typisiertes Anzeigemodell geändert werden.
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
-        {
-            get { return this.defaultViewModel; }
-        }
-
+        
         /// <summary>
         /// Füllt die Seite mit Inhalt auf, der bei der Navigation übergeben wird.  Gespeicherte Zustände werden ebenfalls
         /// bereitgestellt, wenn eine Seite aus einer vorherigen Sitzung neu erstellt wird.
@@ -85,38 +74,20 @@ namespace MensaApp
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            // For-Schleife zur Beahndlung von Verbindungsproblemen
-            for (int i = 0; i < 2; i++)
+            // Laden der Settings lokal
+            ListOfSettingViewModel listOfSettingViewModel = await _dataAndUpdateService.DeliverSettingsForSettingsPage();
+
+            // Aktualisieren der Oberflaeche
+            _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
+            _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
+            _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
+
+            // Setzen der ausgewaehlten Ernaehrungsweise im ComboBox-Menue
+            foreach (NutritionViewModel nutritionViewModel in _settingViewModel.Nutritions)
             {
-                // Laden der Settings lokal
-                Task<ListOfSettingViewModel> listOfTaskWithSettingViewModels = _servingSettings.GetListOfSettingViewModelsAsync();
-
-                // Task abwarten
-                ListOfSettingViewModel listOfSettingViewModel = await listOfTaskWithSettingViewModels;
-
-                // Aktualisieren der Oberflaeche
-                _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
-
-                // Setzen der ausgewaehlten Ernaehrungsweise im ComboBox-Menue
-                foreach (NutritionViewModel nutritionViewModel in _settingViewModel.Nutritions)
+                if (nutritionViewModel.IsSelectedNutrition)
                 {
-                    if (nutritionViewModel.IsSelectedNutrition)
-                    {
-                        _settingViewModel.SelectedNutrition = nutritionViewModel;
-                    }
-                } 
-
-                _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
-                _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
-
-                if (listOfSettingViewModel.AdditiveViewModels.Count == 0 || listOfSettingViewModel.AllergenViewModels.Count == 0 || listOfSettingViewModel.NutritionViewModels.Count == 0)
-                {
-                    getDescriptionsFromServer();
-                }
-                else
-                {
-                    // Wenn Daten gefunden, dann kein weiterer Schleifendurchlauf
-                    i = 2;
+                    _settingViewModel.SelectedNutrition = nutritionViewModel;
                 }
             }
         }
@@ -165,13 +136,15 @@ namespace MensaApp
             // Fortschrittsbalken einblenden
             ProgressBar.Visibility = Visibility.Visible;
 
-            _servingSettings.SaveSettings(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
+            _dataAndUpdateService.SaveSettingsFromSettingsPage(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
 
             // Fortschrittsbalken ausblenden
             ProgressBar.Visibility = Visibility.Collapsed;
 
-            // Zu dem heutigen Essensangebot navigieren // TODO Holger Daniel
-            //Frame.Navigate(typeof(MealsPage));
+            // Zu dem heutigen Essensangebot navigieren
+            Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
+            if (mensaFrame != null && mensaFrame.CanGoBack)
+                mensaFrame.GoBack();
         }
 
         /// <summary>
@@ -194,31 +167,5 @@ namespace MensaApp
                 }
             }
         }
-
-        /// <summary>
-        /// Laden aller Zusatzstoffe und Allergene und Ernaehrungsweisen vom REST-Service
-        /// </summary>
-        private async void getDescriptionsFromServer()
-        {
-            // Ressourcen laden
-            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-
-            // Holen des Grundaufrufs
-            String DescriptionsBaseURL = MensaRestApiResource.GetString("DescriptionsBaseURL");
-
-            // Holen der vertiefenden Struktur
-            String DescriptionsPathURL = MensaRestApiResource.GetString("DescriptionsURL");
-
-            // erzeuge neues Objekt
-            ServingMealOffer servingMO = new ServingMealOffer();
-
-            // Hole das JSON und speichere in Datei
-            string descriptionJSONStringFromServer = await servingMO.GetServerData(DescriptionsBaseURL, DescriptionsPathURL);
-
-            // Beschriebungen lokal vom Server abspeichern
-            _servingSettings.SaveDescriptions(descriptionJSONStringFromServer);
-            
-        }
-
     }
 }

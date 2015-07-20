@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MensaApp.Service;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -88,8 +89,10 @@ namespace MensaApp
 
                 rootFrame.ContentTransitions = null;
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
-                // Display Splashscreen for 800ms
-                await Task.Delay(800);
+                
+                // Check mensa data on start up
+                DataAndUpdateService dataAndUpdateService = new DataAndUpdateService();
+                await dataAndUpdateService.CheckAtStartUp();
 
                 // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
                 // und die neue Seite konfigurieren, indem die erforderlichen Informationen als Navigationsparameter

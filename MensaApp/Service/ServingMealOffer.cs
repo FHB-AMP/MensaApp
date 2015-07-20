@@ -22,19 +22,10 @@ namespace MensaApp.Service
         // Abspeichern und Lesen des JSON-Files
         private StorageFolder _localFolder = ApplicationData.Current.LocalFolder;
         private ServingSettings _servingSettings;
-
-        private string _symbolInfosFilename;
-        private string _additivesFilename;
-        private string _allergensFilename;
-
+        
         public ServingMealOffer()
         {
             _servingSettings = new ServingSettings();
-
-            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            _symbolInfosFilename = MensaRestApiResource.GetString("SettingsSymbolInfoJSONFile");
-            _additivesFilename = MensaRestApiResource.GetString("SettingsAdditivesJSONFile");
-            _allergensFilename = MensaRestApiResource.GetString("SettingsAllergenesJSONFile");
         }
 
         /// <summary>
@@ -42,18 +33,15 @@ namespace MensaApp.Service
         /// </summary>
         /// <param name="forecast">Anzahl der Tage einschließlich des aktuellen</param>
         /// <returns>Liste aus DayViewModellen, fuer jeden Tag ein DayViewModel, es sei denn es ist Samstag oder Sonntag</returns>
-        public async Task<List<DayViewModel>> SearchMealOffersForCertainAmountOfDays(int requiredAmountOfDays)
+        public List<DayViewModel> SearchMealOffersForCertainAmountOfDays(int requiredAmountOfDays, ListOfDays listOfDays, ListOfSettingViewModel listOfSettingViewModel)
         {
             List<DayViewModel> resultDays = new List<DayViewModel>();
 
-            ListOfDays listOfDays = await _servingSettings.GetListOfDays();
-            ListOfSettingViewModel listOfSettingViewModels = await _servingSettings.GetListOfSettingViewModelsAsync();
-
-            ObservableCollection<NutritionViewModel> deserializedNutritions = listOfSettingViewModels.NutritionViewModels;
+            ObservableCollection<NutritionViewModel> deserializedNutritions = listOfSettingViewModel.NutritionViewModels;
             NutritionViewModel deserializedSelectedNutrition = FindSelectedNutritionOrReturnFirst(deserializedNutritions);
-            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModels.InfoSymbolViewModels;
-            ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModels.AdditiveViewModels;
-            ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModels.AllergenViewModels;
+            ObservableCollection<InfoSymbolViewModel> deserializedInfoSymbolSettings = listOfSettingViewModel.InfoSymbolViewModels;
+            ObservableCollection<AdditiveViewModel> deserializedAdditiveSettings = listOfSettingViewModel.AdditiveViewModels;
+            ObservableCollection<AllergenViewModel> deserializedAllergenSettings = listOfSettingViewModel.AllergenViewModels;
 
             int dayIterator = 0;
             int foundDaysCounter = 0;
@@ -309,37 +297,6 @@ namespace MensaApp.Service
         }
 
         /// <summary>
-        /// Hole die JSON-Daten vom Server ab.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<string> GetServerData(string serviceURI, string serviceURL)
-        {
-            string data = "";
-
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(serviceURI);
-                    string url = serviceURL;
-
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Hole JSON-File
-                        data = await response.Content.ReadAsStringAsync();
-                    }
-                }
-            }
-            catch (ArgumentNullException)
-            {
-                Debug.WriteLine("[MensaApp.ServingMealOffer] HTML Get Request Failure");
-            }
-            return data;
-        }
-
-        /// <summary>
         /// Das aus der JSON-Datei eingelesene Datumsformat in DateTime umwandeln.
         /// </summary>
         /// <param name="dateString">Datum eines Tages durch Bindestriche "-" getrennt</param>
@@ -356,38 +313,6 @@ namespace MensaApp.Service
             DateTime result = new DateTime(Int32.Parse(dateParts[0]), Int32.Parse(dateParts[1]), Int32.Parse(dateParts[2]));
 
             return result;
-        }
-
-        internal ObservableCollection<DayViewModel> SearchMealsOfToday(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
-        {
-            ObservableCollection<DayViewModel> today = new ObservableCollection<DayViewModel>();
-
-            foreach (DayViewModel day in AllDaysWithMeals)
-            {
-                // Vergleiche explizit das Datum ohne Uhrzeit.
-                if (day.Date.Date.CompareTo(currentDate.Date) == 0)
-                {
-                    today.Add(day);
-                    break; // there should be only one current day;
-                }
-            }
-            return today;
-        }
-
-        internal ObservableCollection<DayViewModel> SearchMealOfForecast(DateTime currentDate, List<DayViewModel> AllDaysWithMeals)
-        {
-            ObservableCollection<DayViewModel> resultDays = new ObservableCollection<DayViewModel>();
-
-            foreach (DayViewModel day in AllDaysWithMeals)
-            {
-                // Wähle nur Tage, die in der Zukunft liegen aus.
-                // Vergleiche explizit das Datum ohne Uhrzeit.
-                if (day.Date.Date.CompareTo(currentDate.Date) > 0)
-                {
-                    resultDays.Add(day);
-                }
-            }
-            return resultDays;
         }
     }
 }

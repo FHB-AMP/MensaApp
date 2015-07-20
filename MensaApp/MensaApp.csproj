@@ -126,6 +126,7 @@
     <Compile Include="Selector\SettingsTemplateSelector.cs" />
     <Compile Include="Service\DataAndUpdateService.cs" />
     <Compile Include="Service\FileService.cs" />
+    <Compile Include="Service\ServerService.cs" />
     <Compile Include="Service\SettingsMapping.cs" />
     <Compile Include="Service\ServingMealOffer.cs" />
     <Compile Include="Service\ServingSettings.cs" />

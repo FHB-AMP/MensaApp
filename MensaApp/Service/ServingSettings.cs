@@ -23,41 +23,27 @@ namespace MensaApp.Service
             _fileService = new FileService();
         }
 
-        internal async Task<ListOfDays> GetListOfDays()
-        {
-            return await _fileService.LoadListOfDaysAsync();
-        }
-
         /// <summary>
-        /// Combines all discriptions and all settings to a list of settingViewModels
+        /// Combines all descriptions and all settings to a list of settingViewModels
         /// </summary>
-        public async Task<ListOfSettingViewModel> GetListOfSettingViewModelsAsync()
+        public ListOfSettingViewModel GetListOfSettingViewModels(ListsOfDescriptions listsOfDescriptions, ListsOfSettings listOfSettings)
         {
             ListOfSettingViewModel resultListOfSettingViewModel = new ListOfSettingViewModel();
 
             // Phase 1
-            // Load descriptions and settings from file
-            // Starts both async tasks in the first step
-            Task<ListsOfDescriptions> listsOfDescriptionsTask = _fileService.LoadListOfDescriptionsAsync();
-            Task<ListsOfSettings> listOfSettingsTask = _fileService.LoadListOfSettingsAsync();
-            // Await both async tasks to finish in the second step
-            ListsOfDescriptions listsOfDescriptions = await listsOfDescriptionsTask;
-            ListsOfSettings listOfSettings = await listOfSettingsTask;
+            // Combines descriptions and settings to viewModels
+            resultListOfSettingViewModel.AdditiveViewModels = _settingsMapping.MapToAdditiveViewModels(listsOfDescriptions.additives, listOfSettings.additivSettings);
+            resultListOfSettingViewModel.AllergenViewModels = _settingsMapping.MapToAllergenViewModels(listsOfDescriptions.allergens, listOfSettings.allergenSettings);
+            resultListOfSettingViewModel.InfoSymbolViewModels = _settingsMapping.MapToInfoSymbolViewModels(listsOfDescriptions.infoSymbols);
 
             // Phase 2
-            // Combines descriptions and settings to viewModels
-            resultListOfSettingViewModel.AdditiveViewModels = _settingsMapping.mapToAdditiveViewModels(listsOfDescriptions.additives, listOfSettings.additivSettings);
-            resultListOfSettingViewModel.AllergenViewModels = _settingsMapping.mapToAllergenViewModels(listsOfDescriptions.allergens, listOfSettings.allergenSettings);
-            resultListOfSettingViewModel.InfoSymbolViewModels = _settingsMapping.mapToInfoSymbolViewModels(listsOfDescriptions.infoSymbols);
-
-            // Phase 3
             // Combine complex nutritionViewModels
-            resultListOfSettingViewModel.NutritionViewModels = _settingsMapping.mapToNutritionViewModels(listsOfDescriptions.nutritions,
+            resultListOfSettingViewModel.NutritionViewModels = _settingsMapping.MapToNutritionViewModels(listsOfDescriptions.nutritions,
                 listOfSettings.nutritionSetting, resultListOfSettingViewModel.InfoSymbolViewModels, resultListOfSettingViewModel.AdditiveViewModels, resultListOfSettingViewModel.AllergenViewModels);
 
-            // Phase 4
+            // Phase 3
             // mark additives, allergens and infoSymbols as excluded by selected nutrition.
-            NutritionViewModel selectedNutritionViewModel = _settingsMapping.getSelectedNutritionViewModel(resultListOfSettingViewModel.NutritionViewModels);
+            NutritionViewModel selectedNutritionViewModel = _settingsMapping.GetSelectedNutritionViewModel(resultListOfSettingViewModel.NutritionViewModels);
             _settingsMapping.excludeAdditiveViewModelsByNutrition(selectedNutritionViewModel, resultListOfSettingViewModel.AdditiveViewModels);
             _settingsMapping.excludeAllergenViewModelsByNutrition(selectedNutritionViewModel, resultListOfSettingViewModel.AllergenViewModels);
             _settingsMapping.excludeInfoSymbolViewModelsByNutrition(selectedNutritionViewModel, resultListOfSettingViewModel.InfoSymbolViewModels);
@@ -101,7 +87,12 @@ namespace MensaApp.Service
         /// <param name="listsOfSettings"></param>
         private void SaveSettings(ListsOfSettings listsOfSettings)
         {
-            _fileService.SaveListOfSettingsAsync(listsOfSettings);
+            _fileService.SaveListOfSettings(listsOfSettings);
+        }
+
+        internal Task<ListsOfSettings> LoadListsOfSettingsFromFileAysnc()
+        {
+            return _fileService.LoadListOfSettingsAsync();
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,9 +120,9 @@ namespace MensaApp.Service
         /// Save descriptions to file
         /// </summary>
         /// <param name="listsOfSettings"></param>
-        private void SaveDescriptions(ListsOfDescriptions listsOfDescriptions)
+        public void SaveDescriptions(ListsOfDescriptions listsOfDescriptions)
         {
-            _fileService.SaveListOfDescriptionsAsync(listsOfDescriptions);
+            _fileService.SaveListOfDescriptions(listsOfDescriptions);
         }
 
         internal void SaveDescriptions(string descriptionJSONStringFromServer)
@@ -139,6 +130,11 @@ namespace MensaApp.Service
             ListsOfDescriptions listsOfDescriptions = new ListsOfDescriptions();
             listsOfDescriptions = JsonConvert.DeserializeObject<ListsOfDescriptions>(descriptionJSONStringFromServer);
             SaveDescriptions(listsOfDescriptions);
+        }
+
+        internal Task<ListsOfDescriptions> LoadListsOfDescriptionsFromFileAysnc()
+        {
+            return _fileService.LoadListOfDescriptionsAsync();
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +148,14 @@ namespace MensaApp.Service
             SaveMeals(listsOfDays);
         }
 
-        private void SaveMeals(ListOfDays listsOfDays)
+        public void SaveMeals(ListOfDays listsOfDays)
         {
-            _fileService.SaveListOfDaysAsync(listsOfDays);
+            _fileService.SaveListOfDays(listsOfDays);
+        }
+
+        internal async Task<ListOfDays> LoadListOfDaysFromFileAsync()
+        {
+            return await _fileService.LoadListOfDaysAsync();
         }
     }
 }

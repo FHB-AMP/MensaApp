@@ -24,6 +24,7 @@ namespace MensaApp.Service
         private string _settingsFilename;
         private string _mealsFilename;
         private string _descriptionFilename;
+        private readonly int _totalNumberOfFiles = 3;
 
         public FileService()
         {
@@ -39,12 +40,12 @@ namespace MensaApp.Service
         /// Saves all descriptions to json file.
         /// </summary>
         /// <param name="listOfDescriptions"></param>
-        internal async void SaveListOfDescriptionsAsync(ListsOfDescriptions listOfDescriptions)
+        internal void SaveListOfDescriptions(ListsOfDescriptions listOfDescriptions)
         {
             if (listOfDescriptions != null)
             {
                 string jsonString = JsonConvert.SerializeObject(listOfDescriptions);
-                await SaveJsonStringToFile(_descriptionFilename, jsonString);
+                SaveJsonStringToFile(_descriptionFilename, jsonString);
             }
         }
 
@@ -57,7 +58,7 @@ namespace MensaApp.Service
             ListsOfDescriptions description = new ListsOfDescriptions();
             string jsonString = await LoadJsonStringFromFile(_descriptionFilename);
 
-            if (jsonString != null)
+            if (jsonString != null && jsonString.Length < 0)
             {
                 description = JsonConvert.DeserializeObject<ListsOfDescriptions>(jsonString);
             }
@@ -68,12 +69,12 @@ namespace MensaApp.Service
         /// Saves all settings to json file.
         /// </summary>
         /// <param name="listOfSettings"></param>
-        internal async void SaveListOfSettingsAsync(ListsOfSettings listOfSettings)
+        internal void SaveListOfSettings(ListsOfSettings listOfSettings)
         {
             if (listOfSettings != null)
             {
                 string jsonString = JsonConvert.SerializeObject(listOfSettings);
-                await SaveJsonStringToFile(_settingsFilename, jsonString);
+                SaveJsonStringToFile(_settingsFilename, jsonString);
             }
         }
 
@@ -86,7 +87,7 @@ namespace MensaApp.Service
             ListsOfSettings settings = new ListsOfSettings();
             string jsonString = await LoadJsonStringFromFile(_settingsFilename);
 
-            if (jsonString != null)
+            if (jsonString != null && jsonString.Length > 0)
             {
                 settings = JsonConvert.DeserializeObject<ListsOfSettings>(jsonString);
             }
@@ -97,12 +98,12 @@ namespace MensaApp.Service
         /// Saves list of days from file.
         /// </summary>
         /// <param name="listsOfDays"></param>
-        internal async void SaveListOfDaysAsync(ListOfDays listsOfDays)
+        internal void SaveListOfDays(ListOfDays listsOfDays)
         {
             if (listsOfDays != null)
             {
                 string jsonString = JsonConvert.SerializeObject(listsOfDays);
-                await SaveJsonStringToFile(_mealsFilename, jsonString);
+                SaveJsonStringToFile(_mealsFilename, jsonString);
             }
         }
 
@@ -115,7 +116,7 @@ namespace MensaApp.Service
             ListOfDays listOfDays = new ListOfDays();
             string jsonString = await LoadJsonStringFromFile(_mealsFilename);
 
-            if (jsonString != null)
+            if (jsonString != null && jsonString.Length < 0)
             {
                 listOfDays = JsonConvert.DeserializeObject<ListOfDays>(jsonString);
             }
@@ -127,7 +128,7 @@ namespace MensaApp.Service
         //////////////////////////////////////////////////////////////// SaveToFile /////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private async Task SaveJsonStringToFile(string filename, string jsonString)
+        private async void SaveJsonStringToFile(string filename, string jsonString)
         {
             try
             {
@@ -166,8 +167,7 @@ namespace MensaApp.Service
 
             try
             {
-                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                
+                StorageFolder localFolder = ApplicationData.Current.LocalFolder;                
                 if (localFolder != null)
                 {
                     IReadOnlyList<StorageFile> files = await localFolder.GetFilesAsync();
@@ -183,13 +183,6 @@ namespace MensaApp.Service
                             }
                         }
                     }
-
-                    //StorageFile file = await localFolder.GetFileAsync(filename);
-
-                    //if (file != null)
-                    //{
-                    //    jsonString = await FileIO.ReadTextAsync(file);
-                    //}
                 }
             }
             catch (FileNotFoundException)
@@ -203,5 +196,48 @@ namespace MensaApp.Service
 
             return jsonString;
         }
+
+        /// <summary>
+        /// Search all exsisting files and create missing files without content
+        /// </summary>
+        public async Task<int> CreateMissingFilesWithoutContentAsync()
+        {
+            int amountOfMissingFiles = 0;
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            if (localFolder != null)
+            {
+                IReadOnlyList<StorageFile> files = await localFolder.GetFilesAsync();
+                if (files != null && files.Count < _totalNumberOfFiles)
+                {
+                    List<string> filenames = new List<string>();
+                    filenames.Add(_mealsFilename);
+                    filenames.Add(_descriptionFilename);
+                    filenames.Add(_settingsFilename);
+
+                    foreach (string filename in filenames)
+                    {
+                        bool isExistingFilename = false;
+                        IEnumerator<StorageFile> filesIterator = files.GetEnumerator();
+                        while (filesIterator.MoveNext())
+                        {
+                            StorageFile file = filesIterator.Current;
+                            if (file.Name.Equals(filename))
+                            {
+                                isExistingFilename = true;
+                            }
+                        }
+                        if (!isExistingFilename)
+                        {
+                            amountOfMissingFiles++;
+                            // if file not existing, then create a new empty file.
+                            SaveJsonStringToFile(filename, "");
+                        }
+                    }
+                }
+            }
+            return amountOfMissingFiles;
+        }
+
+
     }
 }

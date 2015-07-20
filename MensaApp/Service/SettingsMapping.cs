@@ -26,21 +26,23 @@ namespace MensaApp.Service
         /// <param name="additives"></param>
         /// <param name="allergens"></param>
         /// <returns></returns>
-        public ObservableCollection<NutritionViewModel> mapToNutritionViewModels(List<NutritionDescription> descriptions, NutritionSetting setting,
+        public ObservableCollection<NutritionViewModel> MapToNutritionViewModels(List<NutritionDescription> descriptions, NutritionSetting setting,
             ObservableCollection<InfoSymbolViewModel> infoSymbole, ObservableCollection<AdditiveViewModel> additives, ObservableCollection<AllergenViewModel> allergens)
         {
             ObservableCollection<NutritionViewModel> resultNutritionViewModels = new ObservableCollection<NutritionViewModel>();
-
-            foreach (NutritionDescription description in descriptions)
+            if (descriptions != null)
             {
-                if (setting != null && description.id.Equals(setting.id))
+                foreach (NutritionDescription description in descriptions)
                 {
-                    resultNutritionViewModels.Add(mapToNutritionViewModel(description, setting, infoSymbole, additives, allergens));
-                }
-                else
-                {
-                    // if there is no setting for a description, then create a default view model.
-                    resultNutritionViewModels.Add(mapToNutritionViewModel(description, null, infoSymbole, additives, allergens));
+                    if (setting != null && description.id.Equals(setting.id))
+                    {
+                        resultNutritionViewModels.Add(mapToNutritionViewModel(description, setting, infoSymbole, additives, allergens));
+                    }
+                    else
+                    {
+                        // if there is no setting for a description, then create a default view model.
+                        resultNutritionViewModels.Add(mapToNutritionViewModel(description, null, infoSymbole, additives, allergens));
+                    }
                 }
             }
             return resultNutritionViewModels;
@@ -83,7 +85,7 @@ namespace MensaApp.Service
         {
             NutritionSetting nutritionSetting = null;
 
-            NutritionViewModel selectedNutritionViewModel = getSelectedNutritionViewModel(nutritionViewModels);
+            NutritionViewModel selectedNutritionViewModel = GetSelectedNutritionViewModel(nutritionViewModels);
             if (selectedNutritionViewModel != null)
             {
                 nutritionSetting = new NutritionSetting(selectedNutritionViewModel.Id, selectedNutritionViewModel.IsSelectedNutrition);
@@ -97,16 +99,19 @@ namespace MensaApp.Service
         /// </summary>
         /// <param name="nutritionViewModels"></param>
         /// <returns></returns>
-        public NutritionViewModel getSelectedNutritionViewModel(ObservableCollection<NutritionViewModel> nutritionViewModels) 
+        public NutritionViewModel GetSelectedNutritionViewModel(ObservableCollection<NutritionViewModel> nutritionViewModels) 
         {
             NutritionViewModel selectedNutritionViewModel = null;
 
-            foreach (NutritionViewModel nutritionViewModel in nutritionViewModels)
+            if (nutritionViewModels != null)
             {
-                if (nutritionViewModel.IsSelectedNutrition)
+                foreach (NutritionViewModel nutritionViewModel in nutritionViewModels)
                 {
-                    selectedNutritionViewModel = nutritionViewModel;
-                    break;
+                    if (nutritionViewModel.IsSelectedNutrition)
+                    {
+                        selectedNutritionViewModel = nutritionViewModel;
+                        break;
+                    }
                 }
             }
             return selectedNutritionViewModel;
@@ -122,7 +127,7 @@ namespace MensaApp.Service
         /// <param name="settings"></param>
         /// <param name="descriptions"></param>
         /// <returns></returns>
-        public ObservableCollection<InfoSymbolViewModel> mapToInfoSymbolViewModels(List<InfoSymbolDescription> descriptions)
+        public ObservableCollection<InfoSymbolViewModel> MapToInfoSymbolViewModels(List<InfoSymbolDescription> descriptions)
         {
             ObservableCollection<InfoSymbolViewModel> resultInfoSymbolViewModels = new ObservableCollection<InfoSymbolViewModel>();
             if (descriptions != null)
@@ -201,7 +206,7 @@ namespace MensaApp.Service
                     selectedDescription.Add(description);
                 }
             }
-            return mapToAdditiveViewModels(selectedDescription, settings);
+            return MapToAdditiveViewModels(selectedDescription, settings);
         }
 
         /// <summary>
@@ -235,26 +240,28 @@ namespace MensaApp.Service
         /// <param name="settings"></param>
         /// <param name="descriptions"></param>
         /// <returns></returns>
-        public ObservableCollection<AdditiveViewModel> mapToAdditiveViewModels(List<AdditiveDescription> descriptions, List<AdditiveSetting> settings)
+        public ObservableCollection<AdditiveViewModel> MapToAdditiveViewModels(List<AdditiveDescription> descriptions, List<AdditiveSetting> settings)
         {
             ObservableCollection<AdditiveViewModel> resultAdditiveViewModels = new ObservableCollection<AdditiveViewModel>();
-
-            foreach (AdditiveDescription description in descriptions)
+            if (descriptions != null)
             {
-                bool isSettingAvailable = false;
-                foreach (AdditiveSetting setting in settings)
+                foreach (AdditiveDescription description in descriptions)
                 {
-                    if (description.id.Equals(setting.id))
+                    bool isSettingAvailable = false;
+                    foreach (AdditiveSetting setting in settings)
                     {
-                        isSettingAvailable = true;
-                        resultAdditiveViewModels.Add(mapToAdditiveViewModel(description, setting));
-                        break;
+                        if (description.id.Equals(setting.id))
+                        {
+                            isSettingAvailable = true;
+                            resultAdditiveViewModels.Add(mapToAdditiveViewModel(description, setting));
+                            break;
+                        }
                     }
-                }
-                if (!isSettingAvailable)
-                {
-                    // if there is no setting for a description, then create a default view model.
-                    resultAdditiveViewModels.Add(mapToAdditiveViewModel(description, null));
+                    if (!isSettingAvailable)
+                    {
+                        // if there is no setting for a description, then create a default view model.
+                        resultAdditiveViewModels.Add(mapToAdditiveViewModel(description, null));
+                    }
                 }
             }
             return resultAdditiveViewModels;
@@ -349,7 +356,7 @@ namespace MensaApp.Service
                     selectedDescription.Add(description);
                 }
             }
-            return mapToAllergenViewModels(selectedDescription, settings);
+            return MapToAllergenViewModels(selectedDescription, settings);
         }
 
         /// <summary>
@@ -383,26 +390,29 @@ namespace MensaApp.Service
         /// <param name="settings"></param>
         /// <param name="descriptions"></param>
         /// <returns></returns>
-        public ObservableCollection<AllergenViewModel> mapToAllergenViewModels(List<AllergenDescription> descriptions, List<AllergenSetting> settings)
+        public ObservableCollection<AllergenViewModel> MapToAllergenViewModels(List<AllergenDescription> descriptions, List<AllergenSetting> settings)
         {
             ObservableCollection<AllergenViewModel> resultAllergenViewModels = new ObservableCollection<AllergenViewModel>();
 
-            foreach (AllergenDescription description in descriptions)
+            if (descriptions != null)
             {
-                bool isSettingAvailable = false;
-                foreach (AllergenSetting setting in settings)
+                foreach (AllergenDescription description in descriptions)
                 {
-                    if (description.id.Equals(setting.id))
+                    bool isSettingAvailable = false;
+                    foreach (AllergenSetting setting in settings)
                     {
-                        isSettingAvailable = true;
-                        resultAllergenViewModels.Add(mapToAllergenViewModel(description, setting));
-                        break;
+                        if (description.id.Equals(setting.id))
+                        {
+                            isSettingAvailable = true;
+                            resultAllergenViewModels.Add(mapToAllergenViewModel(description, setting));
+                            break;
+                        }
                     }
-                }
-                if (!isSettingAvailable)
-                {
-                    // if there is no setting for a description, then create a default view model.
-                    resultAllergenViewModels.Add(mapToAllergenViewModel(description, null));
+                    if (!isSettingAvailable)
+                    {
+                        // if there is no setting for a description, then create a default view model.
+                        resultAllergenViewModels.Add(mapToAllergenViewModel(description, null));
+                    }
                 }
             }
             return resultAllergenViewModels;

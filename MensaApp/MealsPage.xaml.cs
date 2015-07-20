@@ -33,21 +33,15 @@ namespace MensaApp
     public sealed partial class MealsPage : Page
     {
         private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
         private MealsPageViewModel _mealsPageViewModel = new MealsPageViewModel();
-
-        private ServingSettings _servingSettings;
-
-        private ServingMealOffer _servingMealOffer;
+        private DataAndUpdateService _dataAndUpdateService;
         
         public MealsPage()
         {
             this.InitializeComponent();
 
-
-            _servingMealOffer = new ServingMealOffer();
-            _servingSettings = new ServingSettings();
+            _dataAndUpdateService = new DataAndUpdateService();
             
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -68,15 +62,6 @@ namespace MensaApp
         }
 
         /// <summary>
-        /// Ruft das Anzeigemodell für diese <see cref="Page"/> ab.
-        /// Dies kann in ein stark typisiertes Anzeigemodell geändert werden.
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
-        {
-            get { return this.defaultViewModel; }
-        }
-
-        /// <summary>
         /// Füllt die Seite mit Inhalt auf, der bei der Navigation übergeben wird.  Gespeicherte Zustände werden ebenfalls
         /// bereitgestellt, wenn eine Seite aus einer vorherigen Sitzung neu erstellt wird.
         /// </summary>
@@ -94,7 +79,7 @@ namespace MensaApp
 
             if (_mealsPageViewModel.Today.Count == 0 && _mealsPageViewModel.ForecastDays.Count == 0)
             {
-                synchronizeWithServer(false);
+                prepareMealsPage(false);
             }
         }
 
@@ -228,47 +213,19 @@ namespace MensaApp
         /// <summary>
         /// Neu-Laden der aktuellen Gerichte und anschließender Aktualisierung der Oberflaeche.
         /// </summary>
-        private async void synchronizeWithServer(bool forceUpdateFromServer)
+        private async void prepareMealsPage(bool forceUpdateFromServer)
         {
             // Zeige den Progressbar fuer den Zeitraum der asynchronen Datenverarbeitung
             ProgressBar.Visibility = Visibility.Visible;
-
             RefreshAppBarButton.IsEnabled = false;
-
-            // Hole die MensaRestSchnittstellen Parameter
-            ResourceLoader MensaRestApiResource = ResourceLoader.GetForCurrentView("MensaRestApi");
-            String MealBaseUrl = MensaRestApiResource.GetString("MealBaseURL");
-            String MealPathUrl = MensaRestApiResource.GetString("MealURL");
-            String dateiName = MensaRestApiResource.GetString("MealsFilename");
-
-            
-
-            // Start taeglich einmalige Synchro
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
-
-            // Helfer
-            DateTime myDate = DateTime.MinValue;
-
-            myDate = await FileModifiedCheck(dateiName, myDate);
-
-            if (DateTime.Today != myDate || forceUpdateFromServer)
-            {
-                // Hole das JSON und speichere in Datei
-                String mealsJSONStringFromServer = await _servingMealOffer.GetServerData(MealBaseUrl, MealPathUrl);
-                _servingSettings.SaveMeals(mealsJSONStringFromServer);
-            }
-
-            // Der Rest muss immer passieren
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             int amountOfDays = 6; // Current day + 5 days of forcast
             // load all meals from file
-            List<DayViewModel> AllDaysWithMeals = await _servingMealOffer.SearchMealOffersForCertainAmountOfDays(amountOfDays);
-
+            List<DayViewModel> AllDaysWithMeals = await _dataAndUpdateService.DeliverAllDaysWithMealsForMealsPage(amountOfDays, forceUpdateFromServer);
             // search for meals of the current day
-            ObservableCollection<DayViewModel> today = _servingMealOffer.SearchMealsOfToday(DateTime.Today, AllDaysWithMeals);
+            ObservableCollection<DayViewModel> today = _dataAndUpdateService.SearchMealsOfToday(AllDaysWithMeals);
             // search for forcast meals
-            ObservableCollection<DayViewModel> forecast = _servingMealOffer.SearchMealOfForecast(DateTime.Today, AllDaysWithMeals);
+            ObservableCollection<DayViewModel> forecast = _dataAndUpdateService.SearchMealOfForecast(AllDaysWithMeals);
 
             // fuer erneutes ausfuehren zuvor loeschen, ansonsten doppelt
             _mealsPageViewModel.Today.Clear();
@@ -345,7 +302,7 @@ namespace MensaApp
         /// <param name="e"></param>
         private void RefreshAppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            synchronizeWithServer(true);
+            prepareMealsPage(true);
         }
 
         /// <summary>
