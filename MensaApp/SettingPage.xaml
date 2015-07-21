@@ -35,7 +35,8 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <ComboBox x:Name="NutritionComboBox" Grid.Row="0" ItemsSource="{Binding Path=Nutritions}" SelectedItem="{Binding Path=SelectedNutrition}" SelectionChanged="NutritionComboBox_SelectionChanged" Margin="8,0" >
+                    <ComboBox x:Name="NutritionComboBox" Grid.Row="0" ItemsSource="{Binding Path=Nutritions}" SelectedItem="{Binding Path=Nutritions, Converter={StaticResource NutritionComboboxItemConverter}}" 
+                              SelectionChanged="NutritionComboBox_SelectionChanged" Margin="8,0">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>

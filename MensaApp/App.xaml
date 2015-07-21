@@ -26,6 +26,7 @@
         <valueConverter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <valueConverter:ShowInformationToImagePathConverter x:Key="ShowInformationToImagePathConverter"/>
         <valueConverter:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
+        <valueConverter:SelectedNutritionComboboxItemConverter x:Key="NutritionComboboxItemConverter"/>
 
         <Style x:Key="MensaFontColor" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#FF171717"/>

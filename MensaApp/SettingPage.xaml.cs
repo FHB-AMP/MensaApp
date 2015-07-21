@@ -45,7 +45,6 @@ namespace MensaApp
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-
         }
 
         public SettingsPageViewModel SettingsPageViewModel
@@ -81,15 +80,6 @@ namespace MensaApp
             _settingViewModel.Nutritions = listOfSettingViewModel.NutritionViewModels;
             _settingViewModel.Additives = listOfSettingViewModel.AdditiveViewModels;
             _settingViewModel.Allergens = listOfSettingViewModel.AllergenViewModels;
-
-            // Setzen der ausgewaehlten Ernaehrungsweise im ComboBox-Menue
-            foreach (NutritionViewModel nutritionViewModel in _settingViewModel.Nutritions)
-            {
-                if (nutritionViewModel.IsSelectedNutrition)
-                {
-                    _settingViewModel.SelectedNutrition = nutritionViewModel;
-                }
-            }
         }
 
         /// <summary>

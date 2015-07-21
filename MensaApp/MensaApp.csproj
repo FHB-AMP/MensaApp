@@ -95,6 +95,7 @@
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\ExcludeToColorCodeConverter.cs" />
     <Compile Include="Converter\InfoSymbolToImagePathConverter.cs" />
+    <Compile Include="Converter\SelectedNutritionComboboxItemConverter.cs" />
     <Compile Include="Converter\SuitableToColorCodeConverter.cs" />
     <Compile Include="Converter\ShowInformationToImagePathConverter.cs" />
     <Compile Include="DataModel\Rest\AdditiveDescription.cs" />
