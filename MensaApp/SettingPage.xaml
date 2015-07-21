@@ -124,7 +124,7 @@
                                 <Image Source="/assets/icon/infoIcon-240.png" Margin="4" UseLayoutRounding="False"/>
                                 <!-- Content List -->
                                 <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding SelectedNutrition.ExcludedSymbols}"  
-                                     Visibility="{Binding SelectedNutrition.ExcludedSymbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Margin="0,10">
+                                     Visibility="{Binding SelectedNutrition.ExcludedSymbols.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Margin="0,10" IsHitTestVisible="False">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -209,7 +209,7 @@
                                 <Image Source="/Assets/Icon/additives-240.png" HorizontalAlignment="Center"/>
                                 <TextBlock Text="ausgeschlossene Zusatzstoffe" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
                                 <!-- Content List -->
-                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAdditives}" Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10">
+                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAdditives}" Visibility="{Binding SelectedNutrition.ExcludedAdditives.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10" IsHitTestVisible="False">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -294,7 +294,7 @@
                                 <TextBlock Text="ausgeschlossene Allergene" Style="{StaticResource MensaTileTitle}" Grid.Column="1" />
                                 <Image Source="/Assets/Icon/allergens-240.png" HorizontalAlignment="Center"/>
                                 <!-- Content List -->
-                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAllergens}" Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10">
+                                <ListView Grid.Row="1" ItemsSource="{Binding SelectedNutrition.ExcludedAllergens}" Visibility="{Binding SelectedNutrition.ExcludedAllergens.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10" IsHitTestVisible="False">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
