@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -36,6 +37,7 @@ namespace MensaApp
 
         private MealsPageViewModel _mealsPageViewModel = new MealsPageViewModel();
         private DataAndUpdateService _dataAndUpdateService;
+        private bool _isLastNavigationTargetSettingsPage = false;
         
         public MealsPage()
         {
@@ -89,18 +91,6 @@ namespace MensaApp
         /// <param name="e"></param>
         private void RestorePageState(LoadStateEventArgs e)
         {
-            // restore MealsPageViewModel
-            if (e.PageState != null && e.PageState.ContainsKey("MealsPageViewModel"))
-            {
-                object mealsPageViewModel;
-                e.PageState.TryGetValue("MealsPageViewModel", out mealsPageViewModel);
-                if (mealsPageViewModel != null)
-                {
-                    _mealsPageViewModel.Today = (mealsPageViewModel as MealsPageViewModel).Today;
-                    _mealsPageViewModel.ForecastDays = (mealsPageViewModel as MealsPageViewModel).ForecastDays;
-                }
-            }
-
             // restore last visited pivot item.
             if (e.PageState != null && e.PageState.ContainsKey("PivotIndex"))
             {
@@ -112,38 +102,67 @@ namespace MensaApp
                 }
             }
 
-            // restore selected item of today listview and set scroller position.
-            if (e.PageState != null && e.PageState.ContainsKey("TodayListIndex"))
+            // restore the last navigation target page
+            if (e.PageState != null && e.PageState.ContainsKey("IsLastNavigationTargetSettingsPage"))
             {
-                object listIndex = 0;
-                e.PageState.TryGetValue("TodayListIndex", out listIndex);
-                if (listIndex != null)
+                object isLastNavigationTargetObject = 0;
+                e.PageState.TryGetValue("IsLastNavigationTargetSettingsPage", out isLastNavigationTargetObject);
+                if (isLastNavigationTargetObject != null)
                 {
-                    int listIndexInt = Convert.ToInt32(listIndex);
-                    // take care about to select only exsiting items
-                    if (listIndexInt >= 0 && TodayList.Items.Count > listIndexInt)
-                    {
-                        TodayList.SelectedIndex = listIndexInt;
-                        TodayList.ScrollIntoView(TodayList.SelectedItem, ScrollIntoViewAlignment.Leading);
-                        TodayList.UpdateLayout();
-                    }
+                    _isLastNavigationTargetSettingsPage = (bool)isLastNavigationTargetObject;
                 }
             }
 
-            // restore selected item of forcast listview and set scroller position.
-            if (e.PageState != null && e.PageState.ContainsKey("ForecastListIndex"))
+            if (_isLastNavigationTargetSettingsPage)
             {
-                object listIndex = 0;
-                e.PageState.TryGetValue("ForecastListIndex", out listIndex);
-                if (listIndex != null)
+                // reload meals page when settings page was the last target page.
+                prepareMealsPage(false);
+            }
+            else
+            {
+                // restore MealsPageViewModel
+                if (e.PageState != null && e.PageState.ContainsKey("MealsPageViewModel"))
                 {
-                    int listIndexInt = Convert.ToInt32(listIndex);
-                    // take care about to select only exsiting items
-                    if (listIndexInt >= 0 && ForecastList.Items.Count > listIndexInt)
+                    object mealsPageViewModel;
+                    e.PageState.TryGetValue("MealsPageViewModel", out mealsPageViewModel);
+                    if (mealsPageViewModel != null)
                     {
-                        ForecastList.SelectedIndex = listIndexInt;
-                        ForecastList.ScrollIntoView(ForecastList.SelectedItem, ScrollIntoViewAlignment.Leading);
-                        ForecastList.UpdateLayout();
+                        _mealsPageViewModel.Today = (mealsPageViewModel as MealsPageViewModel).Today;
+                        _mealsPageViewModel.ForecastDays = (mealsPageViewModel as MealsPageViewModel).ForecastDays;
+                    }
+                }
+                // restore selected item of today listview and set scroller position.
+                if (e.PageState != null && e.PageState.ContainsKey("TodayListIndex"))
+                {
+                    object listIndex = 0;
+                    e.PageState.TryGetValue("TodayListIndex", out listIndex);
+                    if (listIndex != null)
+                    {
+                        int listIndexInt = Convert.ToInt32(listIndex);
+                        // take care about to select only exsiting items
+                        if (listIndexInt >= 0 && TodayList.Items.Count > listIndexInt)
+                        {
+                            TodayList.SelectedIndex = listIndexInt;
+                            TodayList.ScrollIntoView(TodayList.SelectedItem, ScrollIntoViewAlignment.Leading);
+                            TodayList.UpdateLayout();
+                        }
+                    }
+                }
+                // restore selected item of forcast listview and set scroller position.
+                if (e.PageState != null && e.PageState.ContainsKey("ForecastListIndex"))
+                {
+                    object listIndex = 0;
+                    e.PageState.TryGetValue("ForecastListIndex", out listIndex);
+                    if (listIndex != null)
+                    {
+                        int listIndexInt = Convert.ToInt32(listIndex);
+                        // take care about to select only exsiting items
+                        if (listIndexInt >= 0 && ForecastList.Items.Count > listIndexInt)
+                        {
+                            ForecastList.SelectedIndex = listIndexInt;
+                            ForecastList.ScrollIntoView(ForecastList.SelectedItem, ScrollIntoViewAlignment.Leading);
+                            ForecastList.UpdateLayout();
+                        }
                     }
                 }
             }
@@ -172,6 +191,7 @@ namespace MensaApp
             e.PageState.Add("MealsPageViewModel", _mealsPageViewModel);
             e.PageState.Add("TodayListIndex", TodayList.SelectedIndex);
             e.PageState.Add("ForecastListIndex", ForecastList.SelectedIndex);
+            e.PageState.Add("IsLastNavigationTargetSettingsPage", _isLastNavigationTargetSettingsPage);
         }
 
         #region NavigationHelper-Registrierung
@@ -207,6 +227,7 @@ namespace MensaApp
 
         private void SettingAppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            _isLastNavigationTargetSettingsPage = true;
             Frame.Navigate(typeof(SettingPage));
         }
 
@@ -241,30 +262,6 @@ namespace MensaApp
             PrepareListTransitionAninmation();
             RefreshAppBarButton.IsEnabled = true;
             ProgressBar.Visibility = Visibility.Collapsed;
-        }
-
-        private static async System.Threading.Tasks.Task<DateTime> FileModifiedCheck(String dateiName, DateTime myDate)
-        {
-            try
-            {
-                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                // Wenn nicht vorhanden FileNotFoundException
-                StorageFile sampleFile = await localFolder.GetFileAsync(dateiName);
-
-                // modified Zeitpunkt aus Properties holen
-                var check = new List<string>();
-                check.Add("System.DateModified");
-                var props = await sampleFile.Properties.RetrievePropertiesAsync(check);
-                var dateModified = props.SingleOrDefault().Value;
-
-                // Property als DateTime parsen
-                myDate = DateTime.ParseExact(dateModified.ToString(), "dd.MM.yyyy HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture);
-            }
-            catch (FileNotFoundException)
-            {
-                Debug.WriteLine("[MeansaApp.MealsPage] Datei: " + dateiName + "konnte nicht gelesen werden.");
-            }
-            return myDate;
         }
 
         /// <summary>
@@ -317,6 +314,7 @@ namespace MensaApp
 
             if (selectedMeal != null)
             {
+                _isLastNavigationTargetSettingsPage = false;
                 DateTime dateOfMeal = getDateTimeOfSelectedMeal(selectedMeal, _mealsPageViewModel);
                 DetailPageParameter paramModel = new DetailPageParameter(dateOfMeal, selectedMeal);
                 Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
@@ -370,6 +368,7 @@ namespace MensaApp
 
         private void ImpressumAppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            _isLastNavigationTargetSettingsPage = false;
             Frame mensaFrame = MainPage.Current.FindName("MensaFrame") as Frame;
             if (mensaFrame != null)
                 mensaFrame.Navigate(typeof(ImpressumPage));

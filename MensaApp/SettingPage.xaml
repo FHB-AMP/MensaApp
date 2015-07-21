@@ -50,11 +50,11 @@
                     <!-- Properties -->
                     <ScrollViewer Grid.Row="3" HorizontalScrollMode="Disabled">
                         <Grid>
-                            <Grid.ChildrenTransitions>
+                            <!--<Grid.ChildrenTransitions>
                                 <TransitionCollection>
                                     <EntranceThemeTransition/>
                                 </TransitionCollection>
-                            </Grid.ChildrenTransitions>
+                            </Grid.ChildrenTransitions>-->
                             
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>

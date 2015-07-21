@@ -32,11 +32,11 @@
         <!-- Pivot -->
         <Pivot x:Name="mealsPivot" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="0" 
                Margin="-8,0,0,0" Title="Mensa FH Brandenburg">
-            <Pivot.ItemContainerTransitions>
+            <!--<Pivot.ItemContainerTransitions>
                 <TransitionCollection>
                     <EntranceThemeTransition/>
                 </TransitionCollection>
-            </Pivot.ItemContainerTransitions>
+            </Pivot.ItemContainerTransitions>-->
 
             <!-- First PivotItem -->
             <PivotItem Margin="18,0,10,0" Padding="4,0" Header="Heute">
@@ -44,11 +44,11 @@
                     <SemanticZoom>
                         <SemanticZoom.ZoomedInView>
                             <ListView x:Name="TodayList" ItemsSource="{Binding Source={StaticResource mealsToday}}" Visibility="{Binding Today.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" SelectionMode="Single" Tapped="MealsListView_Tapped" >
-                                <ListView.ItemContainerTransitions>
+                                <!--<ListView.ItemContainerTransitions>
                                     <TransitionCollection>
                                         <EntranceThemeTransition/>
                                     </TransitionCollection>
-                                </ListView.ItemContainerTransitions>
+                                </ListView.ItemContainerTransitions>-->
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -170,11 +170,11 @@
                     <SemanticZoom>
                         <SemanticZoom.ZoomedInView>
                             <ListView x:Name="ForecastList" ItemsSource="{Binding Source={StaticResource mealsForecast}}"  Visibility="{Binding ForecastDays.Count, Converter={StaticResource ListNotEmptyToVisibilityConverter}}" Tapped="MealsListView_Tapped" >
-                                <ListView.ItemContainerTransitions>
+                                <!--<ListView.ItemContainerTransitions>
                                     <TransitionCollection>
                                         <EntranceThemeTransition/>
                                     </TransitionCollection>
-                                </ListView.ItemContainerTransitions>
+                                </ListView.ItemContainerTransitions>-->
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

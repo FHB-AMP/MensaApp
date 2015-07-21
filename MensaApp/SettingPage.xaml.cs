@@ -166,6 +166,7 @@ namespace MensaApp
                     nutritionViewModel.IsSelectedNutrition = nutritionViewModel.Id.Equals(selectedNutritionViewModel.Id) ? true : false;
                 }
             }
+            // Update disabled additives und allergens after nutrition selection has changed.
             _settingViewModel.Additives = _dataAndUpdateService.UpdateSettingsAdditivesBySelectedNutrition(_settingViewModel.SelectedNutrition, _settingViewModel.Additives);
             _settingViewModel.Allergens = _dataAndUpdateService.UpdateSettingsAllergensBySelectedNutrition(_settingViewModel.SelectedNutrition, _settingViewModel.Allergens);
             AdditivesList.UpdateLayout();
