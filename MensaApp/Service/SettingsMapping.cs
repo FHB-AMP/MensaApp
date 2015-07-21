@@ -61,7 +61,7 @@ namespace MensaApp.Service
             ObservableCollection<InfoSymbolViewModel> infoSymbol, ObservableCollection<AdditiveViewModel> additives, ObservableCollection<AllergenViewModel> allergens)
         {
             ObservableCollection<InfoSymbolViewModel> excludedSymbols = getInfoSymbolViewModelsByIds(description.excludedSymbols, infoSymbol);
-            ObservableCollection<AdditiveViewModel> excludedAdditive = getAdditiveViewModelsByIds(description.excludedAdditives, additives);
+            ObservableCollection<AdditiveViewModel> excludedAdditive = GetAdditiveViewModelsByIds(description.excludedAdditives, additives);
             ObservableCollection<AllergenViewModel> excludedAllergens = getAllergenViewModelsByIds(description.excludedAllergens, allergens);
 
             // check whether settings are available for a certain description.
@@ -175,10 +175,7 @@ namespace MensaApp.Service
             {
                 foreach (InfoSymbolViewModel infoSymbol in infoSymbols)
                 {
-                    if (nutrition.ExcludedSymbols.Contains(infoSymbol))
-                    {
-                        infoSymbol.IsExcluded = true;
-                    }
+                    infoSymbol.IsExcluded = nutrition.ExcludedSymbols.Contains(infoSymbol) ? true : false;
                 }
             }
         }
@@ -216,7 +213,7 @@ namespace MensaApp.Service
         /// <param name="descriptions"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public ObservableCollection<AdditiveViewModel> getAdditiveViewModelsByIds(List<string> additiveIds, ObservableCollection<AdditiveViewModel> additives)
+        public ObservableCollection<AdditiveViewModel> GetAdditiveViewModelsByIds(List<string> additiveIds, ObservableCollection<AdditiveViewModel> additives)
         {
             ObservableCollection<AdditiveViewModel> selectedAdditives = new ObservableCollection<AdditiveViewModel>();
 
@@ -325,10 +322,7 @@ namespace MensaApp.Service
             {
                 foreach (AdditiveViewModel additive in additives)
                 {
-                    if (selectedNutrition.ExcludedAdditives.Contains(additive))
-                    {
-                        additive.IsDisabled = true;
-                    }
+                    additive.IsDisabled = selectedNutrition.ExcludedAdditives.Contains(additive) ? true : false;
                 }
             }
         }
@@ -475,10 +469,7 @@ namespace MensaApp.Service
             {
                 foreach (AllergenViewModel allergen in allergens)
                 {
-                    if (selectedNutrition.ExcludedAllergens.Contains(allergen))
-                    {
-                        allergen.IsDisabled = true;
-                    }
+                    allergen.IsDisabled = selectedNutrition.ExcludedAllergens.Contains(allergen) ? true : false;
                 }
             }
         }

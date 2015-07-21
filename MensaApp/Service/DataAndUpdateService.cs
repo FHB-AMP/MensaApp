@@ -17,7 +17,6 @@ namespace MensaApp.Service
         private ServingMealOffer _servingMealOffer;
         private ServerService _serverService;
 
-        private readonly string _isFirstAppLaunchKey = "isFirstAppLaunch";
         private readonly string _updateDateKey = "updateDate";
         private readonly int updateHourOfDay = 8;
 
@@ -32,18 +31,25 @@ namespace MensaApp.Service
         //////////////////////////////////////////////////////////////// StartUp ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public async Task CheckAtStartUp()
+        /// <summary>
+        /// Delivers true when the mensa data has been updated.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> CheckAtStartUp()
         {
-            if (isFirstStartUpOfMensaApp() || !isUpToDate())
+            bool isSynchronized = false;
+            if (!isUpToDate())
             {
                 // Start Tasks
                 Task<ListOfDays> mealsTask = UpdateMeals();
                 Task<ListsOfDescriptions> descriptionsTask = UpdateDescriptions();
-                
                 // Await Tasks
                 await mealsTask;
                 await descriptionsTask;
+
+                isSynchronized = true;
             }
+            return isSynchronized;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +117,7 @@ namespace MensaApp.Service
         //////////////////////////////////////////////////////////////// SettingsPage ///////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public async Task<ListOfSettingViewModel> DeliverSettingsForSettingsPage()
+        internal async Task<ListOfSettingViewModel> DeliverSettingsForSettingsPage()
         {
             //Start async Tasks
             Task<ListsOfDescriptions> listsOfDescriptionsTask = FindDescriptionsFromFileOrServer(false);
@@ -125,10 +131,36 @@ namespace MensaApp.Service
             return listOfSettingViewModel;
         }
 
-        public void SaveSettingsFromSettingsPage(ObservableCollection<NutritionViewModel> nutritionViewModels,
+        internal ObservableCollection<AdditiveViewModel> UpdateSettingsAdditivesBySelectedNutrition(NutritionViewModel nutritionViewModel, ObservableCollection<AdditiveViewModel> additiveViewModels)
+        {
+            ObservableCollection<AdditiveViewModel> updateAdditiveViewModels = new ObservableCollection<AdditiveViewModel>();
+            foreach (AdditiveViewModel additiveViewModel in additiveViewModels)
+            {
+                updateAdditiveViewModels.Add(additiveViewModel);
+            }
+            additiveViewModels.Clear();
+
+            _servingSettings.UpdateExcludingOfAdditives(nutritionViewModel, updateAdditiveViewModels);
+            return updateAdditiveViewModels;
+        }
+
+        internal ObservableCollection<AllergenViewModel> UpdateSettingsAllergensBySelectedNutrition(NutritionViewModel nutritionViewModel, ObservableCollection<AllergenViewModel> allergensViewModels)
+        {
+            ObservableCollection<AllergenViewModel> updateAllergenViewModels = new ObservableCollection<AllergenViewModel>();
+            foreach (AllergenViewModel allergensViewModel in allergensViewModels)
+            {
+                updateAllergenViewModels.Add(allergensViewModel);
+            }
+            allergensViewModels.Clear();
+            _servingSettings.UpdateExcludingOfAllergens(nutritionViewModel, updateAllergenViewModels);
+            return updateAllergenViewModels;
+        }
+
+        internal async Task SaveSettingsFromSettingsPage(ObservableCollection<NutritionViewModel> nutritionViewModels,
             ObservableCollection<AdditiveViewModel> additiveViewModels, ObservableCollection<AllergenViewModel> allergenViewModels)
         {
-            _servingSettings.SaveSettings(nutritionViewModels, additiveViewModels, allergenViewModels);
+            await _servingSettings.SaveSettings(nutritionViewModels, additiveViewModels, allergenViewModels);
+            return;
         }
 
 
@@ -139,24 +171,22 @@ namespace MensaApp.Service
         private async Task<ListsOfDescriptions> FindDescriptionsFromFileOrServer(bool forceUpdateFromServer)
         {
             ListsOfDescriptions resultListsOfDescriptions = new ListsOfDescriptions();
-            if (!forceUpdateFromServer)
+            
+            ListsOfDescriptions ListsOfDescriptionsFromFile = await _servingSettings.LoadListsOfDescriptionsFromFileAysnc();
+            if (ListsOfDescriptionsFromFile == null ||
+                ListsOfDescriptionsFromFile.infoSymbols == null || ListsOfDescriptionsFromFile.infoSymbols.Count == 0 ||
+                ListsOfDescriptionsFromFile.nutritions == null || ListsOfDescriptionsFromFile.nutritions.Count == 0 ||
+                ListsOfDescriptionsFromFile.additives == null || ListsOfDescriptionsFromFile.additives.Count == 0 ||
+                ListsOfDescriptionsFromFile.allergens == null || ListsOfDescriptionsFromFile.allergens.Count == 0)
             {
-                ListsOfDescriptions ListsOfDescriptionsFromFile = await _servingSettings.LoadListsOfDescriptionsFromFileAysnc();
-                if (ListsOfDescriptionsFromFile == null ||
-                    ListsOfDescriptionsFromFile.infoSymbols == null || ListsOfDescriptionsFromFile.infoSymbols.Count == 0 ||
-                    ListsOfDescriptionsFromFile.nutritions == null || ListsOfDescriptionsFromFile.nutritions.Count == 0 ||
-                    ListsOfDescriptionsFromFile.additives == null || ListsOfDescriptionsFromFile.additives.Count == 0 ||
-                    ListsOfDescriptionsFromFile.allergens == null || ListsOfDescriptionsFromFile.allergens.Count == 0)
-                {
-                    // update from server if not all descriptions are available from file.
-                    forceUpdateFromServer = true;
-                }
-                else
-                {
-                    resultListsOfDescriptions = ListsOfDescriptionsFromFile;
-                }
+                // update from server if not all descriptions are available from file.
+                forceUpdateFromServer = true;
             }
-
+            else
+            {
+                resultListsOfDescriptions = ListsOfDescriptionsFromFile;
+            }
+            
             if (forceUpdateFromServer)
             {
                 ListsOfDescriptions ListsOfDescriptionsFromServer = await UpdateDescriptions();
@@ -181,20 +211,18 @@ namespace MensaApp.Service
         private async Task<ListOfDays> FindMealsFromFileOrServer(bool forceUpdateFromServer)
         {
             ListOfDays resultListOfDays = new ListOfDays();
-            if (!forceUpdateFromServer)
+            
+            ListOfDays listOfDaysFromFile = await _servingSettings.LoadListOfDaysFromFileAsync();
+            if (listOfDaysFromFile == null || 
+                listOfDaysFromFile.days == null || 
+                listOfDaysFromFile.days.Count == 0)
             {
-                ListOfDays listOfDaysFromFile = await _servingSettings.LoadListOfDaysFromFileAsync();
-                if (listOfDaysFromFile == null || 
-                    listOfDaysFromFile.days == null || 
-                    listOfDaysFromFile.days.Count == 0)
-                {
-                    // update from server if no meals with days could be found from file.
-                    forceUpdateFromServer = true;
-                } 
-                else 
-                {
-                    resultListOfDays = listOfDaysFromFile;
-                }
+                // update from server if no meals with days could be found from file.
+                forceUpdateFromServer = true;
+            } 
+            else 
+            {
+                resultListOfDays = listOfDaysFromFile;
             }
             
             if (forceUpdateFromServer)
@@ -221,7 +249,7 @@ namespace MensaApp.Service
             if (listOfDays != null) 
             {
                 // save listOfDays into file.
-                _servingSettings.SaveMeals(listOfDays);
+                await _servingSettings.SaveMeals(listOfDays);
             }
             return listOfDays;
         }
@@ -237,28 +265,9 @@ namespace MensaApp.Service
             if (listsOfDescriptions != null)
             {
                 // save listsOfDescriptions into file.
-                _servingSettings.SaveDescriptions(listsOfDescriptions);
+                await _servingSettings.SaveDescriptions(listsOfDescriptions);
             }
             return listsOfDescriptions;
-        }
-
-        /// <summary>
-        /// Checks wheather the app has been launched for the first time.
-        /// </summary>
-        /// <returns></returns>
-        private bool isFirstStartUpOfMensaApp()
-        {
-            bool isFirstAppLaunch = true;
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            if (localSettings.Values.ContainsKey(_isFirstAppLaunchKey))
-            {
-                isFirstAppLaunch = (bool)localSettings.Values[_isFirstAppLaunchKey];
-            }
-            else
-            {
-                localSettings.Values[_isFirstAppLaunchKey] = false;
-            }
-            return isFirstAppLaunch;
         }
 
         /// <summary>
@@ -268,7 +277,6 @@ namespace MensaApp.Service
         private bool isUpToDate()
         {
             bool isUpToDate = false;
-
             DateTime lastUpdateDate;
 
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -288,6 +296,5 @@ namespace MensaApp.Service
             }
             return isUpToDate;
         }
-
     }
 }

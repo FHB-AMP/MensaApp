@@ -131,12 +131,12 @@ namespace MensaApp
 
         #endregion
 
-        private void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveSettingsAppBarButton_Click(object sender, RoutedEventArgs e)
         {
             // Fortschrittsbalken einblenden
             ProgressBar.Visibility = Visibility.Visible;
 
-            _dataAndUpdateService.SaveSettingsFromSettingsPage(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
+            await _dataAndUpdateService.SaveSettingsFromSettingsPage(_settingViewModel.Nutritions, _settingViewModel.Additives, _settingViewModel.Allergens);
 
             // Fortschrittsbalken ausblenden
             ProgressBar.Visibility = Visibility.Collapsed;
@@ -166,6 +166,10 @@ namespace MensaApp
                     nutritionViewModel.IsSelectedNutrition = nutritionViewModel.Id.Equals(selectedNutritionViewModel.Id) ? true : false;
                 }
             }
+            _settingViewModel.Additives = _dataAndUpdateService.UpdateSettingsAdditivesBySelectedNutrition(_settingViewModel.SelectedNutrition, _settingViewModel.Additives);
+            _settingViewModel.Allergens = _dataAndUpdateService.UpdateSettingsAllergensBySelectedNutrition(_settingViewModel.SelectedNutrition, _settingViewModel.Allergens);
+            AdditivesList.UpdateLayout();
+            AllergensList.UpdateLayout();
         }
     }
 }

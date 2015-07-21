@@ -1,6 +1,7 @@
 ﻿using MensaApp.Service;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -54,6 +55,7 @@ namespace MensaApp
             }
 #endif
 
+
             Frame rootFrame = Window.Current.Content as Frame;
 
             // App-Initialisierung nicht wiederholen, wenn das Fenster bereits Inhalte enthält.
@@ -89,11 +91,15 @@ namespace MensaApp
 
                 rootFrame.ContentTransitions = null;
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
-                
-                // Check mensa data on start up
-                DataAndUpdateService dataAndUpdateService = new DataAndUpdateService();
-                await dataAndUpdateService.CheckAtStartUp();
 
+                // Check mensa data on start up
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////// Start async mensa update task  /////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                DataAndUpdateService dataAndUpdateService = new DataAndUpdateService();
+                bool isSynchronized = await dataAndUpdateService.CheckAtStartUp();
+                Debug.WriteLine("Synchronized Mensa data with server at app launch: {0}", isSynchronized);
+                
                 // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
                 // und die neue Seite konfigurieren, indem die erforderlichen Informationen als Navigationsparameter
                 // übergeben werden

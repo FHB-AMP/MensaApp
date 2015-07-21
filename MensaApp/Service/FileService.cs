@@ -24,7 +24,6 @@ namespace MensaApp.Service
         private string _settingsFilename;
         private string _mealsFilename;
         private string _descriptionFilename;
-        private readonly int _totalNumberOfFiles = 3;
 
         public FileService()
         {
@@ -40,13 +39,14 @@ namespace MensaApp.Service
         /// Saves all descriptions to json file.
         /// </summary>
         /// <param name="listOfDescriptions"></param>
-        internal void SaveListOfDescriptions(ListsOfDescriptions listOfDescriptions)
+        internal async Task SaveListOfDescriptions(ListsOfDescriptions listOfDescriptions)
         {
             if (listOfDescriptions != null)
             {
                 string jsonString = JsonConvert.SerializeObject(listOfDescriptions);
-                SaveJsonStringToFile(_descriptionFilename, jsonString);
+                await SaveJsonStringToFile(_descriptionFilename, jsonString);
             }
+            return;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace MensaApp.Service
             ListsOfDescriptions description = new ListsOfDescriptions();
             string jsonString = await LoadJsonStringFromFile(_descriptionFilename);
 
-            if (jsonString != null && jsonString.Length < 0)
+            if (jsonString != null && jsonString.Length > 0)
             {
                 description = JsonConvert.DeserializeObject<ListsOfDescriptions>(jsonString);
             }
@@ -69,13 +69,14 @@ namespace MensaApp.Service
         /// Saves all settings to json file.
         /// </summary>
         /// <param name="listOfSettings"></param>
-        internal void SaveListOfSettings(ListsOfSettings listOfSettings)
+        internal async Task SaveListOfSettings(ListsOfSettings listOfSettings)
         {
             if (listOfSettings != null)
             {
                 string jsonString = JsonConvert.SerializeObject(listOfSettings);
-                SaveJsonStringToFile(_settingsFilename, jsonString);
+                await SaveJsonStringToFile(_settingsFilename, jsonString);
             }
+            return;
         }
 
         /// <summary>
@@ -98,13 +99,14 @@ namespace MensaApp.Service
         /// Saves list of days from file.
         /// </summary>
         /// <param name="listsOfDays"></param>
-        internal void SaveListOfDays(ListOfDays listsOfDays)
+        internal async Task SaveListOfDays(ListOfDays listsOfDays)
         {
             if (listsOfDays != null)
             {
                 string jsonString = JsonConvert.SerializeObject(listsOfDays);
-                SaveJsonStringToFile(_mealsFilename, jsonString);
+                await SaveJsonStringToFile(_mealsFilename, jsonString);
             }
+            return;
         }
 
         /// <summary>
@@ -116,7 +118,7 @@ namespace MensaApp.Service
             ListOfDays listOfDays = new ListOfDays();
             string jsonString = await LoadJsonStringFromFile(_mealsFilename);
 
-            if (jsonString != null && jsonString.Length < 0)
+            if (jsonString != null && jsonString.Length > 0)
             {
                 listOfDays = JsonConvert.DeserializeObject<ListOfDays>(jsonString);
             }
@@ -128,7 +130,7 @@ namespace MensaApp.Service
         //////////////////////////////////////////////////////////////// SaveToFile /////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private async void SaveJsonStringToFile(string filename, string jsonString)
+        private async Task SaveJsonStringToFile(string filename, string jsonString)
         {
             try
             {
@@ -154,6 +156,7 @@ namespace MensaApp.Service
             {
                 Debug.WriteLine("[MensaApp.FileService.SaveJsonStringToFile] Datei: {0} konnte nicht zugegriffen werden.", filename);
             }
+            return;
         }
 
 
@@ -193,51 +196,7 @@ namespace MensaApp.Service
             {
                 Debug.WriteLine("[MensaApp.FileService.LoadJsonStringFromFile] Datei: {0} konnte nicht zugegriffen werden.", filename);
             }
-
             return jsonString;
         }
-
-        /// <summary>
-        /// Search all exsisting files and create missing files without content
-        /// </summary>
-        public async Task<int> CreateMissingFilesWithoutContentAsync()
-        {
-            int amountOfMissingFiles = 0;
-            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-            if (localFolder != null)
-            {
-                IReadOnlyList<StorageFile> files = await localFolder.GetFilesAsync();
-                if (files != null && files.Count < _totalNumberOfFiles)
-                {
-                    List<string> filenames = new List<string>();
-                    filenames.Add(_mealsFilename);
-                    filenames.Add(_descriptionFilename);
-                    filenames.Add(_settingsFilename);
-
-                    foreach (string filename in filenames)
-                    {
-                        bool isExistingFilename = false;
-                        IEnumerator<StorageFile> filesIterator = files.GetEnumerator();
-                        while (filesIterator.MoveNext())
-                        {
-                            StorageFile file = filesIterator.Current;
-                            if (file.Name.Equals(filename))
-                            {
-                                isExistingFilename = true;
-                            }
-                        }
-                        if (!isExistingFilename)
-                        {
-                            amountOfMissingFiles++;
-                            // if file not existing, then create a new empty file.
-                            SaveJsonStringToFile(filename, "");
-                        }
-                    }
-                }
-            }
-            return amountOfMissingFiles;
-        }
-
-
     }
 }

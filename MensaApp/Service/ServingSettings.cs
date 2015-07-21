@@ -26,7 +26,7 @@ namespace MensaApp.Service
         /// <summary>
         /// Combines all descriptions and all settings to a list of settingViewModels
         /// </summary>
-        public ListOfSettingViewModel GetListOfSettingViewModels(ListsOfDescriptions listsOfDescriptions, ListsOfSettings listOfSettings)
+        internal ListOfSettingViewModel GetListOfSettingViewModels(ListsOfDescriptions listsOfDescriptions, ListsOfSettings listOfSettings)
         {
             ListOfSettingViewModel resultListOfSettingViewModel = new ListOfSettingViewModel();
 
@@ -51,43 +51,45 @@ namespace MensaApp.Service
             return resultListOfSettingViewModel;
         }
 
+        internal void UpdateExcludingOfAdditives(NutritionViewModel selectedNutritionViewModel, ObservableCollection<AdditiveViewModel> additiveViewModels)
+        {
+            _settingsMapping.excludeAdditiveViewModelsByNutrition(selectedNutritionViewModel, additiveViewModels);
+        }
+
+        internal void UpdateExcludingOfAllergens(NutritionViewModel selectedNutritionViewModel, ObservableCollection<AllergenViewModel> allergensViewModel)
+        {
+            _settingsMapping.excludeAllergenViewModelsByNutrition(selectedNutritionViewModel, allergensViewModel);
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////// SaveSettings ///////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        /// <summary>
-        /// Saves Settings to file
-        /// </summary>
-        /// <param name="listOfSettingsViewModel"></param>
-        public void SaveSettings(ListOfSettingViewModel listOfSettingsViewModel)
-        {
-            if (listOfSettingsViewModel != null)
-                SaveSettings(listOfSettingsViewModel.NutritionViewModels, listOfSettingsViewModel.AdditiveViewModels, listOfSettingsViewModel.AllergenViewModels);
-        }
-
+        
         /// <summary>
         /// Saves Settings to file
         /// </summary>
         /// <param name="nutritionViewModels"></param>
         /// <param name="additiveViewModels"></param>
         /// <param name="allergenViewModels"></param>
-        public void SaveSettings(ObservableCollection<NutritionViewModel> nutritionViewModels, 
+        public async Task SaveSettings(ObservableCollection<NutritionViewModel> nutritionViewModels, 
             ObservableCollection<AdditiveViewModel> additiveViewModels, ObservableCollection<AllergenViewModel> allergenViewModels)
         {
             ListsOfSettings listsOfSettings = new ListsOfSettings();
             listsOfSettings.nutritionSetting = _settingsMapping.mapToNutritionSetting(nutritionViewModels);
             listsOfSettings.additivSettings = _settingsMapping.mapToAdditiveSettings(additiveViewModels);
             listsOfSettings.allergenSettings = _settingsMapping.mapToAllergenSettings(allergenViewModels);
-            SaveSettings(listsOfSettings);
+            await SaveSettings(listsOfSettings);
+            return;
         }
 
         /// <summary>
         /// Save Settings to file
         /// </summary>
         /// <param name="listsOfSettings"></param>
-        private void SaveSettings(ListsOfSettings listsOfSettings)
+        private async Task SaveSettings(ListsOfSettings listsOfSettings)
         {
-            _fileService.SaveListOfSettings(listsOfSettings);
+            await _fileService.SaveListOfSettings(listsOfSettings);
+            return;
         }
 
         internal Task<ListsOfSettings> LoadListsOfSettingsFromFileAysnc()
@@ -96,40 +98,17 @@ namespace MensaApp.Service
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////// SaveDecriptions ////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////// SaveAndLoadDescriptions ////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        /// <summary>
-        /// Saves descriptions to file
-        /// </summary>
-        /// <param name="nutritionViewModels"></param>
-        /// <param name="additiveViewModels"></param>
-        /// <param name="allergenViewModels"></param>
-        public void SaveDescriptions(List<NutritionDescription> nutritionDescriptions,
-            List<AdditiveDescription> additiveDescriptions, List<AllergenDescription> allergenDescriptions, List<InfoSymbolDescription> infoSymbolDescriptions)
-        {
-            ListsOfDescriptions listsOfDescriptions = new ListsOfDescriptions();
-            listsOfDescriptions.nutritions = nutritionDescriptions;
-            listsOfDescriptions.additives = additiveDescriptions;
-            listsOfDescriptions.allergens = allergenDescriptions;
-            listsOfDescriptions.infoSymbols = infoSymbolDescriptions;
-            SaveDescriptions(listsOfDescriptions);
-        }
-
         /// <summary>
         /// Save descriptions to file
         /// </summary>
         /// <param name="listsOfSettings"></param>
-        public void SaveDescriptions(ListsOfDescriptions listsOfDescriptions)
+        public async Task SaveDescriptions(ListsOfDescriptions listsOfDescriptions)
         {
-            _fileService.SaveListOfDescriptions(listsOfDescriptions);
-        }
-
-        internal void SaveDescriptions(string descriptionJSONStringFromServer)
-        {
-            ListsOfDescriptions listsOfDescriptions = new ListsOfDescriptions();
-            listsOfDescriptions = JsonConvert.DeserializeObject<ListsOfDescriptions>(descriptionJSONStringFromServer);
-            SaveDescriptions(listsOfDescriptions);
+            await _fileService.SaveListOfDescriptions(listsOfDescriptions);
+            return;
         }
 
         internal Task<ListsOfDescriptions> LoadListsOfDescriptionsFromFileAysnc()
@@ -138,19 +117,13 @@ namespace MensaApp.Service
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////// SaveMeals //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////// SaveAndLoadMeals ///////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        internal void SaveMeals(string mealsJSONStringFromServer)
+        
+        public async Task SaveMeals(ListOfDays listsOfDays)
         {
-            ListOfDays listsOfDays = new ListOfDays();
-            listsOfDays = JsonConvert.DeserializeObject<ListOfDays>(mealsJSONStringFromServer);
-            SaveMeals(listsOfDays);
-        }
-
-        public void SaveMeals(ListOfDays listsOfDays)
-        {
-            _fileService.SaveListOfDays(listsOfDays);
+            await _fileService.SaveListOfDays(listsOfDays);
+            return;
         }
 
         internal async Task<ListOfDays> LoadListOfDaysFromFileAsync()

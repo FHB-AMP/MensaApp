@@ -324,7 +324,7 @@
 
             <!-- Secound PivotItem -->
             <PivotItem Margin="18,10,10,0" Padding="2,0" Header="Zusatzstoffe">
-                <ListView ItemsSource="{Binding Path=Additives}" SelectionMode="None" 
+                <ListView x:Name="AdditivesList" ItemsSource="{Binding Path=Additives}" SelectionMode="None" 
                           ItemTemplateSelector="{StaticResource SettingsTemplateSelector}">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
@@ -341,12 +341,9 @@
             </PivotItem>
 
 
-
-
-
             <!-- Third PivotItem -->
             <PivotItem  Margin="18,10,10,0" Padding="2,0"  Header="Allergene">
-                <ListView ItemsSource="{Binding Path=Allergens}" SelectionMode="None" 
+                <ListView x:Name="AllergensList" ItemsSource="{Binding Path=Allergens}" SelectionMode="None" 
                           ItemTemplateSelector="{StaticResource SettingsTemplateSelector}">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
