@@ -127,7 +127,7 @@
                     <!--Tile Background-->
                     <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="{StaticResource MensaTilesBackgroundBrush}" RadiusX="5" RadiusY="5" Margin="0,-7,0,0"  />
                     <!--Tile HeaderBackground-->
-                    <Path Fill="{Binding Path=Meal.IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}">
+                    <Path Fill="{Binding Path=Meal.IsSuitableInfoSymbols, Converter={StaticResource SuitableToColorCode}}">
                         <Path.Data>
                             <GeometryGroup>
                                 <RectangleGeometry Rect="0,0 34,34"/>
@@ -148,8 +148,8 @@
                             </GeometryGroup>
                         </Path.Data>
                     </Path>
-                    <Rectangle Fill="{Binding Path=Meal.IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Grid.Column="1" Margin="-2,0" />
-                    <Path Fill="{Binding Path=Meal.IsSuitableNutrition, Converter={StaticResource SuitableToColorCode}}" Grid.Column="2">
+                    <Rectangle Fill="{Binding Path=Meal.IsSuitableInfoSymbols, Converter={StaticResource SuitableToColorCode}}" Grid.Column="1" Margin="-2,0" />
+                    <Path Fill="{Binding Path=Meal.IsSuitableInfoSymbols, Converter={StaticResource SuitableToColorCode}}" Grid.Column="2">
                         <Path.Data>
                             <GeometryGroup>
                                 <RectangleGeometry Rect="0,0 34,34"/>

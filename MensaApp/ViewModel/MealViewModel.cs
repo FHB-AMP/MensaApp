@@ -53,11 +53,12 @@ namespace MensaApp.ViewModel
         }
 
         public MealViewModel(int mealNumber, string name, ObservableCollection<InfoSymbolViewModel> infoSymbols, ObservableCollection<AdditiveViewModel> additives, 
-            ObservableCollection<AllergenViewModel> allergens, bool suitableMeal, bool suitableNutrition, bool suitableAdditives, bool suitableAllergens)
+            ObservableCollection<AllergenViewModel> allergens, bool suitableMeal, bool suitableNutrition, bool suitableInfoSymbols, bool suitableAdditives, bool suitableAllergens)
             : this(mealNumber, name, infoSymbols, additives, allergens)
         {
             this.IsSuitableMeal = suitableMeal;
             this.IsSuitableNutrition = suitableNutrition;
+            this.IsSuitableInfoSymbols = suitableInfoSymbols;
             this.IsSuitableAdditives = suitableAdditives;
             this.IsSuitableAllergens = suitableAllergens;
         }
@@ -100,6 +101,16 @@ namespace MensaApp.ViewModel
         {
             get { return _isSuitableNutrition; }
             set { this.SetProperty(ref this._isSuitableNutrition, value); }
+        }
+
+        /// <summary>
+        /// Is True, when infoSymbol of the meal matches the infosymbols settings of the participant.
+        /// </summary>
+        private bool _isSuitableInfoSymbols;
+        public bool IsSuitableInfoSymbols
+        {
+            get { return _isSuitableInfoSymbols; }
+            set { this.SetProperty(ref this._isSuitableInfoSymbols, value); }
         }
 
         /// <summary>

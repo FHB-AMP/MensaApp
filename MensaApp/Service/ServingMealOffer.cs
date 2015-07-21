@@ -79,11 +79,13 @@ namespace MensaApp.Service
                                     ObservableCollection<AllergenViewModel> resultAllergens = MatchAllergenIdsWithAllergensFromSettings(mealAllergenIds, deserializedAllergenSettings);
 
                                     bool suitableNutrition = EvaluateIsSuitableNutrition(deserializedSelectedNutrition, mealInfoSymbolIds, mealAdditiveIds, mealAllergenIds);
+                                    bool suitableInfoSymbols = EvaluateIsSuitableInfoSymbols(deserializedSelectedNutrition, mealInfoSymbolIds);
                                     bool suitableAdditives = EvaluateIsSuitableAdditives(resultAdditives);
                                     bool suitableAllergens = EvaluateIsSuitableAllergens(resultAllergens);
                                     bool suitableMeal = EvaluateSuitableMeal(suitableNutrition, suitableAdditives, suitableAllergens);
 
-                                    resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, suitableAdditives, suitableAllergens));
+                                    resultDay.Meals.Add(new MealViewModel(meal.mealNumber, meal.name, resultInfoSymbols, resultAdditives, resultAllergens, suitableMeal, suitableNutrition, 
+                                        suitableInfoSymbols, suitableAdditives, suitableAllergens));
                                 }
                             }
                             resultDays.Add(resultDay);
@@ -98,6 +100,11 @@ namespace MensaApp.Service
             return resultDays;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deserializedNutritions"></param>
+        /// <returns></returns>
         private NutritionViewModel FindSelectedNutritionOrReturnFirst(ObservableCollection<NutritionViewModel> deserializedNutritions)
         {
             NutritionViewModel resultNutritionViewModel = new NutritionViewModel();
@@ -181,6 +188,29 @@ namespace MensaApp.Service
             }
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectedNutrition"></param>
+        /// <param name="mealInfoSymbolIds"></param>
+        /// <returns></returns>
+        private bool EvaluateIsSuitableInfoSymbols(NutritionViewModel selectedNutrition, List<string> mealInfoSymbolIds)
+        {
+            if (selectedNutrition != null)
+            {
+                if (selectedNutrition.ExcludedSymbols != null)
+                {
+                    foreach (InfoSymbolViewModel infoSymbolViewModel in selectedNutrition.ExcludedSymbols)
+                    {
+                        if (mealInfoSymbolIds.Contains(infoSymbolViewModel.Id))
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
+
 
         /// <summary>
         /// evaluate whether the collection of allergens contains any excluded.
